@@ -1,59 +1,52 @@
 # EcommerceAppFront
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.18.
+Componentes que a desarrollar:
+Componentes:
+Auth (se verá si hay que crear register, forgot password y login o se hace con Google todo)
+dashboard (para ver estadisitcas, no obligatorio)
+productos-list
+producto-form
+producto-detail
+categorias-list
+carro
+carro-item
+pedido-list
+pedido-detail
 
-## Development server
+Servicios:
+Auth.service
+productos.service.ts
+categorias.service.ts
+usuarios.service.ts
+pedidos.service.ts
+carro.service.ts
+pagos.service.ts
 
-To start a local development server, run:
+Componentes reutilizables:
+header, footer y menú
+spinnger y modales y otros
 
-```bash
-ng serve
-```
+Rutas principales:
+{ path: '', component: HomeComponent },
+//usuario
+{ path: 'login', component: LoginComponent },
+{ path: 'register', component: RegistroComponent },
+{ path: 'checkout', component: CheckoutComponent },
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+//producto
+{ path: 'categoria', component: CategoriaListComponent },
+{ path: 'categoria:id', component: ProductDetailComponent }
+{ path: 'producto', component: ProductListComponent },
+{ path: 'producto:id', component: ProductDetailComponent }
 
-## Code scaffolding
+//compra
+{ path: 'carro', component: CarroComponent },
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+//como admin
+{ path: 'dashboard', component: DashboardComponent },
+{ path: 'productos', component: ProductosListComponent },
+{ path: 'productos/nuevo', component: ProductoFormComponent },
+{ path: 'pedidos', component: PedidosAdminComponent }
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+//404
+{ path: '\*\*', component: NotFoundComponent }
