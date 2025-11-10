@@ -4,6 +4,7 @@
 	"main": "app.js",
 	"type": "module",
 	"scripts": {
+		"dev": "tsnd --respawn --clear src/app.ts",
 		"lint": "biome check .",
 		"format": "biome format --write ."
 	},
@@ -15,11 +16,14 @@
 		"@biomejs/biome": "2.3.4",
 		"@tsconfig/node22": "22.0.2",
 		"@types/express": "5.0.5",
-		"@types/node": "24.10.0",
+		"@types/node": "^24.10.0",
+		"ts-node-dev": "2.0.0",
 		"typescript": "5.9.3"
 	},
 	"dependencies": {
 		"express": "5.1.0",
-		"jsonwebtoken": "9.0.2"
+		"jsonwebtoken": "9.0.2",
+		"reflect-metadata": "0.2.2",
+		"typeorm": "0.3.27"
 	}
 }
