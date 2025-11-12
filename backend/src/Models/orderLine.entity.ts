@@ -3,7 +3,7 @@ import { Order } from './order.entity';
 import { Product } from './product.entity';
 
 @Entity()
-export class Order_Line {
+export class OrderLine {
     @PrimaryGeneratedColumn()
     id!: number;
 

@@ -3,7 +3,7 @@ import { Cart } from './cart.entity';
 import { Product } from './product.entity';
 
 @Entity()
-export class Cart_Line {
+export class CartLine {
     @PrimaryGeneratedColumn()
     id!: number;
 
