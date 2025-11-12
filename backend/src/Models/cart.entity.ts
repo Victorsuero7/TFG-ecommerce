@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 export type cartState = 'active' | 'abandoned' | 'bought';
-import { Photo } from './user.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Cart {
@@ -14,8 +14,8 @@ export class Cart {
     state!: cartState;
 
     @ManyToOne(
-        () => Photo,
-        (photo) => photo.id,
+        () => User,
+        (user) => user.id,
     )
-    user!: Photo;
+    user!: User;
 }

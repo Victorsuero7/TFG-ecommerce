@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
-import { Photo } from './user.entity';
+import { User } from './user.entity';
 @Entity()
 export class Address {
     @PrimaryGeneratedColumn()
@@ -21,8 +21,8 @@ export class Address {
     country!: string;
 
     @ManyToMany(
-        () => Photo,
-        (photo) => photo.id,
+        () => User,
+        (user) => user.id,
     )
-    users!: Photo[];
+    users!: User[];
 }

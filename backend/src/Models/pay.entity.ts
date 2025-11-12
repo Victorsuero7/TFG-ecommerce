@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Photo } from './user.entity';
+import { User } from './user.entity';
 import { Order } from './order.entity';
 
 @Entity()
@@ -14,10 +14,10 @@ export class Pay {
     payDate!: Date;
 
     @ManyToOne(
-        () => Photo,
-        (photo) => photo.id,
+        () => User,
+        (user) => user.id,
     )
-    user!: Photo;
+    user!: User;
 
     @ManyToOne(
         () => Order,
