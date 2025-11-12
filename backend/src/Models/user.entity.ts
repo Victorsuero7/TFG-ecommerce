@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToOne } from 'typeorm';
+import { Address } from './address.entity';
+import { Order } from './order.entity';
 
 @Entity()
 export class Photo {
