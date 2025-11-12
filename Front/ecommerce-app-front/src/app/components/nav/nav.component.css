@@ -1,0 +1,13 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;           
+  width: 250px;            
+  background: #dadada;  
+}
+
+.sidebar .brand {
+  font-weight:700; 
+  margin-bottom:1rem; 
+}
