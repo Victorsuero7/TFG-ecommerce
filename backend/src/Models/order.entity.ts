@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Photo } from './user.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Order {
@@ -10,8 +10,8 @@ export class Order {
     orderDate!: Date;
 
     @ManyToOne(
-        () => Photo,
-        (photo) => photo.id,
+        () => User,
+        (user) => user.id,
     )
-    user!: Photo;
+    user!: User;
 }
