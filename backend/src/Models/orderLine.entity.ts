@@ -11,7 +11,7 @@ export class OrderLine {
     amount!: number;
 
     @Column({ type: 'decimal' })
-    unit_price!: number;
+    unitPrice!: number;
 
     @ManyToOne(
         () => Order,
