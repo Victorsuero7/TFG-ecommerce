@@ -6,8 +6,13 @@
 * execute npm install (on both directories)
 * Create your own .env files based on .env.example files
 
+>[!IMPORTANT]
+>Please, run `npm run format` before each commit to maintain consistent styling and avoid unnecessary changes.
 
-## Define standard naming conventions
+>[!TIP]
+>Set exact versions of dependencies in `package.json` to avoid potential future incompatibilities during project development.
+
+## Naming convention
 
 * Use camelCase for variable and function names.
 * Use UPPER_CASE for global constants to clearly indicate immutable compile-time values.
@@ -15,6 +20,7 @@
 * Use camelCase for interface members.
 * Use PascalCase for type names and enum names.
 * Name files with kebab-case (for example, ebs-volumes.tsx or storage.ts)
+  
 The following shows examples of these recommended naming conventions:
 
 ```ts
