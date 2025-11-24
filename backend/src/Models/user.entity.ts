@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToOne } from 'typeorm';
-
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -13,7 +12,7 @@ export class User {
     lastName!: string;
 
     @Column({ type: 'varchar', length: 255, unique: true })
-    phoneNumbre!: string;
+    phoneNumber!: string;
 
     @Column({ type: 'varchar', length: 255, unique: true })
     email!: string;
