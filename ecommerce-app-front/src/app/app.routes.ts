@@ -1,13 +1,42 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
+import { ListProductsComponent } from './pages/list-products/list-products.component';
+import { CreateProductComponent } from './pages/create-product/create-product.component';
+import { EditProductComponent } from './pages/edit-product/edit-product.component';
+
+import { ListCategoriesComponent } from './pages/list-categories/list-categories.component';
+import { CreateCategoryComponent } from './pages/create-category/create-category.component';
+
+import { GoodsEntryComponent } from './pages/goods-entry/goods-entry.component';
+import { GoodsExitComponent } from './pages/goods-exit/goods-exit.component';
+
+import { InventoryListComponent } from './pages/inventory-list/inventory-list.component';
+import { InventoryNewComponent } from './pages/inventory-new/inventory-new.component';
+
 export const routes: Routes = [
-  // arranque de la app en dashboard
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
-  // dashboard con páginas internas 
+  // Dashboard 
   { path: 'dashboard', component: DashboardComponent },
 
-  // redirección
+  // Goods routes
+  { path: 'goods/entry', component: GoodsEntryComponent },
+  { path: 'goods/exit', component: GoodsExitComponent },
+
+  // Inventory routes
+  { path: 'inventory/list', component: InventoryListComponent },
+  { path: 'inventory/new', component: InventoryNewComponent },
+
+// products
+  { path: 'products/list', component: ListProductsComponent },
+  { path: 'products/new', component: CreateProductComponent },
+  { path: 'products/edit/:id', component: EditProductComponent },
+
+  // categories
+  { path: 'categories/list', component: ListCategoriesComponent },
+  { path: 'categories/new', component: CreateCategoryComponent },
+
+
   { path: '**', redirectTo: 'dashboard' }
 ];
