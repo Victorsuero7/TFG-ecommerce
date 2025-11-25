@@ -1,11 +1,31 @@
-<aside class="sidebar d-none d-lg-block">
-  <div class="p-3">
-    <div class="brand fw-bold mb-3">GET-STOCK</div>
 
-    <nav>
+<nav class="navbar bg-light d-lg-none">
+  <div class="container-fluid d-flex align-items-center">
+      <button class="navbar-toggler me-2" 
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu"
+            aria-controls="sidebarMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <span class="navbar-brand fw-bold mb-0">GET-STOCK</span>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="collapse d-lg-block" id="sidebarMenu">
+
+    <div class="p-3 d-none d-lg-block">
+      <div class="navbar-brand fw-bold mb-0">GET-STOCK</div>
+    </div>
+
+    <nav class="p-3">
       <h6 class="small text-muted">Movimiento de mercancía</h6>
       <ul class="list-unstyled mb-3">
-        <li><a class="d-block ps-3 py-1" routerLink="//goods/entry">Entrada de mercancía</a></li>
+        <li><a class="d-block ps-3 py-1" routerLink="/goods/entry">Entrada de mercancía</a></li>
         <li><a class="d-block ps-3 py-1" routerLink="/goods/exit">Salida de mercancía</a></li>
       </ul>
 
@@ -26,9 +46,6 @@
         <li><a class="d-block ps-3 py-1" routerLink="/categories/list">Consultar categorías</a></li>
         <li><a class="d-block ps-3 py-1" routerLink="/categories/new">Nueva categoría</a></li>
       </ul>
-
-      <!-- Habrá que poner cerrar sesión  ... -->
     </nav>
   </div>
 </aside>
-
