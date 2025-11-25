@@ -5,6 +5,8 @@ import { environment } from '../../../environments/environment';
 export class GenericService<T> {
   constructor(private http: HttpClient, private endpoint: string) {}
 
+  // HAY QUE MANEJAR ERRORES
+
   private get baseUrl(): string {
     return `${environment.apiUrl}/${this.endpoint}`;
   }
