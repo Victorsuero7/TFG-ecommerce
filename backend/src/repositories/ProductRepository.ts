@@ -17,13 +17,4 @@ export class ProductRepository extends TypeORMRepository <Product, number>{
     async findByName(name: string): Promise<Product[]>{
         return await this.repo.findBy({ name})
     }
-
-    async findByOrder(orderId:  number): Promise<Product[]>{
-        return await this.repo
-            .createQueryBuilder("product")
-            .innerJoin("product.orderLine", "ol")
-            .innerJoin("ol.order", "o")
-            .where("o.id = :orderId", { orderId})
-            .getMany();
-    }
 }

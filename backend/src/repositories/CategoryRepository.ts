@@ -10,4 +10,8 @@ export class CategoryRepository extends TypeORMRepository <Category, number>{
     async findByDescription(description: string): Promise<Category | null>{
         return await this.repo.findOneBy({ description})
     }  
+
+    async findByName(name: string): Promise<Category | null>{
+        return await this.repo.findOneBy({ name})
+    }
 }
