@@ -2,6 +2,8 @@ import { DataSource, EntityTarget } from "typeorm";
 import { Product } from "../Models/product.entity";
 import { TypeORMRepository } from "./TypeORMRepository";
 import { Category } from "../Models/category.entity";
+import { Order } from "../Models/order.entity";
+
 
 export class ProductRepository extends TypeORMRepository <Product, number>{
     constructor(datasource: DataSource){
@@ -10,5 +12,18 @@ export class ProductRepository extends TypeORMRepository <Product, number>{
 
     async findByCategory(category: Category): Promise<Product[]> {
         return await this.repo.findBy({ category})
+    }
+
+    async findByName(name: string): Promise<Product[]>{
+        return await this.repo.findBy({ name})
+    }
+
+    async findByOrder(orderId:  number): Promise<Product[]>{
+        return await this.repo
+            .createQueryBuilder("product")
+            .innerJoin("product.orderLine", "ol")
+            .innerJoin("ol.order", "o")
+            .where("o.id = :orderId", { orderId})
+            .getMany();
     }
 }
