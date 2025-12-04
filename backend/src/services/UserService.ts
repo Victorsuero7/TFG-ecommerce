@@ -1,6 +1,8 @@
-import { User } from '../Models/user.entity';
-import { GenericService } from './GenericService';
+import { User } from "../Models/user.entity";
 
-export interface UserService extends GenericService<User, number> {
-    findByEmail(email: string): Promise<User | null>;
+export interface UserService {
+    singUp(user: User): Promise<User>
+    getAll(): Promise<User[]>
+    getOne(ind: number): Promise<User | null>
+    insert(user: User): Promise<User>
 }
