@@ -10,7 +10,7 @@ export class ProductServiceImpl implements ProductService {
     async getAll(): Promise<Product[]> {
         return await this.repo.findAll()
     }
-    async getOne(id: number): Promise<Product | null> {
+    async getById(id: number): Promise<Product | null> {
         return await this.repo.findOneById(id)
     }
     async insert(product: Product): Promise<Product> {
