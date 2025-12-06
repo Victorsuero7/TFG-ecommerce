@@ -2,12 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-export class GenericService<T> {
-  constructor(private http: HttpClient, private endpoint: string) {}
 
-  // HAY QUE MANEJAR ERRORES
+export abstract class GenericService<T> {
+  constructor(protected http: HttpClient, protected endpoint: string) {}
 
-  private get baseUrl(): string {
+  protected get baseUrl(): string {
     return `${environment.apiUrl}/${this.endpoint}`;
   }
 

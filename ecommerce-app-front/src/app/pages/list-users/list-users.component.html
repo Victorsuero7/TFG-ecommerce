@@ -1,0 +1,32 @@
+<div class="list-users container-fluid">
+  <h6 class="mb-3">Listado de usuarios</h6>
+
+  <div *ngIf="loading" class="mb-3">Cargando...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div class="table-header d-none d-md-flex fw-bold small px-2">
+    <div class="col-1">ID</div>
+    <div class="col">Nombre</div>
+    <div class="col-2">Teléfono</div>
+    <div class="col-3">Email</div>
+    <div class="col-2">Fecha nacimiento</div>
+    <div class="col-2 text-end">Acciones</div>
+  </div>
+  <ng-container *ngIf="!loading && users?.length; else noData">
+    <div *ngFor="let u of users" class="user-row d-flex align-items-center my-2">
+      <div class="col-1 small px-2">{{ u.id }}</div>
+      <div class="col small px-2">{{ fullName(u) }}</div>
+      <div class="col-2 small px-2">{{ u.phoneNumber }}</div>
+      <div class="col-3 small px-2">{{ u.email }}</div>
+      <div class="col-2 small px-2">{{ formatDate(u.birthDate) }}</div>
+      <div class="col-2 text-end px-2">
+        <button class="btn btn-sm btn-outline-secondary me-1" (click)="view(u.id)" title="Ver"><i class="bi bi-eye"></i></button>
+        <button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(u.id)" title="Editar"><i class="bi bi-pencil"></i></button>
+        <button class="btn btn-sm btn-outline-danger" (click)="delete(u.id)" title="Eliminar"><i class="bi bi-trash"></i></button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #noData>
+    <div *ngIf="!loading" class="mt-3 text-muted">No hay usuarios.</div>
+  </ng-template>
+</div>

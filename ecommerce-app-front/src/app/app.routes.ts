@@ -14,6 +14,8 @@ import { GoodsExitComponent } from './pages/goods-exit/goods-exit.component';
 import { InventoryListComponent } from './pages/inventory-list/inventory-list.component';
 import { InventoryNewComponent } from './pages/inventory-new/inventory-new.component';
 
+import { ListUsersComponent } from './pages/list-users/list-users.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
@@ -37,6 +39,9 @@ export const routes: Routes = [
   { path: 'categories/list', component: ListCategoriesComponent },
   { path: 'categories/new', component: CreateCategoryComponent },
 
+  //users 
+  {path: 'users/list', component: ListUsersComponent},
+  
 
   { path: '**', redirectTo: 'dashboard' }
 ];

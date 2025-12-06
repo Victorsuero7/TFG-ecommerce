@@ -2,7 +2,7 @@
 
 package-lock.json
 tsconfig.json
-
+proxy.conf.json
 
 # Compiled output
 /dist
