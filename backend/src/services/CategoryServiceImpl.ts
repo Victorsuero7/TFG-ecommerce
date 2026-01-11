@@ -7,7 +7,7 @@ export class CategoryServiceImpl implements CategoryService{
     constructor(repo: CategoryRepository){
         this.repo = repo;
     }
-    async gettAll(): Promise<Category[]> {
+    async getAll(): Promise<Category[]> {
         return await this.repo.findAll()
     }
     async getOne(id: number): Promise<Category | null> {

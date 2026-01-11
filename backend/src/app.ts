@@ -1,6 +1,8 @@
 import express from 'express';
 import { MySQLDataSource } from './config/MySQL-datasource';
 import { UserRoutes } from './routes/UserRoutes'
+import { ProductRoutes } from './routes/ProductRoutes'
+import { CategoryRoutes } from './routes/CategoryRoutes'
 
 
 const app = express();
@@ -26,3 +28,5 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', UserRoutes.routes)
+app.use('/product', ProductRoutes.routes)
+app.use('/category', CategoryRoutes.routes)

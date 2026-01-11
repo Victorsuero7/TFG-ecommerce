@@ -1,0 +1,20 @@
+import { Router } from 'express';
+import { ProductServiceImpl } from '../services/ProductServiceImpl';
+import { ProductRepository } from '../repositories/ProductRepository';
+import { ProductController } from '../controllers/ProductController';
+import { MySQLDataSource } from '../config/MySQL-datasource';
+
+export class ProductRoutes {
+    static get routes(): Router {
+        const router = Router();
+        const repository = new ProductRepository(MySQLDataSource);
+        const service = new ProductServiceImpl(repository);
+        const controller = new ProductController(service);
+
+        router.post('/insert', controller.insert)
+        router.get('/all', controller.getAll)
+        router.get('/:id', controller.getOne)
+
+        return router;
+    }
+}
