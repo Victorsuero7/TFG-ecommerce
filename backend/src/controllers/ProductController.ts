@@ -38,6 +38,7 @@ export class ProductController {
 
     getAll = async (req: Request, res: Response) => {
         const result = await this.service.getAll()
+        console.log('Products fetched:', result.map(p => ({ id: p.id, name: p.name, category: (p as any).category ? { id: (p as any).category.id, name: (p as any).category.name } : null })));
         res.status(200).json({ message: result })
     }
 }

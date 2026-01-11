@@ -1,9 +1,21 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { GenericService } from '../../services/generic/generic.service';
+import { Product } from '../../models/product.model';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class ProductService extends GenericService<Product> {
+  constructor(http: HttpClient) {
+    super(http, 'product');
+  }
 
-  constructor() { }
+  override getAll(): Observable<Product[]> {
+    return super.getAll().pipe(
+      map((res: any) => Array.isArray(res) ? res : (res?.message ?? []))
+    );
+  }
 }

@@ -9,6 +9,9 @@ export class ProductRepository extends TypeORMRepository <Product, number>{
     constructor(datasource: DataSource){
         super(Product, datasource)
     }
+    async findAll(): Promise<Product[]> {
+        return await this.repo.find({ relations: ['category'] });
+    }
 
     async findByCategory(category: Category): Promise<Product[]> {
         return await this.repo.findBy({ category})

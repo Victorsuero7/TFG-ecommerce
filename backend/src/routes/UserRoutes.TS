@@ -12,6 +12,7 @@ export class UserRoutes {
         const controller = new UserController(service);
 
         router.post('/insert', controller.insert)
+        router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/:id', controller.getOne)
         // router.post('/login', controller.getUsers)
