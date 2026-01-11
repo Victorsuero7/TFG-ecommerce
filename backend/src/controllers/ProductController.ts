@@ -28,7 +28,7 @@ export class ProductController {
 
     getOne = async (req: Request, res: Response) => {
         const id = req.params.id
-        const result = await this.service.getOne(Number(id))
+        const result = await this.service.getById(Number(id))
         if (result != null) {
             res.status(200).json({ message: result })
         } else {
