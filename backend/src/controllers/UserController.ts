@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 import { User } from '../Models/user.entity';
 import { HttpErrors } from '../utils/HttpErrors';
+import * as bcrypt from 'bcrypt';
+import { JWTAdapter } from '../utils/Jwt';
 
 export class UserController {
     constructor(service: UserService) {
@@ -57,8 +59,59 @@ export class UserController {
             res.status(404).json({ message: 'not found' })
         }
     }
+
     getAll = async (req: Request, res: Response) => {
         const result = await this.service.getAll()
         res.status(200).json({ message: result })
+    }
+
+    login = async (req: Request, res: Response) => {
+        const { email, password } = req.body
+        let validPassword!: boolean
+        let user!: User | null
+
+        if (email) {
+            user = await this.service.findByEmail(email)
+            if (!user) {
+                return res.status(400).json({ message: "Invalid credentials" })
+            }
+        }
+        validPassword = await bcrypt.compare(password, user!.password)
+        if (validPassword) {
+            const token = await JWTAdapter.generateToken({ id: user!.id, name: user!.name }, '2h')
+            // res.status(200).json({ message: 'Login succesfully', token: token }).cookie("token", token, { maxAge: 84000000 })
+            return res.status(200).json({ message: 'Login succesfully', token: token })
+        }
+        return res.status(400).json({ message: "Invalid credentials" })
+    }
+
+
+
+    signUp = async (req: Request, res: Response) => {
+        console.log(req.body);
+        const { name, lastName, phoneNumber, email, password, birthDate } = req.body
+        const user = new User()
+        user.email = email
+        user.name = name
+        user.lastName = lastName
+        user.phoneNumber = phoneNumber
+        user.birthDate = birthDate
+
+        const salt = bcrypt.genSaltSync(5);
+        let hash = bcrypt.hashSync(password, salt)
+
+        user.password = hash
+        const userExists = await this.service.findByEmail(email)
+        if (!userExists) {
+            return res.status(500).json({ message: 'User alredy exists' })
+        }
+
+        const userRegistered = await this.service.insert(user)
+        if (!userRegistered) {
+            return res.status(500).json({ message: 'Something went wrong' })
+        } else {
+        }
+
+        this.login(req, res)
     }
 }

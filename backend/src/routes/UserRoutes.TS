@@ -15,7 +15,8 @@ export class UserRoutes {
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/:id', controller.getOne)
-        // router.post('/login', controller.getUsers)
+        router.post('/login', controller.login)
+        router.post('/sign-up', controller.signUp)
 
         // router.post('/register', controller.registerUser)
 
