@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-type ROLE = "ADMIN" | "ROOT" | "USER"
+export type ROLE = "ADMIN" | "ROOT" | "USER"
 
 
 @Entity()
@@ -26,6 +26,6 @@ export class User {
     @Column({ type: 'enum', default: "USER", enum: ["ADMIN", "ROOT", "USER"] })
     role!: ROLE;
 
-    @Column({ type: 'date' })
-    birthDate!: Date;
+    // @Column({ type: 'date' })
+    // birthDate!: Date;
 }
