@@ -44,7 +44,7 @@ export class UserController {
                 })
             }
             return res.status(400).json({
-                message: HttpErrors.badRequest("Error en la operación",)
+                message: HttpErrors.badRequest("Error en la operación")
             });
         }
     }
@@ -89,9 +89,12 @@ export class UserController {
             }
             validPassword = await bcrypt.compare(password, user!.password)
             if (validPassword) {
-                const token = await JWTAdapter.generateToken({ id: user!.id, name: user!.name }, '2h')
+                const token = await JWTAdapter.generateToken({ id: user!.id, name: user!.name, role: user!.role }, '2h')
                 // res.status(200).json({ message: 'Login succesfully', token: token }).cookie("token", token, { maxAge: 84000000 })
                 return res.status(200).json({ message: 'Login succesfully', token: token })
+
+                //TODO
+                //Pendiente redireccionar a la home o alguna pagina por determinar
             }
             return res.status(400).json({ message: "Invalid credentials" })
 
@@ -118,7 +121,7 @@ export class UserController {
 
             user.password = hash
             const userExists = await this.service.findByEmail(email)
-            if (!userExists) {
+            if (userExists) {
                 return res.status(500).json({ message: 'User alredy exists' })
             }
 
