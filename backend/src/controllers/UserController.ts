@@ -4,6 +4,7 @@ import { User } from '../Models/user.entity';
 import { HttpErrors } from '../utils/HttpErrors';
 import * as bcrypt from 'bcrypt';
 import { JWTAdapter } from '../utils/Jwt';
+import { RegisterUserDTO } from '../dtos/RegisterUserDTO';
 
 export class UserController {
     constructor(service: UserService) {
@@ -114,7 +115,7 @@ export class UserController {
             user.name = name
             user.lastName = lastName
             user.phoneNumber = phoneNumber
-            user.birthDate = birthDate
+            // user.birthDate = birthDate
 
             const salt = bcrypt.genSaltSync(5);
             let hash = bcrypt.hashSync(password, salt)

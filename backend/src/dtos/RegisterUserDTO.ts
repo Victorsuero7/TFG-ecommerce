@@ -1,12 +1,13 @@
 export class RegisterUserDTO {
-    name!: string
-    lastName!: string
-    email!: string
-    phoneNumber!: string
-    password!: string
+
     // birthDate!: Date;
 
-    private constructor() { }
+    private constructor(
+        private name: string,
+        private lastName: string,
+        private email: string,
+        private phoneNumber: string,
+        private password: string) { }
 
     static create(body: { [key: string]: any; }): [string | null, RegisterUserDTO?] {
 
@@ -18,11 +19,7 @@ export class RegisterUserDTO {
         if (!password) return ['Missing password'];
         if (password.length < 6) return ['Password too short'];
 
-        const dto = new RegisterUserDTO()
-        dto.name = name;
-        dto.lastName = lastName;
-        dto.email = email;
-        dto.phoneNumber = phoneNumber;
+        const dto = new RegisterUserDTO(name, lastName, email, phoneNumber, password)
         return [null, dto];
     }
 
