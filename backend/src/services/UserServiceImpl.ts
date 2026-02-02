@@ -7,9 +7,9 @@ export class UserServiceImpl implements UserService {
     constructor(repo: UserRepository) {
         this.repo = repo;
     }
-    singUp(user: User): Promise<User> {
-        throw new Error("Method not implemented.");
-    }
+    // async singUp(user: User): Promise<User> {
+    //     throw new Error("Method not implemented.");
+    // }
     async getAll(): Promise<User[]> {
         return await this.repo.findAll()
     }
@@ -18,6 +18,9 @@ export class UserServiceImpl implements UserService {
     }
     async insert(user: User): Promise<User> {
         return await this.repo.save(user)
+    }
+    async findByEmail(email: string): Promise<User | null> {
+        return await this.repo.findByEmail(email)
     }
 
 

@@ -12,5 +12,5 @@ export const envs = {
     DATABASE_PORT: get('DATABASE_PORT').asInt(),
     DATABASE_HOST: get('DATABASE_HOST').asString(),
     DATABASE_PASSWORD: get('DATABASE_PASSWORD').asString(),
-    SECRET: get('SECRET').asString(),
+    SECRET: get('JWT_SECRET').asString(),
 };
