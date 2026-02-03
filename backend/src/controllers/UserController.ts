@@ -108,33 +108,19 @@ export class UserController {
 
     signUp = async (req: Request, res: Response) => {
         try {
-            console.log(req.body);
-            const { name, lastName, phoneNumber, email, password, birthDate } = req.body
-            const user = new User()
-            user.email = email
-            user.name = name
-            user.lastName = lastName
-            user.phoneNumber = phoneNumber
-            // user.birthDate = birthDate
-
-            const salt = bcrypt.genSaltSync(5);
-            let hash = bcrypt.hashSync(password, salt)
-
-            user.password = hash
-            const userExists = await this.service.findByEmail(email)
-            if (userExists) {
-                return res.status(500).json({ message: 'User alredy exists' })
+            const [err, dto] = RegisterUserDTO.create(req.body)
+            if (err) {
+                return res.status(400).json({ message: err })
             }
-
-            const userRegistered = await this.service.insert(user)
-            if (!userRegistered) {
-                return res.status(500).json({ message: 'Something went wrong' })
-            }
+            const result = await this.service.signUp(dto!)
             this.login(req, res)
-
+            // return res.status(200).json({ message: result })
         } catch (error) {
-            console.error('ERROR EN EL CONTROLLER:', error);
-            res.status(500).json({ message: "Internal Server Error" })
+            if (error instanceof HttpErrors) {
+                console.error('ERROR EN EL CONTROLLER:', error);
+                res.status(error.statusCode).json({ message: error.message })
+            }
+            res.status(500).json({ message: "Internal server error" })
         }
     }
 }

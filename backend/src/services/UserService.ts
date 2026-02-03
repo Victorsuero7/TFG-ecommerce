@@ -1,3 +1,4 @@
+import { RegisterUserDTO } from "../dtos/RegisterUserDTO";
 import { User } from "../Models/user.entity";
 
 export interface UserService {
@@ -6,4 +7,5 @@ export interface UserService {
     getOne(ind: number): Promise<User | null>
     insert(user: User): Promise<User>
     findByEmail(email: string): Promise<User | null>
+    signUp(dto: RegisterUserDTO): Promise<User>
 }

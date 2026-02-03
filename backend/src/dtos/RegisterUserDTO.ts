@@ -3,11 +3,11 @@ export class RegisterUserDTO {
     // birthDate!: Date;
 
     private constructor(
-        private name: string,
-        private lastName: string,
-        private email: string,
-        private phoneNumber: string,
-        private password: string) { }
+        public readonly name: string,
+        public readonly lastName: string,
+        public readonly email: string,
+        public readonly phoneNumber: string,
+        public readonly password: string) { }
 
     static create(body: { [key: string]: any; }): [string | null, RegisterUserDTO?] {
 
@@ -22,5 +22,4 @@ export class RegisterUserDTO {
         const dto = new RegisterUserDTO(name, lastName, email, phoneNumber, password)
         return [null, dto];
     }
-
 }

@@ -1,5 +1,8 @@
+import { RegisterUserDTO } from "../dtos/RegisterUserDTO";
 import { User } from "../Models/user.entity";
 import { UserRepository } from "../repositories/UserRepository";
+import { HttpErrors } from "../utils/HttpErrors";
+import * as bcrypt from 'bcrypt';
 import { UserService } from "./UserService";
 
 export class UserServiceImpl implements UserService {
@@ -21,6 +24,31 @@ export class UserServiceImpl implements UserService {
     }
     async findByEmail(email: string): Promise<User | null> {
         return await this.repo.findByEmail(email)
+    }
+
+    async signUp(dto: RegisterUserDTO): Promise<User> {
+
+        try {
+            const userExists = await this.findByEmail(dto.email)
+            if (userExists) {
+                throw HttpErrors.badRequest("User alredy exist")
+            }
+            const salt = bcrypt.genSaltSync(5);
+            let hash = bcrypt.hashSync(dto.password, salt)
+            const user = new User()
+            user.email = dto!.email
+            user.name = dto!.name
+            user.lastName = dto!.lastName
+            user.phoneNumber = dto!.phoneNumber
+            user.password = hash
+
+            const userRegistered = await this.insert(user)
+            return userRegistered
+
+        }
+        catch {
+            throw HttpErrors.internalServerError("Something went wrong")
+        }
     }
 
 
