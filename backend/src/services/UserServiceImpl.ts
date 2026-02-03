@@ -4,6 +4,8 @@ import { UserRepository } from "../repositories/UserRepository";
 import { HttpErrors } from "../utils/HttpErrors";
 import * as bcrypt from 'bcrypt';
 import { UserService } from "./UserService";
+import { LoginUserDTO } from "../dtos/LoginUserDTO";
+import { JWTAdapter } from "../utils/Jwt";
 
 export class UserServiceImpl implements UserService {
     private readonly repo: UserRepository;
@@ -26,10 +28,25 @@ export class UserServiceImpl implements UserService {
         return await this.repo.findByEmail(email)
     }
 
+
+    async login(dto: LoginUserDTO): Promise<string | null> {
+        try {
+            const user = await this.repo.findByEmail(dto.email)
+            if (!user) throw HttpErrors.badRequest("Invalid credentials")
+            const validPassword = await bcrypt.compare(dto.password, user!.password)
+            if (!validPassword) throw HttpErrors.badRequest("Invalid credentials")
+            const token = await JWTAdapter.generateToken({ id: user!.id, name: user!.name, role: user!.role }, '2h')
+            return token
+        } catch {
+            throw HttpErrors.internalServerError("Something went wrong")
+        }
+
+    }
+
     async signUp(dto: RegisterUserDTO): Promise<User> {
 
         try {
-            const userExists = await this.findByEmail(dto.email)
+            const userExists = await this.repo.findByEmail(dto.email)
             if (userExists) {
                 throw HttpErrors.badRequest("User alredy exist")
             }
@@ -41,10 +58,9 @@ export class UserServiceImpl implements UserService {
             user.lastName = dto!.lastName
             user.phoneNumber = dto!.phoneNumber
             user.password = hash
-
-            const userRegistered = await this.insert(user)
+            
+            const userRegistered = await this.repo.save(user)
             return userRegistered
-
         }
         catch {
             throw HttpErrors.internalServerError("Something went wrong")

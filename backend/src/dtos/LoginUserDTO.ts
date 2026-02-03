@@ -1,8 +1,8 @@
 export class LoginUserDTO {
 
     private constructor(
-        private email: string,
-        private password: string) { }
+        public readonly email: string,
+        public readonly password: string) { }
 
     static create(body: { [key: string]: any; }): [string | null, LoginUserDTO?] {
         const { email, password } = body;

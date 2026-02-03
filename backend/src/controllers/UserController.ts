@@ -2,9 +2,8 @@ import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 import { User } from '../Models/user.entity';
 import { HttpErrors } from '../utils/HttpErrors';
-import * as bcrypt from 'bcrypt';
-import { JWTAdapter } from '../utils/Jwt';
 import { RegisterUserDTO } from '../dtos/RegisterUserDTO';
+import { LoginUserDTO } from '../dtos/LoginUserDTO';
 
 export class UserController {
     constructor(service: UserService) {
@@ -78,49 +77,37 @@ export class UserController {
 
     login = async (req: Request, res: Response) => {
         try {
-            const { email, password } = req.body
-            let validPassword!: boolean
-            let user!: User | null
+            const [err, dto] = LoginUserDTO.create(req.body)
+            if (err) res.status(400).json({ message: err })
+            const result = await this.service.login(dto!)
 
-            if (email) {
-                user = await this.service.findByEmail(email)
-                if (!user) {
-                    return res.status(400).json({ message: "Invalid credentials" })
-                }
+            if (result) {
+                res.status(200).json({ message: 'Login succesfully', token: result }).cookie("token", result, { maxAge: 84000000 })
             }
-            validPassword = await bcrypt.compare(password, user!.password)
-            if (validPassword) {
-                const token = await JWTAdapter.generateToken({ id: user!.id, name: user!.name, role: user!.role }, '2h')
-                // res.status(200).json({ message: 'Login succesfully', token: token }).cookie("token", token, { maxAge: 84000000 })
-                return res.status(200).json({ message: 'Login succesfully', token: token })
-
-                //TODO
-                //Pendiente redireccionar a la home o alguna pagina por determinar
-            }
-            return res.status(400).json({ message: "Invalid credentials" })
-
-        } catch (error) {
-            console.error('ERROR EN EL CONTROLLER:', error);
-            res.status(500).json({ message: "Internal Server Error" })
+            //TODO
+            //Pendiente redireccionar a la home o alguna pagina por determinar
         }
+        catch(error) {
+            if (error instanceof HttpErrors) return res.status(400).json({ message: "Invalid credentials" })
+        console.error('ERROR EN EL CONTROLLER:', error);
+        res.status(500).json({ message: "Internal Server Error" })
     }
+}
 
 
-    signUp = async (req: Request, res: Response) => {
-        try {
-            const [err, dto] = RegisterUserDTO.create(req.body)
-            if (err) {
-                return res.status(400).json({ message: err })
-            }
-            const result = await this.service.signUp(dto!)
-            this.login(req, res)
-            // return res.status(200).json({ message: result })
-        } catch (error) {
-            if (error instanceof HttpErrors) {
-                console.error('ERROR EN EL CONTROLLER:', error);
-                res.status(error.statusCode).json({ message: error.message })
-            }
-            res.status(500).json({ message: "Internal server error" })
+signUp = async (req: Request, res: Response) => {
+    try {
+        const [err, dto] = RegisterUserDTO.create(req.body)
+        if (err) {
+            return res.status(400).json({ message: err })
         }
+        const result = await this.service.signUp(dto!)
+        this.login(req, res)
+        // return res.status(200).json({ message: result })
+    } catch (error) {
+        if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+        console.error('ERROR EN EL CONTROLLER:', error);
+        res.status(500).json({ message: "Internal server error" })
     }
+}
 }
