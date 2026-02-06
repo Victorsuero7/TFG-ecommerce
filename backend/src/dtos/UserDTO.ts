@@ -1,7 +1,8 @@
 import { User, ROLE } from "../Models/user.entity";
 
 export class UserDTO {
-    constructor(name: string,
+    constructor(
+        public readonly name: string,
         public readonly lastName: string,
         public readonly email: string,
         public readonly phoneNumber: string,
