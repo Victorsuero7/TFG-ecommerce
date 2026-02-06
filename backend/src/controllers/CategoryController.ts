@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { CategoryService } from '../services/CategoryService';
-import { Category } from '../Models/category.entity';
 import { HttpErrors } from '../utils/HttpErrors';
+import { CategoryDTO } from '../dtos/CategoryDTO';
 
 export class CategoryController {
     constructor(service: CategoryService) {
@@ -11,59 +11,58 @@ export class CategoryController {
 
     insert = async (req: Request, res: Response) => {
         try {
-            const payload = req.body as Partial<Category>;
-            const category = new Category();
-            Object.assign(category, payload);
+            const dto = CategoryDTO.createDTO(req.body)
+            const result = await this.service.insert(dto)
+            res.status(200).json({ category: result })
 
-            const result = await this.service.insert(category)
-            res.status(200).json({ message: 'ruta exitosa', content: result })
-
-        } catch (e: any) {
-            console.error('ERROR EN EL CONTROLLER:', e);
-            return res.status(400).json({
-                message: HttpErrors.badRequest('Error en la operación')
-            });
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 
     getOne = async (req: Request, res: Response) => {
-        const id = req.params.id
-        const result = await this.service.getById(Number(id))
-        if (result != null) {
-            res.status(200).json({ message: result })
-        } else {
-            res.status(404).json({ message: 'not found' })
+        try {
+            const id = req.params.id
+            const result = await this.service.getById(Number(id))
+            res.status(200).json({ category: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 
     getAll = async (req: Request, res: Response) => {
-        const result = await this.service.getAll()
-        res.status(200).json({ message: result })
+        try {
+            const result = await this.service.getAll()
+            res.status(200).json({ message: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
     }
 
     getByName = async (req: Request, res: Response) => {
-        const name = req.params.name
-        if (!name) {
-            return res.status(400).json({ message: 'name parameter is required' })
-        }
-        const result = await this.service.findByName(name)
-        if (result != null) {
-            res.status(200).json({ message: result })
-        } else {
-            res.status(404).json({ message: 'not found' })
+        try {
+            const name = req.params.name
+            if (!name) return res.status(400).json({ message: 'name parameter is required' })
+            const result = await this.service.findByName(name)
+            if (result != null) return res.status(200).json({ message: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 
     getByDescription = async (req: Request, res: Response) => {
-        const description = req.params.description
-        if (!description) {
-            return res.status(400).json({ message: 'description parameter is required' })
-        }
-        const result = await this.service.findByDescription(description)
-        if (result != null) {
-            res.status(200).json({ message: result })
-        } else {
-            res.status(404).json({ message: 'not found' })
+        try {
+            const description = req.params.description
+            if (!description) return res.status(400).json({ message: 'description parameter is required' })
+            const result = await this.service.findByName(description)
+            if (result != null) return res.status(200).json({ message: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 }
