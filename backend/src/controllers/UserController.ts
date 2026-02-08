@@ -11,18 +11,6 @@ export class UserController {
     }
     private readonly service: UserService;
 
-    // getUsers = async (req: Request, res: Response) => {
-    //     try {
-    //         const result = await this.service.findAll();
-    //         res.status(200).json({
-    //             title: 'Users List',
-    //             content: result,
-    //         });
-    //     } catch (error) {
-    //         res.status(500).json({ error: 'Something went wrong' });
-    //     }
-    // };
-
     insert = async (req: Request, res: Response) => {
         try {
             const dto = UserDTO.createDTO(req.body)
@@ -33,7 +21,6 @@ export class UserController {
             res.status(500)
         }
     }
-
 
     getOne = async (req: Request, res: Response) => {
         try {
@@ -73,7 +60,6 @@ export class UserController {
             res.status(500).json({ message: "Internal Server Error" })
         }
     }
-
 
     signUp = async (req: Request, res: Response) => {
         try {

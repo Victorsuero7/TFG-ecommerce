@@ -13,23 +13,22 @@ export class UserServiceImpl implements UserService {
     constructor(repo: UserRepository) {
         this.repo = repo;
     }
-    // async singUp(user: User): Promise<User> {
-    //     throw new Error("Method not implemented.");
-    // }
-    async getAll(): Promise<User[]> {
+
+    async getAll(): Promise<UserDTO[]> {
         try {
-            return await this.repo.findAll()
+            const result = await this.repo.findAll()
+            return result.map(e => UserDTO.fromEntity(e))
         } catch (error) {
             console.log(error)
             throw error
         }
     }
 
-    async getOne(id: number): Promise<User | null> {
+    async getOne(id: number): Promise<UserDTO | null> {
         try {
             const user = await this.repo.findOneById(id)
             if (!user) throw HttpErrors.NotFound("User not found")
-            return user
+            return UserDTO.fromEntity(user)
         } catch (error) {
             console.log(error)
             throw error
@@ -41,12 +40,7 @@ export class UserServiceImpl implements UserService {
             const userExists = await this.repo.findByEmail(dto.email)
             if (userExists) throw HttpErrors.badRequest("User alredy exists")
 
-            const user = new User()
-            user.name = dto.name
-            user.lastName = dto.lastName
-            user.phoneNumber = dto.phoneNumber
-            user.email = dto.email
-
+            const user = dto.toEntity()
             const result = await this.repo.save(user)
             return result
         } catch (error) {
@@ -54,10 +48,6 @@ export class UserServiceImpl implements UserService {
             throw error
         }
     }
-    // async findByEmail(email: string): Promise<User | null> {
-    //     return await this.repo.findByEmail(email)
-    // }
-
 
     async login(dto: LoginUserDTO): Promise<string | null> {
         try {
@@ -73,7 +63,7 @@ export class UserServiceImpl implements UserService {
         }
     }
 
-    async signUp(dto: RegisterUserDTO): Promise<User> {
+    async signUp(dto: RegisterUserDTO): Promise<UserDTO> {
         try {
             const userExists = await this.repo.findByEmail(dto.email)
             if (userExists) throw HttpErrors.badRequest("User alredy exist")
@@ -87,13 +77,11 @@ export class UserServiceImpl implements UserService {
             user.password = hash
 
             const userRegistered = await this.repo.save(user)
-            return userRegistered
+            return UserDTO.fromEntity(userRegistered)
         }
         catch (error) {
             console.log(error)
             throw HttpErrors.internalServerError("Something went wrong")
         }
     }
-
-
 }
