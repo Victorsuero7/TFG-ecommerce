@@ -1,3 +1,4 @@
+import { ObjectLiteral } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
@@ -52,6 +53,19 @@ export class ProductServiceImpl implements ProductService {
             console.log(error);
             throw error
         }
+    }
+
+    async update(dto: ProductDTO): Promise<ProductDTO> {
+        try {
+            const product = dto.toEntity()
+            const rows = (await this.repo.update(product.id, product)).affected
+            if (!rows || rows === 0) throw HttpErrors.internalServerError()
+            return await this.repo.findOneById(product.id)
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+
     }
 
 }

@@ -20,6 +20,16 @@ export class ProductController {
         }
     }
 
+    update = async (req: Request, res: Response) => {
+        try {
+            const dto = ProductDTO.createDTO(req.body)
+            const result = await this.service.update(dto)
+            res.status(200).json({ message: "Product updated", product: result })
+        } catch (error) {
+            return res.status(500)
+        }
+    }
+
     getOne = async (req: Request, res: Response) => {
         try {
             const id = req.params.id
