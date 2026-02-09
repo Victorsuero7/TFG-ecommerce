@@ -1,5 +1,7 @@
+import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
+import { HttpErrors } from "../utils/HttpErrors";
 import { ProductService } from "./ProductService";
 
 export class ProductServiceImpl implements ProductService {
@@ -8,13 +10,48 @@ export class ProductServiceImpl implements ProductService {
         this.repo = repo;
     }
     async getAll(): Promise<Product[]> {
-        return await this.repo.findAll()
+        try {
+            return await this.repo.findAll()
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
     }
     async getById(id: number): Promise<Product | null> {
-        return await this.repo.findOneById(id)
+        try {
+            const result = await this.repo.findOneById(id)
+            if (!result) throw HttpErrors.NotFound()
+            return result
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
     }
-    async insert(product: Product): Promise<Product> {
-        return await this.repo.save(product)
+    async insert(dto: ProductDTO): Promise<Product> {
+        try {
+            const product: Product = dto.toEntity()
+            return await this.repo.save(product)
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+    async getByName(name: string): Promise<Product[]> {
+        try {
+            return this.repo.findByName(name)
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async getByDescription(description: string): Promise<Product[]> {
+        try {
+            return this.repo.findByDescription(description)
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
     }
 
 }
