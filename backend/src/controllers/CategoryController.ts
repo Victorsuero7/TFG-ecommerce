@@ -58,7 +58,7 @@ export class CategoryController {
         try {
             const description = req.params.description
             if (!description) return res.status(400).json({ message: 'description parameter is required' })
-            const result = await this.service.findByName(description)
+            const result = await this.service.findByDescription(description)
             if (result != null) return res.status(200).json({ message: result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
