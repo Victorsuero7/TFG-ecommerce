@@ -18,4 +18,8 @@ export class ProductService extends GenericService<Product> {
       map((res: any) => Array.isArray(res) ? res : (res?.message ?? []))
     );
   }
+  
+  override create(item: Product): Observable<Product> {
+    return this.http.post<Product>(`${this.baseUrl}/insert`, item);
+  }
 }
