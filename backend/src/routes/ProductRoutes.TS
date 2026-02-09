@@ -14,6 +14,7 @@ export class ProductRoutes {
         router.post('/insert', controller.insert)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
+        router.get('/all/:page', controller.getAllPaginated)
         router.get('/:id', controller.getOne)
 
         return router;

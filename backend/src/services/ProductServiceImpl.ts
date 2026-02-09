@@ -3,6 +3,9 @@ import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
 import { HttpErrors } from "../utils/HttpErrors";
 import { ProductService } from "./ProductService";
+import { envs } from '../config/envs';
+
+const PPP = envs.PRODUCTS_PER_PAGE!
 
 export class ProductServiceImpl implements ProductService {
     private readonly repo: ProductRepository;
@@ -17,6 +20,18 @@ export class ProductServiceImpl implements ProductService {
             throw error
         }
     }
+
+    async getAllPaginated(page: number): Promise<Product[]> {
+        try {
+            const result = await this.repo.findAllByPage(PPP * (page - 1), PPP)
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return result
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
     async getById(id: number): Promise<Product | null> {
         try {
             const result = await this.repo.findOneById(id)
@@ -53,5 +68,4 @@ export class ProductServiceImpl implements ProductService {
             throw error
         }
     }
-
 }
