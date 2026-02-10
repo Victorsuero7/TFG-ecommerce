@@ -30,6 +30,10 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
         return await this.repo.remove(entity);
     }
 
+    async preload(entity: T): Promise<T | undefined> {
+        return await this.repo.preload(entity)
+    }
+
     async findBy(conditions: Partial<T>): Promise<T[]> {
         return await this.repo.find({ where: conditions });
     }
@@ -37,7 +41,7 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
     async count(): Promise<number> {
         return await this.repo.count()
     }
-    
+
     async countByCondition(conditions: Partial<T>): Promise<number> {
         return await this.repo.count({ where: conditions });
     }

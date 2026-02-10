@@ -1,4 +1,4 @@
-import { Validators } from "../utils/Validators";
+// import { Validators } from "../utils/Validators";
 
 export class RegisterUserDTO {
 
@@ -17,9 +17,9 @@ export class RegisterUserDTO {
         if (!name) return ['Missing name'];
         if (!email) return ['Missing email'];
         if (!phoneNumber) return ['Missing phone number'];
-        if (!Validators.validateEmail(email)) return ['Email is not valid'];
+        // if (!Validators.validateEmail(email)) return ['Email is not valid'];
         if (!password) return ['Missing password'];
-        if (!Validators.validatePassword(password)) return ['Password is not valid'];
+        // if (!Validators.validatePassword(password)) return ['Password is not valid'];
         if (password.length < 6) return ['Password too short'];
 
         const dto = new RegisterUserDTO(name, lastName, email, phoneNumber, password)
