@@ -22,8 +22,8 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
         return await this.repo.save(entity);
     }
 
-    async update(id: ID, entity: T): Promise<UpdateResult> {
-        return await this.repo.update({ id: id } as FindOptionsWhere<T>, entity);
+    async merge(entity: T): Promise<T | undefined> {
+        return await this.repo.preload(entity);
     }
 
     async remove(entity: T): Promise<T> {

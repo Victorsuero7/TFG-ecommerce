@@ -1,4 +1,4 @@
-import { ObjectLiteral } from "typeorm";
+import { ObjectLiteral, ReturnDocument } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
@@ -58,9 +58,11 @@ export class ProductServiceImpl implements ProductService {
     async update(dto: ProductDTO): Promise<ProductDTO> {
         try {
             const product = dto.toEntity()
-            const rows = (await this.repo.update(product.id, product)).affected
-            if (!rows || rows === 0) throw HttpErrors.internalServerError()
-            return await this.repo.findOneById(product.id)
+            const entity = await this.repo.merge(product)
+            if (!entity) throw HttpErrors.NotFound("Product not found")
+            const result = await this.repo.save(entity)
+            return ProductDTO.fromEntity(result)
+
         } catch (error) {
             console.log(error);
             throw error
