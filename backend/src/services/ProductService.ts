@@ -1,3 +1,4 @@
+import { ObjectLiteral } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { SchemaResponse } from '../config/SchemaResponse'

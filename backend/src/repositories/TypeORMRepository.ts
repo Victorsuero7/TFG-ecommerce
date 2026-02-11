@@ -1,4 +1,4 @@
-import { Repository, DataSource, EntityTarget, ObjectLiteral, FindOptionsWhere } from "typeorm";
+import { Repository, DataSource, EntityTarget, ObjectLiteral, FindOptionsWhere, UpdateResult } from "typeorm";
 
 export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
     protected repo: Repository<T>;
@@ -24,6 +24,10 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
 
     async save(entity: T): Promise<T> {
         return await this.repo.save(entity);
+    }
+
+    async merge(entity: T): Promise<T | undefined> {
+        return await this.repo.preload(entity);
     }
 
     async remove(entity: T): Promise<T> {

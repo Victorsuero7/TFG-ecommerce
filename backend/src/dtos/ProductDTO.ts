@@ -25,5 +25,4 @@ export class ProductDTO {
         const { name, description, price, size, stock } = object;
         return new ProductDTO(0, name, description, price, size, stock)
     }
-
 }

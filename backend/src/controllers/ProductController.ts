@@ -16,6 +16,18 @@ export class ProductController {
             const result = await this.service.insert(dto)
             res.status(200).json({ message: "Product saved", product: result })
         } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
+    update = async (req: Request, res: Response) => {
+        try {
+            const dto = ProductDTO.createDTO(req.body)
+            const result = await this.service.update(dto)
+            res.status(200).json({ message: "Product updated", product: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500)
         }
     }
@@ -48,6 +60,18 @@ export class ProductController {
             const result = await this.service.getAll()
             res.status(200).json({ message: result })
         } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
+    getAllPaginated = async (req: Request, res: Response) => {
+        try {
+            const page = req.params.page!
+            const result = await this.service.getAllPaginated(Number.parseInt(page))
+            res.status(200).json({ message: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500)
         }
     }

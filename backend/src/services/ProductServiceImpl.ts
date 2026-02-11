@@ -1,3 +1,4 @@
+import { ObjectLiteral, ReturnDocument } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
