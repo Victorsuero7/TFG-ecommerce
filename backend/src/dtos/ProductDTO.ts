@@ -3,6 +3,7 @@ import { Product } from "../Models/product.entity";
 export class ProductDTO {
 
     constructor(
+        public readonly id: number | null,
         public readonly name: string,
         public readonly description: string,
         public readonly price: number,
@@ -11,7 +12,7 @@ export class ProductDTO {
     ) { }
 
     static fromEntity(product: Product): ProductDTO {
-        return new ProductDTO(product.name, product.description, product.price, product.size, product.stock)
+        return new ProductDTO(product.id, product.name, product.description, product.price, product.size, product.stock)
     }
 
     public toEntity(): Product {
@@ -21,8 +22,7 @@ export class ProductDTO {
     }
 
     static createDTO(object: { [key: string]: any; }): ProductDTO {
-        const { name, description, price, size, stock } = object;
-        return new ProductDTO(name, description, price, size, stock)
+        const { id, name, description, price, size, stock } = object;
+        return new ProductDTO(id ?? null, name, description, price, size, stock)
     }
-
 }

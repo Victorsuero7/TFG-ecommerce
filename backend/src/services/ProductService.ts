@@ -1,3 +1,4 @@
+import { ObjectLiteral } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 
@@ -8,4 +9,5 @@ export interface ProductService {
     getByName(name: string): Promise<Product[]>
     getByDescription(description: string): Promise<Product[]>
     getAllPaginated(page: number): Promise<Product[]>
+    update(dto: ProductDTO): Promise<ProductDTO>
 }
