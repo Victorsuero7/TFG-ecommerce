@@ -1,6 +1,4 @@
-import { ObjectLiteral } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
-import { Product } from "../Models/product.entity";
 import { SchemaResponse } from '../config/SchemaResponse'
 
 export interface ProductService {
@@ -11,4 +9,5 @@ export interface ProductService {
     getByName(name: string): Promise<SchemaResponse<ProductDTO[]>>
     getByDescription(description: string): Promise<SchemaResponse<ProductDTO[]>>
     getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>>
+    filterByStock(n: number, rule: string, page: number): Promise<SchemaResponse<ProductDTO[]>>
 }

@@ -1,4 +1,4 @@
-import { DataSource, ILike } from "typeorm";
+import { DataSource, ILike, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { Product } from "../Models/product.entity";
 import { TypeORMRepository } from "./TypeORMRepository";
 import { Category } from "../Models/category.entity";
@@ -33,5 +33,23 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
 
     async totalResultsByName(name: string): Promise<number> {
         return await this.repo.countBy({ name: ILike(`%${name}%`) })
+    }
+
+    async stockLessThan(n: number, offset: number, limit: number): Promise<[Product[], number]> {
+        return await this.repo.findAndCount({
+            where: { stock: LessThanOrEqual(n) },
+            order: { stock: "ASC" },
+            skip: offset,
+            take: limit
+        })
+    }
+
+    async stockMoreThan(n: number, offset: number, limit: number): Promise<[Product[], number]> {
+        return await this.repo.findAndCount({
+            where: { stock: MoreThanOrEqual(n) },
+            order: { stock: "DESC" },
+            skip: offset,
+            take: limit
+        })
     }
 }

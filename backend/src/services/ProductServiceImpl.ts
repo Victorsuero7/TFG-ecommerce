@@ -1,4 +1,3 @@
-import { ObjectLiteral, ReturnDocument } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
@@ -14,6 +13,7 @@ export class ProductServiceImpl implements ProductService {
     constructor(repo: ProductRepository) {
         this.repo = repo;
     }
+
     async getAll(): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             const result = (await this.repo.findAll()).map(e => ProductDTO.fromEntity(e))
@@ -89,6 +89,22 @@ export class ProductServiceImpl implements ProductService {
             if (result.length === 0) throw HttpErrors.NotFound()
             const count = await this.repo.totalResultsByName(description)
             return new SchemaResponse(result, { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+
+    async filterByStock(n: number, rule: string, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            let result, count
+            if (rule == "more") {
+                [result, count] = await this.repo.stockMoreThan(n, PPP * (page - 1), PPP)
+            } else {
+                [result, count] = await this.repo.stockLessThan(n, PPP * (page - 1), PPP)
+            }
+            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error);
             throw error

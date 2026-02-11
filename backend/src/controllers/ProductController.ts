@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ProductService } from '../services/ProductService';
 import { HttpErrors } from '../utils/HttpErrors';
 import { ProductDTO } from '../dtos/ProductDTO';
+import { Validators } from '../utils/Validators';
 
 export class ProductController {
     constructor(service: ProductService) {
@@ -57,6 +58,20 @@ export class ProductController {
         try {
             const page = req.params.page!
             const result = await this.service.getAllPaginated(Number.parseInt(page))
+            res.status(200).json({ message: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
+    getByStock = async (req: Request, res: Response) => {
+        try {
+            const page = Number(req.query.page)
+            const stock = Number(req.query.stock)
+            const rule = String(req.query.rule)
+            if (!rule || !page || page < 0 || !stock || !Validators.validateString(rule, ["more", "less"])) return res.status(400).json({ error: "Some mistakes on params" })
+            const result = await this.service.filterByStock(stock, rule, page)
             res.status(200).json({ message: result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
