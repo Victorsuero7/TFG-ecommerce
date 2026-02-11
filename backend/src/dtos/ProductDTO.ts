@@ -22,7 +22,7 @@ export class ProductDTO {
     }
 
     static createDTO(object: { [key: string]: any; }): ProductDTO {
-        const { id, name, description, price, size, stock } = object;
-        return new ProductDTO(id ?? null, name, description, price, size, stock)
+        const { name, description, price, size, stock } = object;
+        return new ProductDTO(0, name, description, price, size, stock)
     }
 }
