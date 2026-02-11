@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { ProductService } from '../services/ProductService';
-import { Product } from '../Models/product.entity';
 import { HttpErrors } from '../utils/HttpErrors';
 import { ProductDTO } from '../dtos/ProductDTO';
 
@@ -32,17 +31,6 @@ export class ProductController {
         }
     }
 
-    update = async (req: Request, res: Response) => {
-        try {
-            // const id = req.params.id
-            const dto = ProductDTO.createDTO(req.body)
-            const result = await this.service.update(dto)
-            res.status(200).json({ message: "Product updated", result: result })
-        } catch (error) {
-            return res.status(500)
-        }
-    }
-
     getOne = async (req: Request, res: Response) => {
         try {
             const id = req.params.id
@@ -58,17 +46,6 @@ export class ProductController {
     getAll = async (req: Request, res: Response) => {
         try {
             const result = await this.service.getAll()
-            res.status(200).json({ message: result })
-        } catch (error) {
-            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
-            return res.status(500)
-        }
-    }
-
-    getAllPaginated = async (req: Request, res: Response) => {
-        try {
-            const page = req.params.page!
-            const result = await this.service.getAllPaginated(Number.parseInt(page))
             res.status(200).json({ message: result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
