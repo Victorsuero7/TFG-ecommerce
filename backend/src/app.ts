@@ -9,7 +9,7 @@ import { CategoryRoutes } from './routes/CategoryRoutes'
 const app = express();
 const port = 3000;
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:4200' }));
+// app.use(cors({ origin: 'http://localhost:4200' }));
 
 
 (() => {
