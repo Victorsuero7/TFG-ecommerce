@@ -8,5 +8,6 @@ export interface ProductService {
     insert(dto: ProductDTO): Promise<Product>
     getByName(name: string): Promise<Product[]>
     getByDescription(description: string): Promise<Product[]>
+    getAllPaginated(page: number): Promise<Product[]>
     update(dto: ProductDTO): Promise<ProductDTO>
 }
