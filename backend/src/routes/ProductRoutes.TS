@@ -15,6 +15,7 @@ export class ProductRoutes {
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/:id', controller.getOne)
+        router.post('/update', controller.update)
 
         return router;
     }
