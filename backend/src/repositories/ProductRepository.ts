@@ -22,4 +22,8 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
     async findByDescription(description: string): Promise<Product[]> {
         return await this.repo.findBy({ description: ILike(`%${description}%`) })
     }
+
+    async totalResults(): Promise<number> {
+        return await this.repo.count()
+    }
 }

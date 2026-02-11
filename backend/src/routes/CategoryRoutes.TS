@@ -17,6 +17,7 @@ export class CategoryRoutes {
         router.get('/:id', controller.getOne)
         router.get('/name/:name', controller.getByName)
         router.get('/description/:description', controller.getByDescription)
+        router.get('/all/:page', controller.getAllPaginated)
 
         return router;
     }
