@@ -19,4 +19,11 @@ export class UserService extends GenericService<User> {
       map((res: any) => Array.isArray(res) ? res : (res?.message ?? []))
     );
   }
+  signUp(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/sign-up`, payload);
+  }
+
+  login(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, payload);
+  }
 }
