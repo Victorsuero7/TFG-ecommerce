@@ -18,4 +18,9 @@ export class CategoryService extends GenericService<Category> {
       map((res: any) => Array.isArray(res) ? res : (res?.message ?? []))
     );
   }
+  
+  override create(item: Category): Observable<Category> {
+    // backend expects POST to /category/insert
+    return this.http.post<Category>(`${this.baseUrl}/insert`, item);
+  }
 }

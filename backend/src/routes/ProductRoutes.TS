@@ -12,9 +12,12 @@ export class ProductRoutes {
         const controller = new ProductController(service);
 
         router.post('/insert', controller.insert)
+        router.patch('/update', controller.update)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
+        router.get('/all/:page', controller.getAllPaginated)
         router.get('/:id', controller.getOne)
+        router.post('/update', controller.update)
 
         return router;
     }
