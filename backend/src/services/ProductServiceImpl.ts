@@ -1,4 +1,4 @@
-import { ObjectLiteral, ReturnDocument } from "typeorm";
+import { ObjectLiteral, ReturnDocument, Transaction } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
@@ -6,6 +6,7 @@ import { HttpErrors } from "../utils/HttpErrors";
 import { ProductService } from "./ProductService";
 import { envs } from '../config/envs';
 import { Metadata, SchemaResponse } from "../config/SchemaResponse";
+import { metadata } from "reflect-metadata/no-conflict";
 
 const PPP = envs.PRODUCTS_PER_PAGE ?? 20
 
@@ -14,6 +15,7 @@ export class ProductServiceImpl implements ProductService {
     constructor(repo: ProductRepository) {
         this.repo = repo;
     }
+
     async getAll(): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             const result = (await this.repo.findAll()).map(e => ProductDTO.fromEntity(e))
@@ -65,6 +67,35 @@ export class ProductServiceImpl implements ProductService {
             if (!entity) throw HttpErrors.internalServerError("Something went wrong")
             const result = await this.repo.save(product)
             return new SchemaResponse(ProductDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const products: Product[] = dtos.map(e => e.toEntity())
+            const fails: Product[] = []
+            const success: Product[] = []
+
+            for (const p of products) {
+                try {
+                    const entity = await this.repo.preload(p)
+                    if (!entity) {
+                        fails.push(p)
+                        continue
+                    }
+                    const savedEntity = await this.repo.save(entity)
+                    success.push(savedEntity)
+
+                } catch (error) {
+                    fails.push(p)
+                }
+            }
+            const result = success.map(e => ProductDTO.fromEntity(e))
+            const failures = fails.map(e => ProductDTO.fromEntity(e))
+            return new SchemaResponse(result, { failures })
         } catch (error) {
             console.log(error);
             throw error

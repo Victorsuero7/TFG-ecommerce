@@ -13,6 +13,7 @@ export class ProductRoutes {
 
         router.post('/insert', controller.insert)
         router.patch('/update', controller.update)
+        router.patch('/update/many', controller.updateMany)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/all/:page', controller.getAllPaginated)

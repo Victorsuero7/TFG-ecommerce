@@ -8,6 +8,7 @@ export interface ProductService {
     getById(id: number): Promise<SchemaResponse<ProductDTO | null>>
     insert(dto: ProductDTO): Promise<SchemaResponse<ProductDTO>>
     update(dto: ProductDTO): Promise<SchemaResponse<ProductDTO>>
+    updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>>
     getByName(name: string): Promise<SchemaResponse<ProductDTO[]>>
     getByDescription(description: string): Promise<SchemaResponse<ProductDTO[]>>
     getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>>
