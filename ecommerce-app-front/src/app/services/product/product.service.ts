@@ -22,4 +22,13 @@ export class ProductService extends GenericService<Product> {
   override create(item: Product): Observable<Product> {
     return this.http.post<Product>(`${this.baseUrl}/insert`, item);
   }
+
+  override update(id: number, item: Product): Observable<Product> {
+  return this.http.patch<Product>(`${this.baseUrl}/update`, item);
+  }
+
+  updateStock(items: { id: number; stock: number }[]): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/update-stock`, items);
+  }
+
 }
