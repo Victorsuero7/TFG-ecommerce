@@ -4,6 +4,7 @@ import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
 import { HttpErrors } from "../utils/HttpErrors";
 import { ProductService } from "./ProductService";
+import { Category } from "../Models/category.entity";
 import { envs } from '../config/envs';
 import { Metadata, SchemaResponse } from "../config/SchemaResponse";
 

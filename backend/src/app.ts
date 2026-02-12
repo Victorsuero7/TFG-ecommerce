@@ -12,15 +12,16 @@ app.use(express.json());
 app.use(cors( ));
 
 
-(() => {
-    app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`);
-    });
+(async () => {
     try {
-        MySQLDataSource.initialize();
+        await MySQLDataSource.initialize();
         console.log('Data Source has been initialized!');
+        app.listen(port, () => {
+            console.log(`Example app listening on port ${port}`);
+        });
     } catch (error) {
         console.error('Error during Data Source initialization', error);
+        process.exit(1);
     }
 })();
 

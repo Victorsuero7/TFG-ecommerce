@@ -11,6 +11,10 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         return await this.repo.find({ relations: ['category'] });
     }
 
+    async findOneById(id: number): Promise<Product | null> {
+        return await this.repo.findOne({ where: { id }, relations: ['category'] });
+    }
+
     async findByCategory(category: Category): Promise<Product[]> {
         return await this.repo.findBy({ category })
     }
