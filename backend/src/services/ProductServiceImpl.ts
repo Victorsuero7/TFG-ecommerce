@@ -86,10 +86,31 @@ export class ProductServiceImpl implements ProductService {
 
     async getByDescription(description: string): Promise<SchemaResponse<ProductDTO[]>> {
         try {
-            const result = (await this.repo.findByName(description)).map(e => ProductDTO.fromEntity(e))
+            const result = (await this.repo.findByDescription(description)).map(e => ProductDTO.fromEntity(e))
             if (result.length === 0) throw HttpErrors.NotFound()
-            const count = await this.repo.totalResultsByName(description)
+            const count = await this.repo.totalResultsByDescription(description)
             return new SchemaResponse(result, { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async getByCategoryName(categoryName: string): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const result = (await this.repo.findByCategoryName(categoryName)).map(e => ProductDTO.fromEntity(e))
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result, { count: result.length })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const [result, count] = await this.repo.stockBetween(from, to, PPP * (page - 1), PPP)
+            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error);
             throw error

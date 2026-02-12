@@ -8,11 +8,20 @@ export class ProductDTO {
         public readonly description: string,
         public readonly price: number,
         public readonly size: string,
-        public readonly stock: number
+        public readonly stock: number,
+        public readonly categoryName: string | null = null
     ) { }
 
     static fromEntity(product: Product): ProductDTO {
-        return new ProductDTO(product.id, product.name, product.description, product.price, product.size, product.stock)
+        return new ProductDTO(
+            product.id,
+            product.name,
+            product.description,
+            product.price,
+            product.size,
+            product.stock,
+            product.category?.name ?? null
+        )
     }
 
     public toEntity(): Product {

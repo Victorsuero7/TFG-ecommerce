@@ -16,6 +16,10 @@ export class ProductRoutes {
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/all/:page', controller.getAllPaginated)
+        router.get('/name/:name', controller.getByName)
+        router.get('/description/:description', controller.getByDescription)
+        router.get('/category/:categoryName', controller.getByCategoryName)
+        router.get('/stock/:min/:max', controller.getByStock)
         router.get('/:id', controller.getOne)
         router.post('/update', controller.update)
 
