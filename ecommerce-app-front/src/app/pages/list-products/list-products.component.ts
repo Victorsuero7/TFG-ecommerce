@@ -28,7 +28,7 @@ export class ListProductsComponent implements OnInit {
     this.productSvc.getAll().subscribe({
         next: data => {
           console.log('Frontend: products response', data);
-          const list = (data || []).map((p: any) => ({
+          const list = data.map((p: any) => ({
             ...p,
             categoryName: p?.category?.name ?? p?.categoryName ?? null
           }));
