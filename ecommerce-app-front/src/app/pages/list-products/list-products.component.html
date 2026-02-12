@@ -1,5 +1,30 @@
 <div class="list-products container-fluid">
 	<h6 class="mb-3">Listado de productos</h6>
+	<div class="search-bar d-flex flex-wrap align-items-center gap-2 mb-3">
+		<div class="input-group input-group-sm search-text-group">
+			<input
+				type="text"
+				class="form-control"
+				placeholder="Buscar productos..."
+				[(ngModel)]="searchTerm"
+				(input)="onSearch()"
+			/>
+			<select class="form-select form-select-sm" [(ngModel)]="searchField" (change)="onSearch()">
+				<option value="all">Todo</option>
+				<option value="name">Nombre</option>
+				<option value="description">Descripción</option>
+				<option value="category">Categoría</option>
+			</select>
+			<button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+				<i class="bi bi-x-lg"></i>
+			</button>
+		</div>
+		<div class="input-group input-group-sm stock-filter-group">
+			<span class="input-group-text"><i class="bi bi-box-seam"></i></span>
+			<input type="number" class="form-control" placeholder="Min" [(ngModel)]="minStock" (input)="onStockFilterChange()" />
+			<input type="number" class="form-control" placeholder="Max" [(ngModel)]="maxStock" (input)="onStockFilterChange()" />
+		</div>
+	</div>
 
 	<div *ngIf="loading" class="mb-3">Cargando...</div>
 	<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
@@ -18,15 +43,33 @@
 			<div class="col-2 small px-2">{{ formatPrice(p.price) }}</div>
 			<div class="col-2 small px-2">{{ p.stock ?? '-' }}</div>
 			<div class="col-3 small px-2">{{ p.categoryName ?? '-' }}</div>
-			<div class="col-2 text-end px-2">
-				<button class="btn btn-sm btn-outline-secondary me-1" (click)="view(p.id)" title="Ver"><i class="bi bi-eye"></i></button>
-				<button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(p.id)" title="Editar"><i class="bi bi-pencil"></i></button>
-				<button class="btn btn-sm btn-outline-danger" (click)="delete(p.id)" title="Eliminar"><i class="bi bi-trash"></i></button>
-			</div>
+				<div class="col-2 text-end px-2">
+					<button class="btn btn-sm btn-outline-secondary me-1" (click)="view(p.id)" title="Ver"><i class="bi bi-eye"></i></button>
+					<button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(p.id)" title="Editar"><i class="bi bi-pencil"></i></button>
+					<button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(p.id)" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+				</div>
 		</div>
 	</ng-container>
 
 	<ng-template #noData>
 		<div *ngIf="!loading" class="mt-3 text-muted">No hay productos.</div>
 	</ng-template>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				¿Deseas eliminar el producto seleccionado?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal" (click)="confirmDelete()">Eliminar</button>
+			</div>
+		</div>
+	</div>
 </div>
