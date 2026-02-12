@@ -28,11 +28,11 @@ export class ProductServiceImpl implements ProductService {
 
     async getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>> {
         try {
-            const metadata: Metadata = {}
+            // const metadata: Metadata = {}
             const result = await (await this.repo.findAllByPage(PPP * (page - 1), PPP)).map(e => ProductDTO.fromEntity(e))
             if (result.length === 0) throw HttpErrors.NotFound()
-            metadata.count = await this.repo.count()
-            return new SchemaResponse(result, metadata)
+            const count = await this.repo.count()
+            return new SchemaResponse(result, { count })
         } catch (error) {
             console.log(error);
             throw error
@@ -76,31 +76,40 @@ export class ProductServiceImpl implements ProductService {
     async updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             const products: Product[] = dtos.map(e => e.toEntity())
-            const fails: Product[] = []
-            const success: Product[] = []
-
-            for (const p of products) {
-                try {
-                    const entity = await this.repo.preload(p)
-                    if (!entity) {
-                        fails.push(p)
-                        continue
-                    }
-                    const savedEntity = await this.repo.save(entity)
-                    success.push(savedEntity)
-
-                } catch (error) {
-                    fails.push(p)
-                }
-            }
-            const result = success.map(e => ProductDTO.fromEntity(e))
-            const failures = fails.map(e => ProductDTO.fromEntity(e))
-            return new SchemaResponse(result, { failures })
+            // const entities = this.repo.preload(products)
+            if (products.length === 0) throw HttpErrors.internalServerError("Something went wrong")
+            const result = (await this.repo.saveMany(products)).map(e => ProductDTO.fromEntity(e))
+            return new SchemaResponse(result)
         } catch (error) {
             console.log(error);
             throw error
         }
     }
+    //     try {
+    //         const products: Product[] = dtos.map(e => e.toEntity())
+    //         const fails: Product[] = []
+    //         const success: Product[] = []
+    //         for (const p of products) {
+    //             try {
+    //                 const entity = await this.repo.preload(p)
+    //                 if (!entity) {
+    //                     fails.push(p)
+    //                     continue
+    //                 }
+    //                 const savedEntity = await this.repo.save(entity)
+    //                 success.push(savedEntity)
+    //             } catch (error) {
+    //                 fails.push(p)
+    //             }
+    //         }
+    //         const result = success.map(e => ProductDTO.fromEntity(e))
+    //         const failures = fails.map(e => ProductDTO.fromEntity(e))
+    //         return new SchemaResponse(result, { failures })
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error
+    //     }
+    // }
 
     async getByName(name: string): Promise<SchemaResponse<ProductDTO[]>> {
         try {
