@@ -18,7 +18,7 @@ export class ProductRoutes {
         router.get('/all/:page', controller.getAllPaginated)
         router.get('/:id', controller.getOne)
         router.post('/update', controller.update)
-        router.get('/stock', controller.getByStock) // ?stock = number to filter ?page = page to get ?rule= "more" or "less"
+        router.get('/stock', controller.getByStock) // ?from = number to?=number ?page = page
 
 
         return router;

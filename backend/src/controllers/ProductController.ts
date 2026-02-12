@@ -68,10 +68,10 @@ export class ProductController {
     getByStock = async (req: Request, res: Response) => {
         try {
             const page = Number(req.query.page)
-            const stock = Number(req.query.stock)
-            const rule = String(req.query.rule)
-            if (!rule || !page || page < 0 || !stock || !Validators.validateString(rule, ["more", "less"])) return res.status(400).json({ error: "Some mistakes on params" })
-            const result = await this.service.filterByStock(stock, rule, page)
+            const from = Number(req.query.stock)
+            const to = Number(req.query.rule)
+            if (!page || !from || !to) return res.status(400).json({ error: "Some mistakes on params" })
+            const result = await this.service.filterByStock(from, to, page ?? 1)
             res.status(200).json({ message: result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })

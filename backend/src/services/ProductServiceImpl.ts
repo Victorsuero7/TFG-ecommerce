@@ -96,14 +96,9 @@ export class ProductServiceImpl implements ProductService {
     }
 
 
-    async filterByStock(n: number, rule: string, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+    async filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>> {
         try {
-            let result, count
-            if (rule == "more") {
-                [result, count] = await this.repo.stockMoreThan(n, PPP * (page - 1), PPP)
-            } else {
-                [result, count] = await this.repo.stockLessThan(n, PPP * (page - 1), PPP)
-            }
+            const [result, count] = await this.repo.stockBetween(from, to, PPP * (page - 1), PPP)
             return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error);

@@ -1,4 +1,4 @@
-import { DataSource, ILike, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { Between, DataSource, ILike, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { Product } from "../Models/product.entity";
 import { TypeORMRepository } from "./TypeORMRepository";
 import { Category } from "../Models/category.entity";
@@ -35,18 +35,27 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         return await this.repo.countBy({ name: ILike(`%${name}%`) })
     }
 
-    async stockLessThan(n: number, offset: number, limit: number): Promise<[Product[], number]> {
-        return await this.repo.findAndCount({
-            where: { stock: LessThanOrEqual(n) },
-            order: { stock: "ASC" },
-            skip: offset,
-            take: limit
-        })
-    }
+    // async stockLessThan(n: number, offset: number, limit: number): Promise<[Product[], number]> {
+    //     return await this.repo.findAndCount({
+    //         where: { stock: LessThanOrEqual(n) },
+    //         order: { stock: "ASC" },
+    //         skip: offset,
+    //         take: limit
+    //     })
+    // }
 
-    async stockMoreThan(n: number, offset: number, limit: number): Promise<[Product[], number]> {
+    // async stockMoreThan(n: number, offset: number, limit: number): Promise<[Product[], number]> {
+    //     return await this.repo.findAndCount({
+    //         where: { stock: MoreThanOrEqual(n) },
+    //         order: { stock: "DESC" },
+    //         skip: offset,
+    //         take: limit
+    //     })
+    // }
+
+    async stockBetween(from: number, to: number, offset: number, limit: number): Promise<[Product[], number]> {
         return await this.repo.findAndCount({
-            where: { stock: MoreThanOrEqual(n) },
+            where: { stock: Between(from, to) },
             order: { stock: "DESC" },
             skip: offset,
             take: limit
