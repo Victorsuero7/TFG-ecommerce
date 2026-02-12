@@ -1,0 +1,19 @@
+.search-bar {
+  justify-content: flex-end;
+}
+
+.search-text-group {
+  max-width: 420px;
+  flex: 1 1 auto;
+}
+
+.search-text-group .form-select {
+  max-width: 130px;
+  flex: 0 0 auto;
+}
+
+.stock-filter-group {
+  max-width: 200px;
+  flex: 0 0 auto;
+}
+

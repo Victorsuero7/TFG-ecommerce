@@ -1,5 +1,30 @@
 <div class="list-products container-fluid">
 	<h6 class="mb-3">Listado de productos</h6>
+	<div class="search-bar d-flex flex-wrap align-items-center gap-2 mb-3">
+		<div class="input-group input-group-sm search-text-group">
+			<input
+				type="text"
+				class="form-control"
+				placeholder="Buscar productos..."
+				[(ngModel)]="searchTerm"
+				(input)="onSearch()"
+			/>
+			<select class="form-select form-select-sm" [(ngModel)]="searchField" (change)="onSearch()">
+				<option value="all">Todo</option>
+				<option value="name">Nombre</option>
+				<option value="description">Descripción</option>
+				<option value="category">Categoría</option>
+			</select>
+			<button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+				<i class="bi bi-x-lg"></i>
+			</button>
+		</div>
+		<div class="input-group input-group-sm stock-filter-group">
+			<span class="input-group-text"><i class="bi bi-box-seam"></i></span>
+			<input type="number" class="form-control" placeholder="Min" [(ngModel)]="minStock" (input)="onStockFilterChange()" />
+			<input type="number" class="form-control" placeholder="Max" [(ngModel)]="maxStock" (input)="onStockFilterChange()" />
+		</div>
+	</div>
 
 	<div *ngIf="loading" class="mb-3">Cargando...</div>
 	<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
