@@ -65,4 +65,14 @@ export class CategoryController {
             return res.status(500)
         }
     }
+
+    getAllPaginated = async (req: Request, res: Response) => {
+        try {
+            const page = req.params.page!
+            const result = await this.service.getAllPaginated(Number.parseInt(page))
+            res.status(200).json({ message: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message})
+        }
+    }
 }
