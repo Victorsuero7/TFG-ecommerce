@@ -15,7 +15,7 @@ export class ProductService extends GenericService<Product> {
 
   override getAll(): Observable<Product[]> {
     return super.getAll().pipe(
-      map((res: any) => Array.isArray(res) ? res : (res?.message ?? []))
+      map((res: any) => Array.isArray(res) ? res : (res?.result ?? res?.message ?? []))
     );
   }
   

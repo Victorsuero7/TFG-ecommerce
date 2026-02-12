@@ -36,7 +36,7 @@ export class ProductController {
             const id = req.params.id
             if (!id) return res.status(400).json({ message: "ID param is required" })
             const result = await this.service.getById(Number(id))
-            res.status(200).json({ result })
+            res.status(200).json(result)
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500)
