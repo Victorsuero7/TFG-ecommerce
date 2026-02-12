@@ -15,6 +15,7 @@ export class ListProductsComponent implements OnInit {
   products: Product[] = [];
   loading = false;
   error = '';
+  selectedDeleteId?: number;
 
   constructor(private productSvc: ProductService, private router: Router) {}
 
@@ -46,15 +47,20 @@ export class ListProductsComponent implements OnInit {
     return n.toFixed(2) + ' €';
   }
 
-  view(id?: number) { if (id) this.router.navigate(['/dashboard/products/detail', id]); }
-  edit(id?: number) { if (id) this.router.navigate(['/dashboard/products/edit', id]); }
+  view(id?: number) { if (id) this.router.navigate(['/products/detail', id]); }
+  edit(id?: number) { if (id) this.router.navigate(['/products/edit', id]); }
 
-  delete(id?: number) {
+  openDeleteModal(id?: number) {
     if (!id) return;
-    if (!confirm('¿Eliminar producto?')) return;
+    this.selectedDeleteId = id;
+  }
+
+  confirmDelete() {
+    const id = this.selectedDeleteId;
+    if (!id) return;
     this.productSvc.delete(id).subscribe({
-      next: () => this.load(),
-      error: err => { alert('Error al borrar producto'); console.error(err); }
+      next: () => { this.load(); this.selectedDeleteId = undefined; },
+      error: err => { alert('Error al borrar producto'); console.error(err); this.selectedDeleteId = undefined; }
     });
   }
 }
