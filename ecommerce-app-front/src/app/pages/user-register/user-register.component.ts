@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-user-register',
@@ -24,7 +25,8 @@ export class UserRegisterComponent {
   constructor(
     private fb: FormBuilder,
     private userSvc: UserService,
-    private router: Router
+    private router: Router,
+    private authSvc: AuthService
   ){
     this.form = this.fb.group({
       name: ['', [Validators.required]],
@@ -49,8 +51,9 @@ export class UserRegisterComponent {
     this.submitting = true;
     const { confirmPassword, ...payload } = this.form.value; 
     this.userSvc.signUp(payload).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.submitting = false;
+        if (res?.token) this.authSvc.login(res.token);
         this.router.navigate(['/dashboard']);
         this.showToast('Usuario registrado exitosamente', 'success');
       },

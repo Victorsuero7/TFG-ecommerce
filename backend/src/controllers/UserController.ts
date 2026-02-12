@@ -15,10 +15,10 @@ export class UserController {
         try {
             const dto = UserDTO.createDTO(req.body)
             const result = await this.service.insert(dto)
-            res.status(200).json({ message: "User saved", user: result })
+            return res.status(200).json({ message: "User saved", user: result })
         } catch (error) {
-            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
-            res.status(500)
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 
@@ -45,11 +45,11 @@ export class UserController {
     login = async (req: Request, res: Response) => {
         try {
             const [err, dto] = LoginUserDTO.create(req.body)
-            if (err) res.status(400).json({ message: err })
+            if (err) return res.status(400).json({ message: err })
             const result = await this.service.login(dto!)
 
             if (result) {
-                res.status(200).json({ message: 'Login succesfully', token: result }).cookie("token", result, { maxAge: 84000000 })
+                return res.cookie("token", result, { maxAge: 84000000 }).status(200).json({ message: 'Login succesfully', token: result })
             }
             //TODO
             //Pendiente redireccionar a la home o alguna pagina por determinar
@@ -68,11 +68,10 @@ export class UserController {
                 return res.status(400).json({ message: err })
             }
             const result = await this.service.signUp(dto!)
-            this.login(req, res)
-            // return res.status(200).json({ message: result })
+            return this.login(req, res)
         } catch (error) {
-            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
-            res.status(500).json({ message: "Internal server error" })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500).json({ message: "Internal server error" })
         }
     }
 }

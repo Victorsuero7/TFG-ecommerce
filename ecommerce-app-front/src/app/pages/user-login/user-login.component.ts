@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {ReactiveFormsModule, FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../services/user/user.service';
+import {AuthService} from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-user-login',
@@ -23,7 +24,8 @@ error: string | null = null;
   constructor(
     private fb: FormBuilder,
     private userSvc: UserService,
-    private router: Router
+    private router: Router,
+    private authSvc: AuthService
   ){
     this.form = this.fb.group({
       email: ['', [Validators.required]],
@@ -39,8 +41,9 @@ error: string | null = null;
     this.submitting = true;
     const payload  = this.form.value; 
     this.userSvc.login(payload).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.submitting = false;
+        if (res?.token) this.authSvc.login(res.token);
         this.router.navigate(['/dashboard']);
         this.showToast('Has accedido exitosamente', 'success');
       },
