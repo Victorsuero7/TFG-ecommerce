@@ -23,12 +23,19 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         return await this.repo.findBy({ category })
     }
 
+    async findByCategoryName(categoryName: string): Promise<Product[]> {
+        return await this.repo.find({
+            where: { category: { name: ILike(`%${categoryName}%`) } },
+            relations: ['category']
+        })
+    }
+
     async findByName(name: string): Promise<Product[]> {
-        return await this.repo.findBy({ name: ILike(`%${name}%`) })
+        return await this.repo.find({ where: { name: ILike(`%${name}%`) }, relations: ['category'] })
     }
 
     async findByDescription(description: string): Promise<Product[]> {
-        return await this.repo.findBy({ description: ILike(`%${description}%`) })
+        return await this.repo.find({ where: { description: ILike(`%${description}%`) }, relations: ['category'] })
     }
 
     async totalResults(): Promise<number> {
@@ -41,5 +48,14 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
 
     async totalResultsByName(name: string): Promise<number> {
         return await this.repo.countBy({ name: ILike(`%${name}%`) })
+    }
+    
+    async stockBetween(from: number, to: number, offset: number, limit: number): Promise<[Product[], number]> {
+        return await this.repo.findAndCount({
+            where: { stock: Between(from, to) },
+            order: { stock: "DESC" },
+            skip: offset,
+            take: limit
+        })
     }
 }

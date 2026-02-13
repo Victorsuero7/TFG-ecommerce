@@ -11,5 +11,7 @@ export interface ProductService {
     updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>>
     getByName(name: string): Promise<SchemaResponse<ProductDTO[]>>
     getByDescription(description: string): Promise<SchemaResponse<ProductDTO[]>>
+    getByCategoryName(categoryName: string): Promise<SchemaResponse<ProductDTO[]>>
     getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>>
+    filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>>
 }

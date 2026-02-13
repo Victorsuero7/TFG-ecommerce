@@ -1,5 +1,24 @@
 <div class="list-categories container-fluid">
 	<h6 class="mb-3">Listado de categorías</h6>
+	<div class="search-bar d-flex align-items-center gap-2 mb-3">
+		<div class="input-group input-group-sm ms-auto">
+			<input
+				type="text"
+				class="form-control"
+				placeholder="Buscar categorías..."
+				[(ngModel)]="searchTerm"
+				(input)="onSearch()"
+			/>
+			<select class="form-select form-select-sm w-auto" [(ngModel)]="searchField" (change)="onSearch()">
+				<option value="all">Todo</option>
+				<option value="name">Nombre</option>
+				<option value="description">Descripción</option>
+			</select>
+			<button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+				<i class="bi bi-x-lg"></i>
+			</button>
+		</div>
+	</div>
 
 	<div *ngIf="loading" class="mb-3">Cargando...</div>
 	<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
