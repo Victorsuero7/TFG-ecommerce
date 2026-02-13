@@ -9,4 +9,5 @@ export interface UserService {
     insert(user: UserDTO): Promise<User>
     signUp(dto: RegisterUserDTO): Promise<UserDTO>
     login(dto: LoginUserDTO): Promise<string | null>
+    emailExists(email: string): Promise<User | null>
 }
