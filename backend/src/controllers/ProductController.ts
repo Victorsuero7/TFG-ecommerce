@@ -3,6 +3,7 @@ import { ProductService } from '../services/ProductService';
 import { HttpErrors } from '../utils/HttpErrors';
 import { ProductDTO } from '../dtos/ProductDTO';
 import { getPath } from '../utils/ImageUploaderMiddleware';
+import { CategoryDTO } from '../dtos/CategoryDTO';
 
 export class ProductController {
     constructor(service: ProductService) {
@@ -126,6 +127,20 @@ export class ProductController {
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500)
+        }
+    }
+
+    byCategory = async (req: Request, res: Response) => {
+        try {
+            const page = req.params.pge ? Number(req.query.page) : 1
+            const id = Number(req.params.id)
+            const dto = new CategoryDTO()
+            dto.id = id
+            const result = await this.service.findByCategory(dto, page)
+            res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+            res.status(500).json({ message: "Internal server error" })
         }
     }
 

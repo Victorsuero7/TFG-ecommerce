@@ -4,6 +4,7 @@ import { HttpErrors } from '../utils/HttpErrors';
 import { RegisterUserDTO } from '../dtos/RegisterUserDTO';
 import { LoginUserDTO } from '../dtos/LoginUserDTO';
 import { UserDTO } from '../dtos/UserDTO';
+import { CategoryDTO } from '../dtos/CategoryDTO';
 
 export class UserController {
     constructor(service: UserService) {

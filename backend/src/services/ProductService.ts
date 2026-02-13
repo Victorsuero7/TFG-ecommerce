@@ -1,7 +1,6 @@
-import { ObjectLiteral } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
-import { Product } from "../Models/product.entity";
 import { SchemaResponse } from '../config/SchemaResponse'
+import { CategoryDTO } from "../dtos/CategoryDTO";
 
 export interface ProductService {
     getAll(): Promise<SchemaResponse<ProductDTO[]>>
@@ -14,4 +13,5 @@ export interface ProductService {
     getByCategoryName(categoryName: string): Promise<SchemaResponse<ProductDTO[]>>
     getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>>
     filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>>
+    findByCategory(dto: CategoryDTO, page: number): Promise<SchemaResponse<ProductDTO[]>>;
 }
