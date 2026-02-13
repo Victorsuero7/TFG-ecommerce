@@ -1,4 +1,4 @@
-import { Between, DataSource, ILike, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { DataSource, FindOptionsWhere, ILike } from "typeorm";
 import { Product } from "../Models/product.entity";
 import { TypeORMRepository } from "./TypeORMRepository";
 import { Category } from "../Models/category.entity";
@@ -12,8 +12,12 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
     }
 
     async findOneById(id: number): Promise<Product | null> {
-        return await this.repo.findOne({ where: { id }, relations: ['category'] });
+        return await this.repo.findOne({
+            where: { id },
+            relations: ["category"]
+        })
     }
+
 
     async findByCategory(category: Category): Promise<Product[]> {
         return await this.repo.findBy({ category })

@@ -9,7 +9,7 @@ export const MySQLDataSource = new DataSource({
     password: envs.DATABASE_PASSWORD!,
     database: envs.DATABASE_NAME!,
     entities: ['src/Models/**/*.{js,ts}'],
-    // synchronize: true,
+    synchronize: true,
     logging: true,
     extra: {
         connectionLimit: 5,
