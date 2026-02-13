@@ -25,6 +25,7 @@ export class ProductRoutes {
         router.get('/category/:categoryName', controller.getByCategoryName)
         router.get('/stock/:min/:max', controller.getByStock)
         router.get('/:id', controller.getOne)
+        router.delete('/delete/:id', controller.delete)
         // router.post('/update', controller.update)
 
         return router;

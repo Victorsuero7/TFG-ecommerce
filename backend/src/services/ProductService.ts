@@ -14,4 +14,5 @@ export interface ProductService {
     getByCategoryName(categoryName: string): Promise<SchemaResponse<ProductDTO[]>>
     getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>>
     filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>>
+    delete(id: number): Promise<SchemaResponse<ProductDTO>>
 }

@@ -29,10 +29,10 @@ export class ProductServiceImpl implements ProductService {
     async getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             // const metadata: Metadata = {}
-            const result = await (await this.repo.findAllByPage(PPP * (page - 1), PPP)).map(e => ProductDTO.fromEntity(e))
+            const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
             if (result.length === 0) throw HttpErrors.NotFound()
-            const count = await this.repo.count()
-            return new SchemaResponse(result, { count })
+            // const count = await this.repo.count()
+            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error);
             throw error
@@ -150,6 +150,20 @@ export class ProductServiceImpl implements ProductService {
         try {
             const [result, count] = await this.repo.stockBetween(from, to, PPP * (page - 1), PPP)
             return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async delete(id: number): Promise<SchemaResponse<ProductDTO>> {
+        try {
+            const entity = await this.repo.findOneById(id)
+            if (!entity) throw HttpErrors.NotFound()
+            entity.enable = false
+            const result = await this.repo.save(entity)
+            if (!result) throw HttpErrors.internalServerError()
+            return new SchemaResponse(ProductDTO.fromEntity(result))
         } catch (error) {
             console.log(error);
             throw error
