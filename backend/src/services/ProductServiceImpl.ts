@@ -5,8 +5,7 @@ import { ProductRepository } from "../repositories/ProductRepository";
 import { HttpErrors } from "../utils/HttpErrors";
 import { ProductService } from "./ProductService";
 import { envs } from '../config/envs';
-import { Metadata, SchemaResponse } from "../config/SchemaResponse";
-import { metadata } from "reflect-metadata/no-conflict";
+import { SchemaResponse } from "../config/SchemaResponse";
 
 const PPP = envs.PRODUCTS_PER_PAGE ?? 20
 
@@ -65,7 +64,7 @@ export class ProductServiceImpl implements ProductService {
             const product: Product = dto.toEntity()
             const entity = this.repo.preload(product)
             if (!entity) throw HttpErrors.internalServerError("Something went wrong")
-            const result = await this.repo.save(product)
+            const result = await this.repo.save(entity as unknown as Product)
             return new SchemaResponse(ProductDTO.fromEntity(result))
         } catch (error) {
             console.log(error);

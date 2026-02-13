@@ -26,11 +26,11 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
         return await this.repo.save(entity);
     }
 
-    async saveMany(entities: T[]): Promise<T[]>{
-        return await this.repo.save(entities)
+    async saveMany(entities: T[]): Promise<T[]> {
+        return await this.repo.save(entities, { transaction: true })
     }
-    
-    async update(id: FindOptionsWhere<T>, entity :T): Promise<UpdateResult>{
+
+    async update(id: FindOptionsWhere<T>, entity: T): Promise<UpdateResult> {
         return await this.repo.update(id, entity)
     }
 

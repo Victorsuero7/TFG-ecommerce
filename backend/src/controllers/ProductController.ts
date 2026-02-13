@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ProductService } from '../services/ProductService';
 import { HttpErrors } from '../utils/HttpErrors';
 import { ProductDTO } from '../dtos/ProductDTO';
+import { getPath } from '../utils/ImageUploaderMiddleware';
 
 export class ProductController {
     constructor(service: ProductService) {
@@ -11,12 +12,14 @@ export class ProductController {
 
     insert = async (req: Request, res: Response) => {
         try {
+            // console.log("ruta del archivo ", req.file?.path);
             const dto = ProductDTO.createDTO(req.body)
+            dto.imageUrl = getPath(req.file?.path!)
             const result = await this.service.insert(dto)
             res.status(200).json({ message: "Product saved", product: result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
-            return res.status(500)
+            return res.status(500).json({ message: error })
         }
     }
 
@@ -27,16 +30,16 @@ export class ProductController {
             res.status(200).json({ message: "Product updated", product: result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
-            return res.status(500)
+            return res.status(500).json({ message: "error.message" })
         }
     }
 
     updateMany = async (req: Request, res: Response) => {
         try {
             const objects: object[] = req.body.array
-            const dtos = objects.map(e=>ProductDTO.createDTO(e))
-            const result = this.service.updateMany(dtos)
-            res.status(200).json({ result })
+            // const dtos = objects.map(e => ProductDTO.createDTO(e, getPath(req.file?.path!)))
+            // const result = this.service.updateMany(dtos)
+            // res.status(200).json({ result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500)

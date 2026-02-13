@@ -1,18 +1,21 @@
 import { Product } from "../Models/product.entity";
+import { Category } from "../Models/category.entity";
 
 export class ProductDTO {
 
     constructor(
-        public readonly id: number | null,
-        public readonly name: string,
-        public readonly description: string,
-        public readonly price: number,
-        public readonly size: string,
-        public readonly stock: number
+        public id: number,
+        public name: string,
+        public description: string,
+        public price: number,
+        public size: string,
+        public stock: number,
+        public imageUrl: string | undefined,
+        public category: Category
     ) { }
 
     static fromEntity(product: Product): ProductDTO {
-        return new ProductDTO(product.id, product.name, product.description, product.price, product.size, product.stock)
+        return new ProductDTO(product.id, product.name, product.description, product.price, product.size, product.stock, product.imageUrl, product.category)
     }
 
     public toEntity(): Product {
@@ -21,8 +24,8 @@ export class ProductDTO {
         return entity
     }
 
-    static createDTO(object: { [key: string]: any; }): ProductDTO {
-        const { name, description, price, size, stock } = object;
-        return new ProductDTO(0, name, description, price, size, stock)
+    static createDTO(object: { [key: string]: any }, path?: string | undefined): ProductDTO {
+        const { id, name, description, price, size, stock, categoryId } = object;
+        return new ProductDTO(id, name, description, price, size, stock, path, categoryId)
     }
 }
