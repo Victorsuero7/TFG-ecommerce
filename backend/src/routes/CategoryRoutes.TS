@@ -15,10 +15,10 @@ export class CategoryRoutes {
         router.patch('/update', controller.update)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
-        router.get('/:id', controller.getOne)
         router.get('/name/:name', controller.getByName)
         router.get('/description/:description', controller.getByDescription)
         router.get('/all/:page', controller.getAllPaginated)
+        router.get('/:id', controller.getOne)
 
         return router;
     }

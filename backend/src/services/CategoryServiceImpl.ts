@@ -73,18 +73,9 @@ export class CategoryServiceImpl implements CategoryService {
 
     async findByName(name: string): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
-            /*const result = (await this.repo.findByName(name))?.map(e => CategoryDTO.fromEntity(e))
-            if (result.length === 0) throw HttpErrors.NotFound()
-            const count = await this.repo.totalResultsByName(name)
-            return new SchemaResponse(result, { count })
-            */
-           //REVISAR ESTA CORRECCIÓN DE CHATI
-           const entities = await this.repo.findByName(name);
-           if(!entities || entities.length === 0){
-            throw HttpErrors.NotFound()
-           }
+           const [entities, count]= await this.repo.findByName(name)
+           if (entities.length === 0) throw HttpErrors.NotFound()
            const result = entities.map(e => CategoryDTO.fromEntity(e))
-           const count = await this.repo.totalResultsByName(name)
            return new SchemaResponse (result, { count })
         } catch (error) {
             console.log(error);
@@ -93,17 +84,10 @@ export class CategoryServiceImpl implements CategoryService {
     }
     async findByDescription(description: string): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
-            /*const result = (await this.repo.findByDescription(description))?.map(e => CategoryDTO.fromEntity(e))
-            if (result.length === 0) throw HttpErrors.NotFound()
-            const count = await this.repo.totalResultsByName(description)
-            return new SchemaResponse(result, {count})
-            */
-           const entities = await this.repo.findByDescription(description)
-           if(!entities || entities.length === 0) {
-            throw HttpErrors.NotFound()
-           }
+           const [entities, count] = await this.repo.findByDescription(description)
+           if (entities.length === 0) throw HttpErrors.NotFound()
            const result = entities.map(e => CategoryDTO.fromEntity(e))
-           const count = await this.repo.totalResultsByDescription(description)
+           
            return new SchemaResponse( result, {count})
         } catch (error) {
             console.log(error);

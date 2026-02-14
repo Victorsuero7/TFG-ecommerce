@@ -18,7 +18,7 @@ export class CategoryDTO {
     }
 
     static createDTO(object: { [key: string]: any; }): CategoryDTO {
-        const { name, description } = object;
-        return new CategoryDTO(0, name, description)
+        const { id, name, description } = object;
+        return new CategoryDTO(id, name, description)
     }
 }
