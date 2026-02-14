@@ -12,6 +12,7 @@ export class CategoryRoutes {
         const controller = new CategoryController(service);
 
         router.post('/insert', controller.insert)
+        router.patch('/update', controller.update)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/:id', controller.getOne)
