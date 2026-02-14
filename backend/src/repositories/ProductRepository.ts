@@ -64,4 +64,17 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
             take: limit
         })
     }
+
+    async getDisabled(offset: number, limit: number): Promise<[Product[], number]> {
+        return await this.repo.findAndCount({
+            where: {
+                enable: false
+            },
+            order: {
+                name: "ASC"
+            },
+            skip: offset,
+            take: limit
+        })
+    }
 }

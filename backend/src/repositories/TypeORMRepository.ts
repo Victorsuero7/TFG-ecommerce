@@ -1,3 +1,4 @@
+import { asyncWrapProviders } from "async_hooks";
 import { Repository, DataSource, EntityTarget, ObjectLiteral, FindOptionsWhere, UpdateResult } from "typeorm";
 
 export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {

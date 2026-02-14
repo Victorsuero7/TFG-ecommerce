@@ -141,4 +141,15 @@ export class ProductController {
             return res.status(500)
         }
     }
+
+    disabled = async (req: Request, res: Response) => {
+        try {
+            const page = Number(req.params.page) ?? 1
+            const result = await this.service.listDisabled(page)
+            res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
 }

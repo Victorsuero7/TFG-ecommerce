@@ -85,31 +85,6 @@ export class ProductServiceImpl implements ProductService {
             throw error
         }
     }
-    //     try {
-    //         const products: Product[] = dtos.map(e => e.toEntity())
-    //         const fails: Product[] = []
-    //         const success: Product[] = []
-    //         for (const p of products) {
-    //             try {
-    //                 const entity = await this.repo.preload(p)
-    //                 if (!entity) {
-    //                     fails.push(p)
-    //                     continue
-    //                 }
-    //                 const savedEntity = await this.repo.save(entity)
-    //                 success.push(savedEntity)
-    //             } catch (error) {
-    //                 fails.push(p)
-    //             }
-    //         }
-    //         const result = success.map(e => ProductDTO.fromEntity(e))
-    //         const failures = fails.map(e => ProductDTO.fromEntity(e))
-    //         return new SchemaResponse(result, { failures })
-    //     } catch (error) {
-    //         console.log(error);
-    //         throw error
-    //     }
-    // }
 
     async getByName(name: string): Promise<SchemaResponse<ProductDTO[]>> {
         try {
@@ -168,5 +143,18 @@ export class ProductServiceImpl implements ProductService {
             console.log(error);
             throw error
         }
+    }
+
+    async listDisabled(page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const [result, count] = await this.repo.getDisabled(PPP * (page - 1), PPP)
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result.map((e) => ProductDTO.fromEntity(e)), { count })
+
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+
     }
 }
