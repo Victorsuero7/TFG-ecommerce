@@ -1,5 +1,7 @@
 import { Product } from "../Models/product.entity";
 import { Category } from "../Models/category.entity";
+import { User } from "../Models/user.entity";
+import { UserDTO } from "./UserDTO";
 
 export class ProductDTO {
     public id?: number
@@ -9,6 +11,8 @@ export class ProductDTO {
     public size?: string
     public stock?: number
     public imageUrl?: string | undefined
+    public lastModification?: Date
+    public modifiedBy?: string
     public category?: Category
     constructor(
 
@@ -23,6 +27,8 @@ export class ProductDTO {
         dto.size = product.size
         dto.stock = product.stock
         dto.imageUrl = product.imageUrl
+        dto.lastModification = product.lastModification
+        dto.modifiedBy = product.modifiedBy?.email
         dto.category = product.category
         return dto
     }

@@ -15,10 +15,12 @@ export class ProductController {
         try {
             // console.log("ruta del archivo ", req.file?.path);
             const dto = ProductDTO.createDTO(req.body)
+            dto.modifiedBy = req.user?.id
             dto.imageUrl = getPath(req.file?.path!)
             const result = await this.service.insert(dto)
             res.status(200).json(result)
         } catch (error) {
+            console.log(error);
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500).json({ message: error })
         }
@@ -27,6 +29,7 @@ export class ProductController {
     update = async (req: Request, res: Response) => {
         try {
             const dto = ProductDTO.createDTO(req.body)
+            dto.modifiedBy = req.user.id
             const result = await this.service.update(dto)
             res.status(200).json(result)
         } catch (error) {
@@ -38,9 +41,10 @@ export class ProductController {
     updateMany = async (req: Request, res: Response) => {
         try {
             const objects: object[] = req.body.array
-            // const dtos = objects.map(e => ProductDTO.createDTO(e, getPath(req.file?.path!)))
-            // const result = this.service.updateMany(dtos)
-            // res.status(200).json({ result })
+            const dtos = objects.map(e => ProductDTO.createDTO(e, getPath(req.file?.path!)))
+            dtos.map(e => e.modifiedBy = req.user.id)
+            const result = this.service.updateMany(dtos)
+            res.status(200).json({ result })
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500)

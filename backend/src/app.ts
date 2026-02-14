@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import cors from 'cors';
 import { MySQLDataSource } from './config/MySQL-datasource';
 import { UserRoutes } from './routes/UserRoutes'
@@ -7,15 +7,17 @@ import { CategoryRoutes } from './routes/CategoryRoutes'
 import { getPath, ImageUploaderMiddleware } from './utils/ImageUploaderMiddleware';
 import path from 'path';
 import { envs } from './config/envs';
+import { RBACMiddleware } from './utils/AuthorizationMiddleware';
 
 
 const app = express();
 const port = 3000;
 app.use(express.json());
 app.use(cors());
+// app.use(RBACMiddleware.requireAutentication())
 
 
-(async () => {
+; (async () => {
     try {
         await MySQLDataSource.initialize();
         console.log('Data Source has been initialized!');

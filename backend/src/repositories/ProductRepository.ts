@@ -8,13 +8,13 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         super(Product, datasource)
     }
     async findAll(): Promise<Product[]> {
-        return await this.repo.find({ relations: ['category'] });
+        return await this.repo.find({ relations: ['category', 'modifiedBy'] });
     }
 
     async findOneById(id: number): Promise<Product | null> {
         return await this.repo.findOne({
             where: { id },
-            relations: ["category"]
+            relations: ["category", 'modifiedBy']
         })
     }
 
@@ -27,23 +27,23 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
             },
             skip: offset,
             take: limit,
-            relations: ['category']
+            relations: ['category', 'modifiedBy']
         })
     }
 
     async findByCategoryName(categoryName: string): Promise<Product[]> {
         return await this.repo.find({
             where: { category: { name: ILike(`%${categoryName}%`) } },
-            relations: ['category']
+            relations: ['category', 'modifiedBy']
         })
     }
 
     async findByName(name: string): Promise<Product[]> {
-        return await this.repo.find({ where: { name: ILike(`%${name}%`) }, relations: ['category'] })
+        return await this.repo.find({ where: { name: ILike(`%${name}%`) }, relations: ['category', 'modifiedBy'] })
     }
 
     async findByDescription(description: string): Promise<Product[]> {
-        return await this.repo.find({ where: { description: ILike(`%${description}%`) }, relations: ['category'] })
+        return await this.repo.find({ where: { description: ILike(`%${description}%`) }, relations: ['category', 'modifiedBy'] })
     }
 
     async totalResults(): Promise<number> {
