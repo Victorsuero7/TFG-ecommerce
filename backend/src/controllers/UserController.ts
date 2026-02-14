@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
 import { HttpErrors } from '../utils/HttpErrors';
 import { RegisterUserDTO } from '../dtos/RegisterUserDTO';
 import { LoginUserDTO } from '../dtos/LoginUserDTO';
 import { UserDTO } from '../dtos/UserDTO';
 import { CategoryDTO } from '../dtos/CategoryDTO';
+import { error } from 'console';
 
 export class UserController {
     constructor(service: UserService) {
@@ -73,6 +74,20 @@ export class UserController {
             // return res.status(200).json({ message: result })
         } catch (error) {
             if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+            console.log(error);
+            res.status(500).json({ message: "Internal server error" })
+        }
+    }
+
+    validateEmail = async (req: Request, res: Response) => {
+        try {
+            const email = String(req.query.email)
+            if (!email) return res.status(400).json({ error: "missing email" })
+            const result = await this.service.emailExists(email)
+            if (!result) return res.status(200).json({ result: "email available" })
+        } catch (error) {
+            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+            // console.log(error);
             res.status(500).json({ message: "Internal server error" })
         }
     }
