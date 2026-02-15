@@ -134,6 +134,29 @@ export class ProductController {
         }
     }
 
+    delete = async (req: Request, res: Response) => {
+        try {
+            const id = req.params.id
+            if (!id) return res.status(400).json({ message: "Missing params" })
+            const result = await this.service.delete(Number(id))
+            if (result)
+                res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
+    disabled = async (req: Request, res: Response) => {
+        try {
+            const page = Number(req.params.page) ?? 1
+            const result = await this.service.listDisabled(page)
+            res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
     byCategory = async (req: Request, res: Response) => {
         try {
             const page = req.params.pge ? Number(req.query.page) : 1

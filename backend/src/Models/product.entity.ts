@@ -35,4 +35,7 @@ export class Product {
         (category) => category.products,
     )
     category!: Category;
+
+    @Column({ type: "boolean", default: true })
+    enable!: boolean
 }

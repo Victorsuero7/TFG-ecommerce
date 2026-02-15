@@ -18,6 +18,9 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         })
     }
 
+    async findAllByPage(offset: number, limit: number): Promise<[Product[], number]> {
+        return await this.repo.findAndCount({ where: { enable: true }, skip: offset, take: limit })
+    }
 
     async findByCategory(category: Category, offset: number, limit: number): Promise<[Product[], number]> {
         return await this.repo.findAndCount({
@@ -47,21 +50,34 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
     }
 
     async totalResults(): Promise<number> {
-        return await this.repo.count()
+        return await this.repo.count({ where: { enable: true } })
     }
 
     async totalResultsByDescription(description: string): Promise<number> {
-        return await this.repo.countBy({ description: ILike(`%${description}%`) })
+        return await this.repo.countBy({ description: ILike(`%${description}%`), enable: true })
     }
 
     async totalResultsByName(name: string): Promise<number> {
-        return await this.repo.countBy({ name: ILike(`%${name}%`) })
+        return await this.repo.countBy({ name: ILike(`%${name}%`), enable: true })
     }
 
     async stockBetween(from: number, to: number, offset: number, limit: number): Promise<[Product[], number]> {
         return await this.repo.findAndCount({
-            where: { stock: Between(from, to) },
+            where: { stock: Between(from, to), enable: true },
             order: { stock: "DESC" },
+            skip: offset,
+            take: limit
+        })
+    }
+
+    async getDisabled(offset: number, limit: number): Promise<[Product[], number]> {
+        return await this.repo.findAndCount({
+            where: {
+                enable: false
+            },
+            order: {
+                name: "ASC"
+            },
             skip: offset,
             take: limit
         })
