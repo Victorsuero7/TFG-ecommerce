@@ -7,6 +7,7 @@ import { ProductService } from "./ProductService";
 import { Category } from "../Models/category.entity";
 import { envs } from '../config/envs';
 import { SchemaResponse } from "../config/SchemaResponse";
+import { CategoryDTO } from "../dtos/CategoryDTO";
 
 const PPP = envs.PRODUCTS_PER_PAGE ?? 20
 
@@ -151,10 +152,16 @@ export class ProductServiceImpl implements ProductService {
             if (result.length === 0) throw HttpErrors.NotFound()
             return new SchemaResponse(result.map((e) => ProductDTO.fromEntity(e)), { count })
 
+    async findByCategory(dto: CategoryDTO, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const category = dto.toEntity()
+            const [result, count] = (await this.repo.findByCategory(category, PPP * (page - 1), PPP))
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error);
             throw error
         }
-
     }
+
 }

@@ -1,5 +1,6 @@
 import { ProductDTO } from "../dtos/ProductDTO";
 import { SchemaResponse } from '../config/SchemaResponse'
+import { CategoryDTO } from "../dtos/CategoryDTO";
 
 export interface ProductService {
     getAll(): Promise<SchemaResponse<ProductDTO[]>>
@@ -14,4 +15,5 @@ export interface ProductService {
     filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>>
     delete(id: number): Promise<SchemaResponse<ProductDTO>>
     listDisabled(page: number): Promise<SchemaResponse<ProductDTO[]>>
+    findByCategory(dto: CategoryDTO, page: number): Promise<SchemaResponse<ProductDTO[]>>;
 }

@@ -1,21 +1,36 @@
 import { Product } from "../Models/product.entity";
 import { Category } from "../Models/category.entity";
+import { User } from "../Models/user.entity";
+import { UserDTO } from "./UserDTO";
 
 export class ProductDTO {
-
+    public id?: number
+    public name?: string
+    public description?: string
+    public price?: number
+    public size?: string
+    public stock?: number
+    public imageUrl?: string | undefined
+    public lastModification?: Date
+    public modifiedBy?: string
+    public category?: Category
     constructor(
-        public id: number,
-        public name: string,
-        public description: string,
-        public price: number,
-        public size: string,
-        public stock: number,
-        public imageUrl: string | undefined,
-        public category: Category
+
     ) { }
 
     static fromEntity(product: Product): ProductDTO {
-        return new ProductDTO(product.id, product.name, product.description, product.price, product.size, product.stock, product.imageUrl, product.category)
+        const dto = new ProductDTO()
+        dto.id = product.id
+        dto.name = product.name
+        dto.description = product.description
+        dto.price = product.price
+        dto.size = product.size
+        dto.stock = product.stock
+        dto.imageUrl = product.imageUrl
+        dto.lastModification = product.lastModification
+        dto.modifiedBy = product.modifiedBy?.email
+        dto.category = product.category
+        return dto
     }
 
     public toEntity(): Product {
@@ -26,6 +41,15 @@ export class ProductDTO {
 
     static createDTO(object: { [key: string]: any }, path?: string | undefined): ProductDTO {
         const { id, name, description, price, size, stock, categoryId } = object;
-        return new ProductDTO(id, name, description, price, size, stock, path, categoryId)
+        const dto = new ProductDTO()
+        dto.id = id
+        dto.name = name
+        dto.description = description
+        dto.price = price
+        dto.size = size
+        dto.stock = stock
+        dto.category = categoryId
+        dto.imageUrl = path
+        return dto
     }
 }

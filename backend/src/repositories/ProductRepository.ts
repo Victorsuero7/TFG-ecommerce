@@ -8,16 +8,13 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         super(Product, datasource)
     }
     async findAll(): Promise<Product[]> {
-        return await this.repo.find({
-            relations: ['category'],
-            where: { enable: true }
-        });
+        return await this.repo.find({ relations: ['category', 'modifiedBy'] });
     }
 
     async findOneById(id: number): Promise<Product | null> {
         return await this.repo.findOne({
-            where: { id, enable: true },
-            relations: ["category"]
+            where: { id },
+            relations: ["category", 'modifiedBy']
         })
     }
 
@@ -25,23 +22,31 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         return await this.repo.findAndCount({ where: { enable: true }, skip: offset, take: limit })
     }
 
-    async findByCategory(category: Category): Promise<Product[]> {
-        return await this.repo.findBy({ category })
+    async findByCategory(category: Category, offset: number, limit: number): Promise<[Product[], number]> {
+        return await this.repo.findAndCount({
+            where: { category },
+            order: {
+                name: "ASC"
+            },
+            skip: offset,
+            take: limit,
+            relations: ['category', 'modifiedBy']
+        })
     }
 
     async findByCategoryName(categoryName: string): Promise<Product[]> {
         return await this.repo.find({
-            where: { category: { name: ILike(`%${categoryName}%`) }, enable: true },
-            relations: ['category']
+            where: { category: { name: ILike(`%${categoryName}%`) } },
+            relations: ['category', 'modifiedBy']
         })
     }
 
     async findByName(name: string): Promise<Product[]> {
-        return await this.repo.find({ where: { name: ILike(`%${name}%`), enable: true }, relations: ['category'] })
+        return await this.repo.find({ where: { name: ILike(`%${name}%`) }, relations: ['category', 'modifiedBy'] })
     }
 
     async findByDescription(description: string): Promise<Product[]> {
-        return await this.repo.find({ where: { description: ILike(`%${description}%`), enable: true }, relations: ['category'] })
+        return await this.repo.find({ where: { description: ILike(`%${description}%`) }, relations: ['category', 'modifiedBy'] })
     }
 
     async totalResults(): Promise<number> {

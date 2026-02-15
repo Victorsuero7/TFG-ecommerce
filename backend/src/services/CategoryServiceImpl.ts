@@ -3,9 +3,9 @@ import { Category } from "../Models/category.entity";
 import { CategoryRepository } from "../repositories/CategoryRepository";
 import { HttpErrors } from "../utils/HttpErrors";
 import { CategoryService } from "./CategoryService";
-import {envs} from "../config/envs"
+import { envs } from "../config/envs"
 
-const PPP = envs.PRODUCTS_PER_PAGE??4;
+const PPP = envs.PRODUCTS_PER_PAGE ?? 4;
 
 export class CategoryServiceImpl implements CategoryService {
     private readonly repo: CategoryRepository;
@@ -13,10 +13,10 @@ export class CategoryServiceImpl implements CategoryService {
         this.repo = repo;
     }
     async getAllPaginated(page: number): Promise<Category[]> {
-        try{
+        try {
             const result = await this.repo.findAllByPage(PPP * (page - 1), PPP)
             if (result.length === 0) throw HttpErrors.NotFound()
-                return result
+            return result
         } catch (error) {
             console.log(error);
             throw error
@@ -43,11 +43,11 @@ export class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    async insert(dto: CategoryDTO): Promise <Category> {
+    async insert(dto: CategoryDTO): Promise<Category> {
         try {
             const category = new Category()
-            category.name = dto.name
-            category.description = dto.description
+            category.name = dto.name!
+            category.description = dto.description!
             return await this.repo.save(category)
         } catch (error) {
             console.log(error);
