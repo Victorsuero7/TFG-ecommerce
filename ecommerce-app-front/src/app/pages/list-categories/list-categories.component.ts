@@ -83,7 +83,7 @@ export class ListCategoriesComponent implements OnInit, OnDestroy {
   }
 
   view(id?: number) { if (id) this.router.navigate(['/dashboard/categories/detail', id]); }
-  edit(id?: number) { if (id) this.router.navigate(['/dashboard/categories/edit', id]); }
+  edit(id?: number) { if (id) this.router.navigate(['/categories/edit', id]); }
 
   delete(id?: number) {
     if (!id) return;
