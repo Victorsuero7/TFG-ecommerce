@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, catchError, debounceTime, switchMap, first } from 'rxjs/operators';
 import { UserService } from '../../services/user/user.service';
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -31,8 +33,8 @@ export class UserRegisterComponent {
     this.form = this.fb.group({
       name: ['', [Validators.required]],
       lastName: [''],
-      email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email], [this.emailExistsValidator.bind(this)]],
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{6,15}$/)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     });
@@ -99,6 +101,18 @@ export class UserRegisterComponent {
         else cpControl.setErrors(errors);
       }
     }
+  }
+
+  private emailExistsValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+    if (!control.value || control.hasError('email')) return of(null);
+    return of(control.value).pipe(
+      debounceTime(400),
+      switchMap(email => this.userSvc.checkEmail(email).pipe(
+        map(res => res.exists ? { emailTaken: true } : null),
+        catchError(() => of(null))
+      )),
+      first()
+    );
   }
 
   goToLogin() { this.router.navigate(['/login']); }

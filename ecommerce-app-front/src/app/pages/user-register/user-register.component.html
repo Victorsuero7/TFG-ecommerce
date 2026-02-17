@@ -20,16 +20,18 @@
           <label class="form-label">Email</label>
           <input class="form-control" formControlName="email"
             [class.is-invalid]="form.get('email')?.touched && form.get('email')?.invalid">
-          <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="invalid-feedback">Introduce un
-            email válido.</div>
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')" class="invalid-feedback">El email es obligatorio.</div>
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')" class="invalid-feedback">Introduce un email válido.</div>
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('emailTaken')" class="invalid-feedback">Ya existe una cuenta con ese email.</div>
+          <div *ngIf="form.get('email')?.pending" class="form-text text-muted">Comprobando disponibilidad...</div>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Teléfono</label>
-          <input class="form-control" formControlName="phoneNumber"
+          <input class="form-control" formControlName="phoneNumber" inputmode="numeric"
             [class.is-invalid]="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">
-          <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid" class="invalid-feedback">El
-            teléfono es obligatorio.</div>
+          <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('required')" class="invalid-feedback">El teléfono es obligatorio.</div>
+          <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('pattern')" class="invalid-feedback">Introduce un número de teléfono válido.</div>
         </div>
 
         <div class="mb-3">
@@ -58,7 +60,7 @@
 </div>
 
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
-  <div *ngIf="toastVisible" class="toast show align-items-center border-0 text-bg-{{toastVariant}}" role="alert"
+  <div *ngIf="toastVisible" class="toast show align-items-center border-0" [ngClass]="'text-bg-' + toastVariant" role="alert"
     aria-live="assertive" aria-atomic="true">
     <div class="d-flex">
       <div class="toast-body">
