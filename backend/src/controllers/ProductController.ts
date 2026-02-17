@@ -42,7 +42,7 @@ export class ProductController {
         try {
             const objects: object[] = req.body.array
             const dtos = objects.map(e => ProductDTO.createDTO(e, getPath(req.file?.path!)))
-            dtos.map(e => e.modifiedBy = req.user.id)
+            dtos.forEach(e => e.modifiedBy = req.user.id)
             const result = this.service.updateMany(dtos)
             res.status(200).json({ result })
         } catch (error) {
