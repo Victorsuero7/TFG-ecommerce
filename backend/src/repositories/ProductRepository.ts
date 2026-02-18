@@ -1,4 +1,4 @@
-import { Between, DataSource, FindOptionsWhere, ILike } from "typeorm";
+import { Between, DataSource, EntityManager, FindOptionsWhere, ILike } from "typeorm";
 import { Product } from "../Models/product.entity";
 import { TypeORMRepository } from "./TypeORMRepository";
 import { Category } from "../Models/category.entity";
@@ -9,6 +9,10 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
     }
     async findAll(): Promise<Product[]> {
         return await this.repo.find({ relations: ['category', 'modifiedBy'] });
+    }
+
+    async transaction(cb: (entityManager: EntityManager) => Promise<unknown>){
+        return this.datasource.transaction(cb)
     }
 
     async findOneById(id: number): Promise<Product | null> {
