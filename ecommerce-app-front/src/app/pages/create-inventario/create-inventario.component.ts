@@ -1,21 +1,24 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product/product.service';
-import { error } from 'console';
 import { Router } from '@angular/router';
 
 
 export interface ProductInventario extends Product {
   cantidad: number;
+  stockOriginal: number;
 }
 @Component({
   selector: 'app-create-inventario',
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './create-inventario.component.html',
-  styleUrl: './create-inventario.component.css'
+  styleUrls: ['./create-inventario.component.css']
 })
 export class CreateInventarioComponent {
   productos: ProductInventario[] = [];
+  loading = false;
 
   constructor(private productService: ProductService, public router: Router) {}
   toastVisible = false;
@@ -30,7 +33,8 @@ export class CreateInventarioComponent {
     this.productService.getAll().subscribe(products => {
       this.productos = products.map(p => ({
         ...p,
-        cantidad: 0
+        stockOriginal: p.stock ?? 0,
+        cantidad: p.stock ?? 0
       }));
     });
   }
@@ -46,20 +50,29 @@ export class CreateInventarioComponent {
   }
 
   guardarInventario() {
+  this.loading = true;
   const productosActualizados = this.productos
-    .filter(p => p.cantidad > 0)
+    .filter(p => p.cantidad !== p.stockOriginal)
     .map(p => ({
-      id: p.id as number,
-      stock: (p.stock ?? 0) + p.cantidad
+      ...p,
+      stock: p.cantidad
     }));
 
-  this.productService.updateStock(productosActualizados)
+  if (productosActualizados.length === 0) {
+    this.showToast('No hay cambios que guardar', 'info');
+    this.loading = false;
+    return;
+  }
+
+  this.productService.updateMany(productosActualizados as any)
     .subscribe({
           next: () => {
-            this.showToast('Iventario actualizado', 'success');
-            setTimeout(() => this.router.navigate(['/inventary/list']), 800);
+            this.loading = false;
+            this.showToast('Inventario actualizado', 'success');
+            setTimeout(() => this.router.navigate(['/inventory/list']), 800);
           },
           error: err => {
+            this.loading = false;
             console.error('Error actualizando inventario', err);
             this.showToast('Error al actualizar inventario', 'error');
           }

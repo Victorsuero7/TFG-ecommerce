@@ -51,8 +51,8 @@ export class ProductService extends GenericService<Product> {
   return this.http.patch<Product>(`${this.baseUrl}/update`, item);
   }
 
-  updateStock(items: { id: number; stock: number }[]): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/update-stock`, items);
+  updateMany(items: Product[]): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/update/many`, items);
   }
 
 }

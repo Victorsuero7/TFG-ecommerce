@@ -2,14 +2,7 @@
   <div class="row mb-4">
     <div class="col">
       <h2 class="fw-bold">Nuevo inventario</h2>
-      <p class="text-muted">Añade cantidades a los productos disponibles</p>
-    </div>
-    <div class="col text-end">
-      <h5>
-        Total unidades: <span class="badge bg-primary">
-          {{  productos.reduce((acc, p) => acc + p.cantidad, 0)  }}
-        </span>
-      </h5>
+      <p class="text-muted">Modifica el stock de los productos</p>
     </div>
   </div>
  
@@ -20,9 +13,8 @@
           <thead class="table-light">
             <tr>
               <th>Producto</th>
-              <th>Stock actual</th>
-              <th class="text-center">Cantidad a añadir</th>
-              <th class="text-center">Acciones</th>
+              <th class="text-center">Stock actual</th>
+              <th class="text-center">Nuevo stock</th>
             </tr>
           </thead>
 
@@ -34,28 +26,23 @@
                   {{ producto.categoryName || 'Sin categoría' }}
                 </div>
               </td>
-              <td>
-                <span class="badge bg-secondary">
-                  {{ producto.stock || 0 }}
-                </span>
+              <td class="text-center">
+                <span>{{ producto.stockOriginal }}</span>
               </td>
               <td class="text-center">
-                <span class="fw-bold fs-5">
-                  {{ producto.cantidad }}
-                </span>
-              </td>
-              <td class="text-center">
-                <div class="btn-group">
+                <div class="d-inline-flex align-items-center gap-2">
                   <button class="btn btn-outline-danger btn-sm" (click)="disminuir(producto)"
-                    [disabled]="producto.cantidad === 0"> -
+                    [disabled]="producto.cantidad <= 0"> &minus;
                   </button>
+                  <input type="number" class="form-control form-control-sm text-center" style="width: 80px;"
+                    [(ngModel)]="producto.cantidad" min="0" />
                   <button class="btn btn-outline-success btn-sm" (click)="aumentar(producto)"> +
                   </button>
                 </div>
               </td>
             </tr>
             <tr *ngIf="productos.length === 0">
-              <td colspan="4" class="text-center py-4 text-muted">
+              <td colspan="3" class="text-center py-4 text-muted">
                 No hay productos disponibles
               </td>
             </tr>
@@ -68,10 +55,9 @@
     </div>
   </div>
 
-  <div class="d-flex align-items-center gap-2">
-    <button class="btn btn-primary" type="submit" [disabled]="loading || form.invalid">{{ loading ? 'Guardando...' :
-      'Guardar' }}</button>
-    <button class="btn btn-secondary" type="button" (click)="router.navigate(['/inventary/list'])">Cancelar</button>
+  <div class="d-flex align-items-center gap-2 mt-3">
+    <button class="btn btn-secondary" type="button" (click)="router.navigate(['/inventory/list'])">Cancelar</button>
+    <button class="btn btn-primary" type="button" (click)="guardarInventario()" [disabled]="loading">{{ loading ? 'Guardando...' : 'Guardar' }}</button>
   </div>
 
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">

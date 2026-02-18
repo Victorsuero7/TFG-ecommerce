@@ -1,1 +1,43 @@
-<p>inventory-list works!</p>
+<div class="inventory-list container-fluid">
+  <h6 class="mb-3">Historial de inventarios</h6>
+
+  <div class="search-bar d-flex flex-wrap align-items-center gap-2 mb-3">
+    <div class="input-group input-group-sm search-text-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar por producto..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+      <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="mb-3">Cargando...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="table-header d-none d-md-flex fw-bold small px-2">
+    <div class="col-1">ID</div>
+    <div class="col">Producto</div>
+    <div class="col-2">Stock final</div>
+    <div class="col-2">Modificado por</div>
+    <div class="col-3">Fecha</div>
+  </div>
+
+  <ng-container *ngIf="!loading && movements?.length; else noData">
+    <div *ngFor="let m of movements" class="movement-row d-flex align-items-center my-2">
+      <div class="col-1 small px-2">{{ m.id }}</div>
+      <div class="col small px-2">{{ m.productName }}</div>
+      <div class="col-2 small px-2">{{ m.finalStock }}</div>
+      <div class="col-2 small px-2">{{ m.modifiedByEmail }}</div>
+      <div class="col-3 small px-2">{{ formatDate(m.lastModification) }}</div>
+    </div>
+  </ng-container>
+
+  <ng-template #noData>
+    <div *ngIf="!loading" class="mt-3 text-muted">No hay movimientos registrados.</div>
+  </ng-template>
+</div>

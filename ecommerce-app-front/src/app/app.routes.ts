@@ -12,10 +12,10 @@ import { GoodsEntryComponent } from './pages/goods-entry/goods-entry.component';
 import { GoodsExitComponent } from './pages/goods-exit/goods-exit.component';
 
 import { InventoryListComponent } from './pages/inventory-list/inventory-list.component';
-import { InventoryNewComponent } from './pages/inventory-new/inventory-new.component';
-
 import { ListUsersComponent } from './pages/list-users/list-users.component';
+
 import { EditCategoryComponent } from './pages/edit-category/edit-category.component';
+import { CreateInventarioComponent } from './pages/create-inventario/create-inventario.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -29,7 +29,7 @@ export const routes: Routes = [
 
   // Inventory routes
   { path: 'inventory/list', component: InventoryListComponent },
-  { path: 'inventory/new', component: InventoryNewComponent },
+  { path: 'inventory/new', component: CreateInventarioComponent },
 
 // products
   { path: 'products/list', component: ListProductsComponent },
