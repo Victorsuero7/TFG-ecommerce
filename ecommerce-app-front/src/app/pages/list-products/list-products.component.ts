@@ -18,10 +18,14 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   loading = false;
   error = '';
   selectedDeleteId?: number;
+  toastVisible = false;
+  toastMessage = '';
+  toastVariant: 'primary' | 'success' | 'danger' = 'primary';
   searchTerm = '';
   searchField: 'all' | 'name' | 'description' | 'category' = 'all';
   minStock?: number;
   maxStock?: number;
+  showDisabled = false;
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
@@ -75,18 +79,24 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   load(): void {
     this.loading = true;
     this.error = '';
-    this.productSvc.getAll().subscribe({
+    const source$ = this.showDisabled
+      ? this.productSvc.getDisabled()
+      : this.productSvc.getAll();
+    source$.subscribe({
       next: data => { 
         this.applyStockFilter(data); 
         this.loading = false; 
-        console.log('Frontend: productos cargados', this.products);
-
       },
       error: err => {
         console.error('Frontend: error cargando productos', err);
         this.error = 'Error cargando productos'; this.loading = false;
       }
     });
+  }
+
+  onToggleDisabled(): void {
+    this.searchTerm = '';
+    this.load();
   }
 
   private mapProducts(data: any[]): any[] {
@@ -145,13 +155,26 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   confirmDelete() {
     const id = this.selectedDeleteId;
     if (!id) return;
-    this.productSvc.delete(id).subscribe({
-      next: () => { this.load(); this.selectedDeleteId = undefined; },
+    this.productSvc.softdelete(id).subscribe({
+      next: () => {
+        this.showToast('Producto desactivado correctamente', 'success');
+        this.load();
+        this.selectedDeleteId = undefined;
+      },
       error: err => {
-        alert('Error al borrar producto');
+        this.showToast('Error al desactivar producto', 'error');
         console.error(err);
         this.selectedDeleteId = undefined;
       }
     });
   }
+
+  showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+    this.toastMessage = message;
+    this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 3500);
+  }
+
+  hideToast() { this.toastVisible = false; }
 }

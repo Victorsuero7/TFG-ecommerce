@@ -46,4 +46,17 @@ export class ProductService extends GenericService<Product> {
       map((res: any) => Array.isArray(res) ? res : (res?.result ?? []))
     );
   }
+
+  softdelete(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/delete/${id}`);
+  }
+
+  getDisabled(page: number = 1): Observable<Product[]> {
+    return this.http.get<any>(`${this.baseUrl}/disabled/${page}`).pipe(
+      map((res: any) => {
+        const inner = res?.result ?? res;
+        return Array.isArray(inner) ? inner : (inner?.result ?? []);
+      })
+    );
+  }
 }
