@@ -4,6 +4,7 @@ import { MySQLDataSource } from './config/MySQL-datasource';
 import { UserRoutes } from './routes/UserRoutes'
 import { ProductRoutes } from './routes/ProductRoutes'
 import { CategoryRoutes } from './routes/CategoryRoutes'
+import { MovementRoutes } from './routes/MovementRoutes'
 import { getPath, ImageUploaderMiddleware } from './utils/ImageUploaderMiddleware';
 import path from 'path';
 import { envs } from './config/envs';
@@ -51,3 +52,4 @@ console.log(path.join(process.cwd(), envs.UPLOADS_DIR));
 app.use('/user', UserRoutes.routes)
 app.use('/product', ProductRoutes.routes)
 app.use('/category', CategoryRoutes.routes)
+app.use('/movement', MovementRoutes.routes)
