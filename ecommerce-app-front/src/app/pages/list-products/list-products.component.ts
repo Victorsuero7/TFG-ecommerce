@@ -17,6 +17,11 @@ export class ListProductsComponent implements OnInit {
   error = '';
   selectedDeleteId?: number;
 
+  currentPage = 1;
+  totalPages = 1;
+  totalCount = 0;
+  pages: number[] = [];
+
   constructor(private productSvc: ProductService, private router: Router) {}
 
   ngOnInit(): void {
@@ -26,18 +31,37 @@ export class ListProductsComponent implements OnInit {
   load(): void {
     this.loading = true;
     this.error = '';
-    this.productSvc.getAll().subscribe({
-        next: data => {
-          console.log('Frontend: products response', data);
-          const list = (data || []).map((p: any) => ({
-            ...p,
-            categoryName: p?.category?.name ?? p?.categoryName ?? null
-          }));
-          this.products = list;
-          this.loading = false;
-        },
-      error: err => { console.error('Frontend: error cargabdi  productos', err); this.error = 'Error cargando productos'; this.loading = false; }
+    this.productSvc.getAllPaginated(this.currentPage).subscribe({
+      next: res => {
+        console.log('Paginated response:', res);
+        console.log('Data:', res.data);
+        console.log('TotalCount:', res.totalCount);
+        const list = (res.data || []).map((p: any) => ({
+          ...p,
+          categoryName: p?.category?.name ?? p?.categoryName ?? null
+        }));
+        console.log('Mapped list:', list);
+        this.products = list;
+        this.totalCount = res.totalCount;
+        this.totalPages = Math.max(1, Math.ceil(this.totalCount / Math.max(list.length, 1)));
+        if (list.length > 0) {
+          this.totalPages = Math.ceil(this.totalCount / list.length);
+        }
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+        this.loading = false;
+      },
+      error: err => {
+        console.error('Error cargando productos', err);
+        this.error = 'Error cargando productos';
+        this.loading = false;
+      }
     });
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.currentPage = page;
+    this.load();
   }
 
   formatPrice(p?: number) {

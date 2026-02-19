@@ -29,6 +29,20 @@
 	<ng-template #noData>
 		<div *ngIf="!loading" class="mt-3 text-muted">No hay productos.</div>
 	</ng-template>
+
+	<nav *ngIf="totalPages > 1" aria-label="Paginación de productos" class="mt-3">
+		<ul class="pagination justify-content-center">
+			<li class="page-item" [class.disabled]="currentPage === 1">
+				<a class="page-link" (click)="goToPage(currentPage - 1)" role="button">Anterior</a>
+			</li>
+			<li *ngFor="let page of pages" class="page-item" [class.active]="page === currentPage">
+				<a class="page-link" (click)="goToPage(page)" role="button">{{ page }}</a>
+			</li>
+			<li class="page-item" [class.disabled]="currentPage === totalPages">
+				<a class="page-link" (click)="goToPage(currentPage + 1)" role="button">Siguiente</a>
+			</li>
+		</ul>
+	</nav>
 </div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
