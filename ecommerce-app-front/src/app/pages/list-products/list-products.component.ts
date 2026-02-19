@@ -17,6 +17,7 @@ export class ListProductsComponent implements OnInit {
   error = '';
   selectedDeleteId?: number;
 
+  readonly PAGE_SIZE = 2;
   currentPage = 1;
   totalPages = 1;
   totalCount = 0;
@@ -43,10 +44,7 @@ export class ListProductsComponent implements OnInit {
         console.log('Mapped list:', list);
         this.products = list;
         this.totalCount = res.totalCount;
-        this.totalPages = Math.max(1, Math.ceil(this.totalCount / Math.max(list.length, 1)));
-        if (list.length > 0) {
-          this.totalPages = Math.ceil(this.totalCount / list.length);
-        }
+        this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
         this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
         this.loading = false;
       },
