@@ -1,5 +1,6 @@
 import { SchemaResponse } from "../config/SchemaResponse";
 import { MovementDTO } from "../dtos/MovementDTO";
+import { MovementDTO } from "../dtos/MovementDTO";
 
 export interface MovementService {
     getAllPaginated(page?: number): Promise<SchemaResponse<MovementDTO[]>>

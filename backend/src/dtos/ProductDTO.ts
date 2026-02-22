@@ -2,6 +2,7 @@ import { Product } from "../Models/product.entity";
 import { Category } from "../Models/category.entity";
 import { User } from "../Models/user.entity";
 import { UserDTO } from "./UserDTO";
+import { emitWarning } from "process";
 
 export class ProductDTO {
     public id?: number
@@ -12,7 +13,7 @@ export class ProductDTO {
     public stock?: number
     public imageUrl?: string | undefined
     public lastModification?: Date
-    public modifiedBy?: string
+    public modifiedBy?: Partial<User>
     public category?: Category
     constructor(
 
@@ -28,7 +29,7 @@ export class ProductDTO {
         dto.stock = product.stock
         dto.imageUrl = product.imageUrl
         dto.lastModification = product.lastModification
-        dto.modifiedBy = product.modifiedBy?.email
+        dto.modifiedBy = { id: product.modifiedBy?.id, email: product.modifiedBy?.email }
         dto.category = product.category
         return dto
     }

@@ -4,6 +4,8 @@ import { envs } from "../config/envs";
 import { SchemaResponse } from "../config/SchemaResponse";
 import { MovementDTO } from "../dtos/MovementDTO";
 import { HttpErrors } from "../utils/HttpErrors";
+import { MovementDTO } from "../dtos/MovementDTO";
+import { HttpErrors } from "../utils/HttpErrors";
 
 const PPP = envs.PRODUCTS_PER_PAGE ?? 20
 
@@ -12,6 +14,7 @@ export class MovementServiceImpl implements MovementService {
     constructor(repo: MovementRepository) {
         this.repo = repo;
     }
+    async getAllPaginated(page = 1): Promise<SchemaResponse<MovementDTO[]>> {
     async getAllPaginated(page = 1): Promise<SchemaResponse<MovementDTO[]>> {
         try {
             const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
