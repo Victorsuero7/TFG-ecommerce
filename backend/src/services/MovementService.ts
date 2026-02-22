@@ -1,8 +1,8 @@
 import { SchemaResponse } from "../config/SchemaResponse";
-import { UserDTO } from "../dtos/UserDTO";
-import { Movement } from "../Models/DataMovements.entity";
+import { MovementDTO } from "../dtos/MovementDTO";
 
 export interface MovementService {
-    getAllPaginated(page?: number): Promise<SchemaResponse<Movement[]>>
-    getOne(id: any): Promise<SchemaResponse<Movement | null>>
+    getAllPaginated(page?: number): Promise<SchemaResponse<MovementDTO[]>>
+    getOne(id: any): Promise<SchemaResponse<MovementDTO | null>>
+    getByQueryParams(params: { [key: string]: any; }): Promise<SchemaResponse<MovementDTO[]>>
 }

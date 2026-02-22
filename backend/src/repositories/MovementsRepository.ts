@@ -1,4 +1,4 @@
-import { Between, DataSource, EntityManager, Or } from "typeorm";
+import { Between, DataSource, EntityManager, FindOptionsWhere } from "typeorm";
 import { TypeORMRepository } from "./TypeORMRepository";
 import { Movement } from "../Models/DataMovements.entity";
 import { User } from "../Models/user.entity";
@@ -7,28 +7,49 @@ import { Product } from "../Models/product.entity";
 type Conditions = {
     userId?: number;
     productId?: number;
+    from?: string,
+    to?: string
 };
 export class MovementRepository extends TypeORMRepository<Movement, number> {
     constructor(datasource: DataSource) {
         super(Movement, datasource)
     }
 
-    private RELATIONS = ["category", 'modifiedBy']
+    private RELATIONS = ["product", 'modifiedBy']
 
     private buildWhere(conditions: Conditions) {
-        const where: Partial<Movement>[] = [];
+        const where: Partial<Movement> = {};
         if (conditions.userId !== undefined) {
-            where.push({
-                modifiedBy: { id: conditions.userId } as User
-            });
+            where.modifiedBy = { id: conditions.userId } as User
         }
         if (conditions.productId !== undefined) {
-            where.push({
-                product: { id: conditions.productId } as Product
-            });
-        }
+            where.product = { id: conditions.productId } as Product
+        };
+        if (conditions.from !== undefined && conditions.to !== undefined) {
+            console.log("FECHAS: ", conditions);
+            where.lastModification = Between(new Date(conditions.from), new Date(conditions.to)) as unknown as Date
+        };
         return where;
     }
+    // private buildWhere(conditions: Conditions) {
+    //     const where: Partial<Movement>[] = [];
+    //     if (conditions.userId !== undefined) {
+    //         where.push({
+    //             modifiedBy: { id: conditions.userId } as User
+    //         });
+    //     }
+    //     if (conditions.productId !== undefined) {
+    //         where.push({
+    //             product: { id: conditions.productId } as Product
+    //         });
+    //     }
+    //     if (conditions.from !== undefined && conditions.to !== undefined) {
+    //         where.push({
+    //             lastModification: Between(conditions.from, conditions.to) as unknown as Date
+    //         })
+    //     }
+    //     return where;
+    // }
 
     async transaction(cb: (entityManager: EntityManager) => Promise<unknown>) {
         return this.datasource.transaction(cb)
@@ -43,7 +64,7 @@ export class MovementRepository extends TypeORMRepository<Movement, number> {
 
     async findAllByPage(offset: number, limit: number, relations: string[] = this.RELATIONS): Promise<[Movement[], number]> {
         return await this.repo.findAndCount({
-            where: {},
+            // where: {},
             order: { id: "ASC" },
             skip: offset,
             take: limit,
