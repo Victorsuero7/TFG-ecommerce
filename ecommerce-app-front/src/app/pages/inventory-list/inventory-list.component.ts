@@ -18,6 +18,12 @@ export class InventoryListComponent implements OnInit, OnDestroy {
   error = '';
   searchTerm = '';
 
+  // Pagination
+  currentPage = 1;
+  totalItems = 0;
+  pageSize = 2; // Must match backend PRODUCTS_PER_PAGE
+  totalPages = 0;
+
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
 
@@ -28,16 +34,20 @@ export class InventoryListComponent implements OnInit, OnDestroy {
 
     this.searchSub = this.search$.pipe(
       debounceTime(350),
-      distinctUntilChanged(),
       switchMap(term => {
-        if (!term.trim()) {
-          return this.movementSvc.getAll();
-        }
         this.loading = true;
-        return this.movementSvc.searchByProductName(term).pipe(catchError(() => of([])));
+        if (!term.trim()) {
+          return this.movementSvc.getAll(this.currentPage);
+        }
+        return this.movementSvc.searchByProductName(term, this.currentPage).pipe(catchError(() => of({ data: [], count: 0 })));
       })
     ).subscribe({
-      next: data => { this.movements = data; this.loading = false; },
+      next: res => {
+        this.movements = res.data;
+        this.totalItems = res.count;
+        this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+        this.loading = false;
+      },
       error: () => { this.error = 'Error en la búsqueda'; this.loading = false; }
     });
   }
@@ -49,9 +59,11 @@ export class InventoryListComponent implements OnInit, OnDestroy {
   load(): void {
     this.loading = true;
     this.error = '';
-    this.movementSvc.getAll().subscribe({
-      next: data => {
-        this.movements = data;
+    this.movementSvc.getAll(this.currentPage).subscribe({
+      next: res => {
+        this.movements = res.data;
+        this.totalItems = res.count;
+        this.totalPages = Math.ceil(this.totalItems / this.pageSize);
         this.loading = false;
       },
       error: err => {
@@ -62,7 +74,18 @@ export class InventoryListComponent implements OnInit, OnDestroy {
     });
   }
 
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    if (this.searchTerm.trim()) {
+      this.search$.next(this.searchTerm);
+    } else {
+      this.load();
+    }
+  }
+
   onSearch(): void {
+    this.currentPage = 1;
     this.search$.next(this.searchTerm);
   }
 

@@ -1,4 +1,4 @@
-import express, { RequestHandler } from 'express';
+import express from 'express';
 import cors from 'cors';
 import { MySQLDataSource } from './config/MySQL-datasource';
 import { UserRoutes } from './routes/UserRoutes'
@@ -9,6 +9,7 @@ import { getPath, ImageUploaderMiddleware } from './utils/ImageUploaderMiddlewar
 import path from 'path';
 import { envs } from './config/envs';
 import { RBACMiddleware } from './utils/AuthorizationMiddleware';
+import { MovementsRoutes } from './routes/MovementsRouter';
 
 
 const app = express();

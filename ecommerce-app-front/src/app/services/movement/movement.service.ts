@@ -13,20 +13,28 @@ export class MovementService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Movement[]> {
-    return this.http.get<any>(this.baseUrl).pipe(
+  getAll(page: number = 1): Observable<{ data: Movement[], count: number }> {
+    return this.http.get<any>(this.baseUrl, { params: { page: page.toString() } }).pipe(
       map((res: any) => {
         const data = Array.isArray(res) ? res : (res?.result ?? []);
-        return data.map((m: any) => this.mapMovement(m));
+        const count = res?.metadata?.count ?? data.length;
+        return {
+          data: data.map((m: any) => this.mapMovement(m)),
+          count
+        };
       })
     );
   }
 
-  searchByProductName(name: string): Observable<Movement[]> {
-    return this.http.get<any>(`${this.baseUrl}/product/${encodeURIComponent(name)}`).pipe(
+  searchByProductName(name: string, page: number = 1): Observable<{ data: Movement[], count: number }> {
+    return this.http.get<any>(`${this.baseUrl}/product/${encodeURIComponent(name)}`, { params: { page: page.toString() } }).pipe(
       map((res: any) => {
         const data = Array.isArray(res) ? res : (res?.result ?? []);
-        return data.map((m: any) => this.mapMovement(m));
+        const count = res?.metadata?.count ?? data.length;
+        return {
+          data: data.map((m: any) => this.mapMovement(m)),
+          count
+        };
       })
     );
   }
