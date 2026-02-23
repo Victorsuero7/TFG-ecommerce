@@ -15,9 +15,9 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
         return await this.repo.find();
     }
 
-    // async findAllByPage(offset: number, limit: number): Promise<T[]> {
-    //     return await this.repo.find({ skip: offset, take: limit })
-    // }
+    async findAllByPage(offset: number, limit: number): Promise<T[] | [T[], number]> {
+        return await this.repo.find({ skip: offset, take: limit })
+    }
 
     async findOneById(id: ID): Promise<T | null> {
         return await this.repo.findOneBy({ id } as FindOptionsWhere<T>);
