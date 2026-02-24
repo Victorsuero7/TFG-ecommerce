@@ -1,0 +1,39 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+      <h3>Accede</h3>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="email"
+            [class.is-invalid]="form.get('email')?.touched && form.get('email')?.invalid">
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="invalid-feedback">Introduce un email válido.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-control" formControlName="password"
+            [class.is-invalid]="form.get('password')?.touched && form.get('password')?.invalid">
+          <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="invalid-feedback">La contraseña es obligatoria.</div>
+        </div>
+
+        <button class="btn btn-secondary ms-2" type="button" (click)="goToRegister()">Registrate</button>
+        <button class="btn btn-primary ms-2" type="submit" [disabled]="submitting">{{ submitting ? 'Accediendo...' : 'Accede' }}</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+  <div *ngIf="toastVisible" class="toast show align-items-center border-0 text-bg-{{toastVariant}}" role="alert"
+    aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        {{ toastMessage }}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Close"
+        (click)="hideToast()"></button>
+    </div>
+  </div>
+</div>
+
