@@ -53,3 +53,8 @@ app.use('/user', UserRoutes.routes)
 app.use('/product', ProductRoutes.routes)
 app.use('/category', CategoryRoutes.routes)
 app.use('/movement', MovementRoutes.routes)
+
+
+//Es para poner el número de páginas en el paginado al listar porfi no me lo borreis 
+const { ConfigRoutes } = require('./routes/ConfigRoutes');
+app.use('/config', ConfigRoutes.routes);

@@ -14,7 +14,7 @@ export class MovementService {
   constructor(private http: HttpClient) {}
 
   getAll(page: number = 1): Observable<{ data: Movement[], count: number }> {
-    return this.http.get<any>(this.baseUrl, { params: { page: page.toString() } }).pipe(
+    return this.http.get<any>(`${this.baseUrl}/all/${page}`).pipe(
       map((res: any) => {
         const data = Array.isArray(res) ? res : (res?.result ?? []);
         const count = res?.metadata?.count ?? data.length;

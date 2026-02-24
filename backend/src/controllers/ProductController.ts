@@ -79,9 +79,13 @@ export class ProductController {
 
     getAllPaginated = async (req: Request, res: Response) => {
         try {
-            const page = req.params.page!
-            const result = await this.service.getAllPaginated(Number.parseInt(page))
-            res.status(200).json(result)
+            const page = Number(req.params.page) || 1;
+            const response = await this.service.getAllPaginated(page);
+            console.log("response from getAllPaginated ", response);
+            return res.status(200).json({
+                data: response.result,
+                totalCount: response.metadata?.count ?? 0,
+            });
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             return res.status(500)
@@ -163,15 +167,18 @@ export class ProductController {
     }
     byCategory = async (req: Request, res: Response) => {
         try {
-            const page = req.params.pge ? Number(req.query.page) : 1
-            const id = Number(req.params.id)
-            const dto = new CategoryDTO()
-            dto.id = id
-            const result = await this.service.findByCategory(dto, page)
-            res.status(200).json({ result })
+            const page = req.params.pge ? Number(req.query.page) : 1;
+            const id = Number(req.params.id);
+            if (isNaN(id)) {
+                return res.status(400).json({ message: 'Parámetro de categoría inválido' });
+            }
+            const dto = new CategoryDTO();
+            dto.id = id;
+            const result = await this.service.findByCategory(dto, page);
+            res.status(200).json({ result });
         } catch (error) {
-            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
-            res.status(500).json({ message: "Internal server error" })
+            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message });
+            else res.status(500).json({ message: "Internal server error" });
         }
     }
 
