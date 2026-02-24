@@ -62,4 +62,13 @@ export class ProductService extends GenericService<Product> {
       map((res: any) => Array.isArray(res) ? res : (res?.result ?? []))
     );
   }
+
+  override update(id: number, item: Product): Observable<Product> {
+  return this.http.patch<Product>(`${this.baseUrl}/update`, item);
+  }
+
+  updateMany(items: Product[]): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/update/many`, items);
+  }
+
 }
