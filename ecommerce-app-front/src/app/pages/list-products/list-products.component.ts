@@ -25,10 +25,14 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   totalPages = 1;
   totalCount = 0;
   pages: number[] = [];
+  toastVisible = false;
+  toastMessage = '';
+  toastVariant: 'primary' | 'success' | 'danger' = 'primary';
   searchTerm = '';
   searchField: 'all' | 'name' | 'description' | 'category' = 'all';
   minStock?: number;
   maxStock?: number;
+  showDisabled = false;
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
@@ -115,6 +119,11 @@ export class ListProductsComponent implements OnInit, OnDestroy {
     });
   }
 
+  onToggleDisabled(): void {
+    this.searchTerm = '';
+    this.load();
+  }
+
   private mapProducts(data: any[]): any[] {
     return (data || []).map((p: any) => ({
       ...p,
@@ -177,13 +186,26 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   confirmDelete() {
     const id = this.selectedDeleteId;
     if (!id) return;
-    this.productSvc.delete(id).subscribe({
-      next: () => { this.load(); this.selectedDeleteId = undefined; },
+    this.productSvc.softdelete(id).subscribe({
+      next: () => {
+        this.showToast('Producto desactivado correctamente', 'success');
+        this.load();
+        this.selectedDeleteId = undefined;
+      },
       error: err => {
-        alert('Error al borrar producto');
+        this.showToast('Error al desactivar producto', 'error');
         console.error(err);
         this.selectedDeleteId = undefined;
       }
     });
   }
+
+  showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+    this.toastMessage = message;
+    this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 3500);
+  }
+
+  hideToast() { this.toastVisible = false; }
 }
