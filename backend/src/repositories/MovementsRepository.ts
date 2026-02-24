@@ -10,6 +10,7 @@ type Conditions = {
     from?: string,
     to?: string
 };
+
 export class MovementRepository extends TypeORMRepository<Movement, number> {
     constructor(datasource: DataSource) {
         super(Movement, datasource)
