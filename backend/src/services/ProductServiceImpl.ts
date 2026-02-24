@@ -84,21 +84,21 @@ export class ProductServiceImpl implements ProductService {
         }
     }
 
+    // async updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
+    //     try {
+    //         const products: Product[] = dtos.map(e => e.toEntity())
+    //         // const entities = this.repo.preload(products)
+    //         if (products.length === 0) throw HttpErrors.internalServerError("Something went wrong")
+    //         const result = (await this.repo.saveMany(products)).map(e => ProductDTO.fromEntity(e))
+    //         return new SchemaResponse(result)
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error
+    //     }
+    // }
+
+
     async updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
-        try {
-            const products: Product[] = dtos.map(e => e.toEntity())
-            // const entities = this.repo.preload(products)
-            if (products.length === 0) throw HttpErrors.internalServerError("Something went wrong")
-            const result = (await this.repo.saveMany(products)).map(e => ProductDTO.fromEntity(e))
-            return new SchemaResponse(result)
-        } catch (error) {
-            console.log(error);
-            throw error
-        }
-    }
-
-
-    async updateWithTransaction(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             const products: Product[] = dtos.map(e => e.toEntity())
             const movements = products.map((e) => {

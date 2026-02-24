@@ -14,9 +14,7 @@ export class MovementServiceImpl implements MovementService {
     }
     async getAllPaginated(page = 1): Promise<SchemaResponse<MovementDTO[]>> {
         try {
-            let p
             const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
-            if (result.length === 0) throw HttpErrors.NotFound()
             return new SchemaResponse(result.map(e => MovementDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error)
@@ -29,6 +27,16 @@ export class MovementServiceImpl implements MovementService {
             const result = await this.repo.findOneById(id)
             if (!result) throw HttpErrors.NotFound()
             return new SchemaResponse(MovementDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error)
+            throw error
+        }
+    }
+
+    async searchByProductName(name: string, page = 1): Promise<SchemaResponse<MovementDTO[]>> {
+        try {
+            const [result, count] = await this.repo.findByProductName(name, PPP * (page - 1), PPP)
+            return new SchemaResponse(result.map(e => MovementDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error)
             throw error

@@ -8,7 +8,7 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         super(Product, datasource)
     }
     async findAll(): Promise<Product[]> {
-        return await this.repo.find({ relations: ['category', 'modifiedBy'] });
+        return await this.repo.find({ where: { enable: true }, relations: ['category', 'modifiedBy'] });
     }
 
     async transaction(cb: (entityManager: EntityManager) => Promise<unknown>){

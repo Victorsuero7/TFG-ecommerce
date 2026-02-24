@@ -11,10 +11,23 @@ export class MovementController {
 
     getAll = async (req: Request, res: Response) => {
         try {
-            const page = Number(req.params.page)
-            if (page < 1) return res.status(400).json({ message: "Page required" })
+            const page = Number(req.query.page ?? req.params.page ?? 1)
+            if (isNaN(page) || page < 1) return res.status(400).json({ message: "Page required" })
             const result = await this.service.getAllPaginated(page)
-            return res.status(200).json({ message: result })
+            return res.status(200).json(result)
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            res.status(500).json({ message: "Internal Server Error" })
+        }
+    }
+
+    searchByProductName = async (req: Request, res: Response) => {
+        try {
+            const name = req.params.name
+            if (!name) return res.status(400).json({ message: 'name parameter is required' })
+            const page = Number(req.query.page ?? 1)
+            const result = await this.service.searchByProductName(name, page)
+            return res.status(200).json(result)
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             res.status(500).json({ message: "Internal Server Error" })
@@ -33,7 +46,7 @@ export class MovementController {
             console.log("PARAMS: ", params);
             // if (params.page < 1) return res.status(400).json({ message: "Page required" })
             const result = await this.service.getByQueryParams(params)
-            return res.status(200).json({ message: result })
+            return res.status(200).json(result)
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             res.status(500).json({ message: "Internal Server Error" })

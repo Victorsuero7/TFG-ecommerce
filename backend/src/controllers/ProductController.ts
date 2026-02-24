@@ -40,14 +40,18 @@ export class ProductController {
 
     updateMany = async (req: Request, res: Response) => {
         try {
-            const objects: object[] = req.body.array
-            const dtos = objects.map(e => ProductDTO.createDTO(e, getPath(req.file?.path!)))
-            dtos.forEach(e => e.modifiedBy = req.user.id)
-            const result = this.service.updateMany(dtos)
+            console.log('[updateMany] req.body:', JSON.stringify(req.body));
+            const objects: object[] = Array.isArray(req.body) ? req.body : req.body.array;
+            console.log('[updateMany] objects to update:', objects?.length);
+            const dtos = objects.map(e => ProductDTO.createDTO(e))
+            console.log('[updateMany] dtos created:', dtos.length);
+            const result = await this.service.updateMany(dtos)
+            console.log('[updateMany] result:', JSON.stringify(result));
             res.status(200).json({ result })
         } catch (error) {
+            console.error('[updateMany] error:', error);
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
-            return res.status(500)
+            return res.status(500).json({ message: "Internal Server Error" })
         }
     }
 
