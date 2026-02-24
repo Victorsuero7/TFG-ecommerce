@@ -43,6 +43,7 @@
 			</li>
 		</ul>
 	</nav>
+	<p *ngIf="!loading && totalCount > 0" class="text-muted small mt-2 text-end">Total de productos: {{ totalCount }}</p>
 </div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">

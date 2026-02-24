@@ -5,8 +5,8 @@ export class Product {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type: 'int' })
-    serialNumber!: number
+    // @Column({ type: 'int' })
+    // serialNumber!: number
 
     @Column({ type: 'varchar', length: 255 })
     name!: string;
