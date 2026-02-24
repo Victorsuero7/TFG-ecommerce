@@ -20,7 +20,7 @@ export class UserService extends GenericService<User> {
     );
   }
   checkEmail(email: string): Observable<{ exists: boolean }> {
-    return this.http.get<{ exists: boolean }>(`${this.baseUrl}/email/${encodeURIComponent(email)}`);
+    return this.http.get<{ exists: boolean }>(`${this.baseUrl}/email-available?email=${encodeURIComponent(email)}`);
   }
 
   signUp(payload: any): Observable<any> {
