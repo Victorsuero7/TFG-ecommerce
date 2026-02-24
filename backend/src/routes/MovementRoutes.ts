@@ -11,9 +11,8 @@ export class MovementRoutes {
         const service = new MovementServiceImpl(repository);
         const controller = new MovementController(service);
 
-        router.get('/', controller.getAll);
-        router.get('/all', controller.getAll);
-
+        router.get('/all/:page', controller.getAll)
+        router.get('/find', controller.findBy) //accept this params ?page, ?user (id), ?product (id), ?from, ?to //both dates required in fomrat YYYY-mm-dd
         return router;
     }
 }
