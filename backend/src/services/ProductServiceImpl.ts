@@ -1,11 +1,14 @@
-import { ObjectLiteral, ReturnDocument } from "typeorm";
+import { ObjectLiteral, ReturnDocument, Transaction } from "typeorm";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { Product } from "../Models/product.entity";
 import { ProductRepository } from "../repositories/ProductRepository";
 import { HttpErrors } from "../utils/HttpErrors";
 import { ProductService } from "./ProductService";
+import { Category } from "../Models/category.entity";
 import { envs } from '../config/envs';
-import { Metadata, SchemaResponse } from "../config/SchemaResponse";
+import { SchemaResponse } from "../config/SchemaResponse";
+import { CategoryDTO } from "../dtos/CategoryDTO";
+import { Movement } from "../Models/DataMovements.entity";
 
 const PPP = envs.PRODUCTS_PER_PAGE ?? 20
 
@@ -14,6 +17,7 @@ export class ProductServiceImpl implements ProductService {
     constructor(repo: ProductRepository) {
         this.repo = repo;
     }
+
     async getAll(): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             const result = (await this.repo.findAll()).map(e => ProductDTO.fromEntity(e))
@@ -26,11 +30,11 @@ export class ProductServiceImpl implements ProductService {
 
     async getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>> {
         try {
-            const metadata: Metadata = {}
-            const result = await (await this.repo.findAllByPage(PPP * (page - 1), PPP)).map(e => ProductDTO.fromEntity(e))
+            // const metadata: Metadata = {}
+            const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
             if (result.length === 0) throw HttpErrors.NotFound()
-            metadata.count = await this.repo.count()
-            return new SchemaResponse(result, metadata)
+            // const count = await this.repo.count()
+            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error);
             throw error
@@ -50,6 +54,19 @@ export class ProductServiceImpl implements ProductService {
     async insert(dto: ProductDTO): Promise<SchemaResponse<ProductDTO>> {
         try {
             const product: Product = dto.toEntity()
+            const result = await this.repo.save(product)
+            return new SchemaResponse(ProductDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async update(dto: ProductDTO): Promise<SchemaResponse<ProductDTO>> {
+        try {
+            const product: Product = dto.toEntity()
+            const entity = this.repo.preload(product)
+            if (!entity) throw HttpErrors.internalServerError("Something went wrong")
             const move = new Movement()
             move.finalStock = product.stock
             move.modifiedBy = product.modifiedBy
@@ -67,34 +84,21 @@ export class ProductServiceImpl implements ProductService {
         }
     }
 
-    async update(dto: ProductDTO): Promise<SchemaResponse<ProductDTO>> {
+    async updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
         try {
-            const product: Product = dto.toEntity()
-            const entity = this.repo.preload(product)
-            if (!entity) throw HttpErrors.internalServerError("Something went wrong")
-            const result = await this.repo.save(product)
-            return new SchemaResponse(ProductDTO.fromEntity(result))
+            const products: Product[] = dtos.map(e => e.toEntity())
+            // const entities = this.repo.preload(products)
+            if (products.length === 0) throw HttpErrors.internalServerError("Something went wrong")
+            const result = (await this.repo.saveMany(products)).map(e => ProductDTO.fromEntity(e))
+            return new SchemaResponse(result)
         } catch (error) {
             console.log(error);
             throw error
         }
     }
 
-    // async updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
-    //     try {
-    //         const products: Product[] = dtos.map(e => e.toEntity())
-    //         // const entities = this.repo.preload(products)
-    //         if (products.length === 0) throw HttpErrors.internalServerError("Something went wrong")
-    //         const result = (await this.repo.saveMany(products)).map(e => ProductDTO.fromEntity(e))
-    //         return new SchemaResponse(result)
-    //     } catch (error) {
-    //         console.log(error);
-    //         throw error
-    //     }
-    // }
 
-
-    async updateMany(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
+    async updateWithTransaction(dtos: ProductDTO[]): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             const products: Product[] = dtos.map(e => e.toEntity())
             const movements = products.map((e) => {
@@ -133,13 +137,71 @@ export class ProductServiceImpl implements ProductService {
 
     async getByDescription(description: string): Promise<SchemaResponse<ProductDTO[]>> {
         try {
-            const result = (await this.repo.findByName(description)).map(e => ProductDTO.fromEntity(e))
+            const result = (await this.repo.findByDescription(description)).map(e => ProductDTO.fromEntity(e))
             if (result.length === 0) throw HttpErrors.NotFound()
-            const count = await this.repo.totalResultsByName(description)
+            const count = await this.repo.totalResultsByDescription(description)
             return new SchemaResponse(result, { count })
         } catch (error) {
             console.log(error);
             throw error
         }
     }
+
+    async getByCategoryName(categoryName: string): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const result = (await this.repo.findByCategoryName(categoryName)).map(e => ProductDTO.fromEntity(e))
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result, { count: result.length })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const [result, count] = await this.repo.stockBetween(from, to, PPP * (page - 1), PPP)
+            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async delete(id: number): Promise<SchemaResponse<ProductDTO>> {
+        try {
+            const entity = await this.repo.findOneById(id)
+            if (!entity) throw HttpErrors.NotFound()
+            entity.enable = false
+            const result = await this.repo.save(entity)
+            if (!result) throw HttpErrors.internalServerError()
+            return new SchemaResponse(ProductDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async listDisabled(page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const [result, count] = await this.repo.getDisabled(PPP * (page - 1), PPP)
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result.map((e) => ProductDTO.fromEntity(e)), { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+    async findByCategory(dto: CategoryDTO, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        try {
+            const category = dto.toEntity()
+            const [result, count] = (await this.repo.findByCategory(category, PPP * (page - 1), PPP))
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
 }
