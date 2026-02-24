@@ -17,6 +17,9 @@ import { ListUsersComponent } from './pages/list-users/list-users.component';
 import { EditCategoryComponent } from './pages/edit-category/edit-category.component';
 import { CreateInventarioComponent } from './pages/create-inventario/create-inventario.component';
 
+import { UserRegisterComponent } from './pages/user-register/user-register.component';
+import { UserLoginComponent } from './pages/user-login/user-login.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
@@ -43,7 +46,8 @@ export const routes: Routes = [
 
   //users 
   {path: 'users/list', component: ListUsersComponent},
+  {path: 'register', component: UserRegisterComponent},
+  {path: 'login', component: UserLoginComponent},
   
-
   { path: '**', redirectTo: 'dashboard' }
 ];

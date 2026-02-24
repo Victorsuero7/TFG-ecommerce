@@ -15,6 +15,9 @@ export class CreateCategoryComponent {
   form!: FormGroup;
   loading = false;
   error = '';
+  toastVisible = false;
+  toastMessage = '';
+  toastVariant: 'primary' | 'success' | 'danger' = 'primary';
 
   constructor(private fb: FormBuilder, private categorySvc: CategoryService, public router: Router) {
     this.form = this.fb.group({
@@ -35,13 +38,23 @@ export class CreateCategoryComponent {
     this.categorySvc.create(payload as any).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/categories/list']);
+        this.showToast('Categoria creada', 'success');
+        setTimeout(() => this.router.navigate(['/categories/list']), 800);
       },
       error: err => {
-        console.error('Error creating category', err);
-        this.error = 'Error creando categoría';
+        console.error('Error creando categoria', err);
+        this.showToast('Error al crear categoría', 'error');
         this.loading = false;
       }
     });
   }
+
+    showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+    this.toastMessage = message;
+    this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 3500);
+  }
+
+  hideToast() { this.toastVisible = false; }
 }
