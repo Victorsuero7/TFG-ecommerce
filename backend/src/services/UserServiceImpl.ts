@@ -63,10 +63,10 @@ export class UserServiceImpl implements UserService {
         }
     }
 
-    async emailExists(email: string): Promise<boolean> {
-        const user = await this.repo.findByEmail(email)
-        return !!user
-    }
+    // async emailExists(email: string): Promise<boolean> {
+    //     const user = await this.repo.findByEmail(email)
+    //     return !!user
+    // }
 
     async signUp(dto: RegisterUserDTO): Promise<UserDTO> {
         try {

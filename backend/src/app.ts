@@ -10,7 +10,6 @@ import { ConfigRoutes } from './routes/ConfigRoutes';
 import path from 'path';
 import { envs } from './config/envs';
 import { RBACMiddleware } from './utils/AuthorizationMiddleware';
-import { MovementsRoutes } from './routes/MovementsRouter';
 
 
 const app = express();
