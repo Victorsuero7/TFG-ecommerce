@@ -19,7 +19,7 @@ export class MovementRepository extends TypeORMRepository<Movement, number> {
     private RELATIONS = ["product", 'modifiedBy']
 
     private buildWhere(conditions: Conditions) {
-        const where: Partial<Movement> = {};
+        const where: any = {};
         if (conditions.userId !== undefined) {
             where.modifiedBy = { id: conditions.userId } as User
         }
@@ -74,6 +74,7 @@ export class MovementRepository extends TypeORMRepository<Movement, number> {
     }
 
     async findByConditions(conditions: Conditions, offset: number, limit: number, relations: string[] = this.RELATIONS): Promise<[Movement[], number]> {
+        console.log(conditions);
         return await this.repo.findAndCount({
             where: this.buildWhere(conditions),
             order: {

@@ -25,12 +25,12 @@ export class MovementController {
         try {
             const params: any = {
                 page: Number(req.query.page ?? 1),
-                userId: Number(req.query.user),
-                productId: Number(req.query.produt),
+                userId: Number(req.query.user ?? 0),
+                productId: Number(req.query.product ?? 0),
                 from: req.query.from ?? undefined,
                 to: req.query.to ?? undefined,
             }
-            console.log("PARAMS: ", params);
+            // console.log("PARAMS: ", params);
             // if (params.page < 1) return res.status(400).json({ message: "Page required" })
             const result = await this.service.getByQueryParams(params)
             return res.status(200).json(result)
