@@ -63,10 +63,15 @@ export class UserServiceImpl implements UserService {
         }
     }
 
+    async emailExists(email: string): Promise<boolean> {
+        const user = await this.repo.findByEmail(email)
+        return !!user
+    }
+
     async signUp(dto: RegisterUserDTO): Promise<UserDTO> {
         try {
             const userExists = await this.repo.findByEmail(dto.email)
-            if (userExists) throw HttpErrors.badRequest("User alredy exist")
+            if (userExists) throw HttpErrors.badRequest("Ya existe una cuenta con ese email")
             const salt = bcrypt.genSaltSync(5);
             let hash = bcrypt.hashSync(dto.password, salt)
             const user = new User()
@@ -83,5 +88,11 @@ export class UserServiceImpl implements UserService {
             console.log(error)
             throw HttpErrors.internalServerError("Something went wrong")
         }
+    }
+
+    async emailExists(email: string): Promise<User | null> {
+        const userExists = await this.repo.findByEmail(email)
+        if (userExists) throw HttpErrors.badRequest("User alredy exist")
+        return userExists
     }
 }

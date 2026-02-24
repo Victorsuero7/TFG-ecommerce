@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, OneToMany, UpdateDateColumn } from 'typeorm';
 import { Category } from './category.entity';
+import { User } from './user.entity';
 @Entity()
 export class Product {
     @PrimaryGeneratedColumn()
@@ -23,9 +24,21 @@ export class Product {
     @Column({ type: 'int' })
     stock!: number;
 
+    @Column({ type: "varchar", length: 255 })
+    imageUrl!: string
+
+    @UpdateDateColumn()
+    lastModification!: Date
+
+    @ManyToOne(() => User)
+    modifiedBy!: User
+
     @ManyToOne(
         () => Category,
         (category) => category.products,
     )
     category!: Category;
+
+    @Column({ type: "boolean", default: true })
+    enable!: boolean
 }

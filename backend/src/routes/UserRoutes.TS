@@ -14,9 +14,10 @@ export class UserRoutes {
         router.post('/insert', controller.insert)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
-        router.get('/:id', controller.getOne)
+        router.get('/email-available', controller.validateEmail) //?email=
         router.post('/login', controller.login)
         router.post('/sign-up', controller.signUp)
+        router.get('/:id', controller.getOne)
 
         // router.post('/register', controller.registerUser)
 
