@@ -12,24 +12,28 @@ export class CategoryServiceImpl implements CategoryService {
     constructor(repo: CategoryRepository) {
         this.repo = repo;
     }
-    async getAllPaginated(page: number): Promise<Category[]> {
-      try {
-            const [result] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
-            if (result.length === 0) throw HttpErrors.NotFound()
-            return result
-        } catch (error) {
-            console.log(error);
-            throw error
-        }
-    } 
-    async getAll(): Promise<Category[]> {
+    async getAll(params?: any): Promise<Category[]> {
         try {
-            return await this.repo.findAll()
+            if (params && params.name) {
+                return await this.findByName(params.name) ?? [];
+            }
+            return await this.repo.findAll();
         } catch (error) {
-            console.log(error);
-            throw error
+            throw error;
         }
     }
+
+    
+    async getAllPaginated(page: number): Promise<Category[]> {
+            try {
+                const result = await this.repo.findAllByPage(PPP * (page - 1), PPP);
+                if (!result || result.length === 0) throw HttpErrors.NotFound();
+                return result;
+            } catch (error) {
+                console.log(error);
+                throw error;
+            }
+        }
 
     async getById(id: number): Promise<Category | null> {
         try {
