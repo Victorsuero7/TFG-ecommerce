@@ -24,6 +24,16 @@
 
         <div class="mt-3 text-danger" *ngIf="error">{{ error }}</div>
       </form>
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div *ngIf="toastVisible" class="toast show align-items-center border-0 text-bg-{{toastVariant}}" role="alert"
+          aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              {{ toastMessage }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Close"
+              (click)="hideToast()"></button>
+          </div>
     </div>
   </div>
 </div>

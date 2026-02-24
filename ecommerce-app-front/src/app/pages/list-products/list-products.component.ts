@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, Subscription, of, switchMap, debounceTime, distinctUntilChanged, catchError, forkJoin, map } from 'rxjs';
 import { ProductService } from '../../services/product/product.service';
 import { Product } from '../../models/product.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-list-products',
@@ -18,6 +19,12 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   loading = false;
   error = '';
   selectedDeleteId?: number;
+
+  PAGE_SIZE = 10;
+  currentPage = 1;
+  totalPages = 1;
+  totalCount = 0;
+  pages: number[] = [];
   toastVisible = false;
   toastMessage = '';
   toastVariant: 'primary' | 'success' | 'danger' = 'primary';
@@ -33,7 +40,16 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   constructor(private productSvc: ProductService, private router: Router) {}
 
   ngOnInit(): void {
-    this.load();
+    fetch(environment.apiUrl + '/config')
+      .then(res => res.json())
+      .then(cfg => {
+        this.PAGE_SIZE = cfg.productsPerPage ?? 10;
+        this.load();
+      })
+      .catch(() => {
+        this.PAGE_SIZE = 10;
+        this.load();
+      });
 
     this.searchSub = this.search$.pipe(
       debounceTime(350),
@@ -79,17 +95,26 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   load(): void {
     this.loading = true;
     this.error = '';
-    const source$ = this.showDisabled
-      ? this.productSvc.getDisabled()
-      : this.productSvc.getAll();
-    source$.subscribe({
-      next: data => { 
-        this.applyStockFilter(data); 
-        this.loading = false; 
+    this.productSvc.getAllPaginated(this.currentPage).subscribe({
+      next: res => {
+        console.log('Paginated response:', res);
+        console.log('Data:', res.data);
+        console.log('TotalCount:', res.totalCount);
+        const list = (res.data || []).map((p: any) => ({
+          ...p,
+          categoryName: p?.category?.name ?? p?.categoryName ?? null
+        }));
+        console.log('Mapped list:', list);
+        this.products = list;
+        this.totalCount = res.totalCount;
+        this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+        this.loading = false;
       },
       error: err => {
-        console.error('Frontend: error cargando productos', err);
-        this.error = 'Error cargando productos'; this.loading = false;
+        console.error('Error cargando productos', err);
+        this.error = 'Error cargando productos';
+        this.loading = false;
       }
     });
   }
@@ -135,6 +160,12 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   clearSearch(): void {
     this.searchTerm = '';
     this.search$.next('');
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.currentPage = page;
+    this.load();
   }
 
   formatPrice(p?: number) {
