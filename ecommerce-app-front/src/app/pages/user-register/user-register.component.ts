@@ -104,13 +104,25 @@ export class UserRegisterComponent {
   }
 
   private emailExistsValidator(control: AbstractControl): Observable<ValidationErrors | null> {
-    if (!control.value || control.hasError('email')) return of(null);
+    if (!control.value || control.hasError('email')) {
+      console.log('Email vacío o formato inválido:', control.value);
+      return of(null);
+    }
     return of(control.value).pipe(
       debounceTime(400),
-      switchMap(email => this.userSvc.checkEmail(email).pipe(
-        map(res => res.exists ? { emailTaken: true } : null),
-        catchError(() => of(null))
-      )),
+      switchMap(email => {
+        console.log('Comprobando email:', email);
+        return this.userSvc.checkEmail(email).pipe(
+          map(res => {
+            console.log('Respuesta backend:', res);
+            return res.exists ? { emailTaken: true } : null;
+          }),
+          catchError((err) => {
+            console.log('Error backend:', err);
+            return of(null);
+          })
+        );
+      }),
       first()
     );
   }
