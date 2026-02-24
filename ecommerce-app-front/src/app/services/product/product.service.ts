@@ -26,12 +26,10 @@ export class ProductService extends GenericService<Product> {
 
   getAllPaginated(page: number): Observable<PaginatedResponse<Product>> {
     return this.http.get<any>(`${this.baseUrl}/all/${page}`).pipe(
-      map((res: any) => {
-        const inner = res?.result ?? res;
-        const data = Array.isArray(inner?.result) ? inner.result : [];
-        const totalCount = inner?.metadata?.count ?? 0;
-        return { data, totalCount };
-      })
+      map((res: any) => ({
+      data: res.data ?? [],
+      totalCount: res.totalCount ?? 0
+    }))
     );
   }
 

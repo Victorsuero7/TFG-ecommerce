@@ -56,7 +56,10 @@ export class ListProductsComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       switchMap(term => {
         if (!term.trim()) {
-          return this.productSvc.getAll();
+           this.loading = false;
+            this.currentPage = 1;
+            this.load();      
+            return of(null);
         }
         this.loading = true;
         if (this.searchField === 'name') {
@@ -83,7 +86,16 @@ export class ListProductsComponent implements OnInit, OnDestroy {
         );
       })
     ).subscribe({
-      next: data => { this.applyStockFilter(data); this.loading = false; },
+      next: data => {
+        if (data !== null) {
+          this.currentPage = 1;
+          this.applyStockFilter(data);
+          this.totalCount = Array.isArray(data) ? data.length : 0;
+          this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
+          this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+        }
+        this.loading = false;
+      },
       error: () => { this.error = 'Error en la búsqueda'; this.loading = false; }
     });
   }
@@ -95,28 +107,46 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   load(): void {
     this.loading = true;
     this.error = '';
-    this.productSvc.getAllPaginated(this.currentPage).subscribe({
-      next: res => {
-        console.log('Paginated response:', res);
-        console.log('Data:', res.data);
-        console.log('TotalCount:', res.totalCount);
-        const list = (res.data || []).map((p: any) => ({
-          ...p,
-          categoryName: p?.category?.name ?? p?.categoryName ?? null
-        }));
-        console.log('Mapped list:', list);
-        this.products = list;
-        this.totalCount = res.totalCount;
-        this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
-        this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Error cargando productos', err);
-        this.error = 'Error cargando productos';
-        this.loading = false;
-      }
-    });
+    if (this.showDisabled) {
+      this.productSvc.getDisabled(this.currentPage).subscribe({
+        next: res => {
+          const list = (res || []).map((p: any) => ({
+            ...p,
+            categoryName: p?.category?.name ?? p?.categoryName ?? null
+          }));
+          this.products = list;
+          this.totalCount = list.length;
+          this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
+          this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+          this.loading = false;
+        },
+        error: err => {
+          console.error('Error cargando productos inactivos', err);
+          this.error = 'Error cargando productos inactivos';
+          this.loading = false;
+        }
+      });
+    } else {
+        this.productSvc.getAllPaginated(this.currentPage).subscribe({
+            next: ({ data, totalCount }) => {
+              const list = (data || []).map((p: any) => ({
+                ...p,
+                categoryName: p?.category?.name ?? p?.categoryName ?? null
+              }));
+
+              this.products = list;
+              this.totalCount = totalCount;
+              this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
+              this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+              this.loading = false;
+            },      
+        error: err => {
+          console.error('Error cargando productos', err);
+          this.error = 'Error cargando productos';
+          this.loading = false;
+        }
+      });
+    }
   }
 
   onToggleDisabled(): void {
@@ -159,6 +189,7 @@ export class ListProductsComponent implements OnInit, OnDestroy {
 
   clearSearch(): void {
     this.searchTerm = '';
+    this.currentPage = 1;
     this.search$.next('');
   }
 
