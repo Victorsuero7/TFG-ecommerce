@@ -14,4 +14,5 @@ export const envs = {
     DATABASE_PASSWORD: get('DATABASE_PASSWORD').asString(),
     SECRET: get('JWT_SECRET').asString(),
     PRODUCTS_PER_PAGE: get('PRODUCTS_PER_PAGE').asInt(),
+    UPLOADS_DIR: get('UPLOADS_DIR').required().asString()
 };

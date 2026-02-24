@@ -26,4 +26,8 @@ export class CategoryRepository extends TypeORMRepository<Category, number> {
     async totalResultsByName(name: string): Promise<number> {
         return await this.repo.countBy({ name: ILike(`%${name}`)})
     }
+
+   async findAllByPage(offset: number, limit: number): Promise<[Category[], number]> {
+        return await this.repo.findAndCount({ skip: offset, take: limit })
+    }
 }

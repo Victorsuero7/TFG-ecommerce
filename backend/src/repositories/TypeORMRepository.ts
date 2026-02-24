@@ -1,11 +1,12 @@
-import { Repository, DataSource, EntityTarget, ObjectLiteral, FindOptionsWhere } from "typeorm";
+import { asyncWrapProviders } from "async_hooks";
+import { Repository, DataSource, EntityTarget, ObjectLiteral, FindOptionsWhere, UpdateResult } from "typeorm";
 
 export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
     protected repo: Repository<T>;
 
     constructor(
         entity: EntityTarget<T>,
-        protected readonly datasource: DataSource
+        public readonly datasource: DataSource
     ) {
         this.repo = datasource.getRepository(entity);
     }
@@ -14,9 +15,9 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
         return await this.repo.find();
     }
 
-    async findAllByPage(offset: number, limit: number): Promise<T[]> {
-        return await this.repo.find({ skip: offset, take: limit})
-    }
+    // async findAllByPage(offset: number, limit: number): Promise<T[]> {
+    //     return await this.repo.find({ skip: offset, take: limit })
+    // }
 
     async findOneById(id: ID): Promise<T | null> {
         return await this.repo.findOneBy({ id } as FindOptionsWhere<T>);
@@ -24,6 +25,14 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
 
     async save(entity: T): Promise<T> {
         return await this.repo.save(entity);
+    }
+
+    async saveMany(entities: T[]): Promise<T[]> {
+        return await this.repo.save(entities, { transaction: true })
+    }
+
+    async update(id: FindOptionsWhere<T>, entity: T): Promise<UpdateResult> {
+        return await this.repo.update(id, entity)
     }
 
     async merge(entity: T): Promise<T | undefined> {

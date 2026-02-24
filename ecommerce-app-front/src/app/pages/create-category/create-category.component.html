@@ -1,1 +1,39 @@
-<p>create-category works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title mb-4">Crear categoría</h4>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="mb-3">
+          <label for="name" class="form-label">Nombre <span class="text-danger">*</span></label>
+          <input id="name" class="form-control" type="text" formControlName="name" required />
+          <div class="invalid-feedback d-block" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">El nombre es obligatorio.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Descripción <span class="text-danger">*</span></label>
+          <textarea id="description" class="form-control" rows="3" formControlName="description" required></textarea>
+          <div class="invalid-feedback d-block" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">La descripción es obligatoria.</div>
+        </div>
+        <p class="mb-3"><small class="text-muted">Campos obligatorios <span class="text-danger">*</span></small></p>
+
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-primary" type="submit" [disabled]="loading || form.invalid">{{ loading ? 'Guardando...' : 'Crear' }}</button>
+          <button class="btn btn-secondary" type="button" (click)="router.navigate(['/categories/list'])">Cancelar</button>
+        </div>
+
+        <div class="mt-3 text-danger" *ngIf="error">{{ error }}</div>
+      </form>
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div *ngIf="toastVisible" class="toast show align-items-center border-0 text-bg-{{toastVariant}}" role="alert"
+          aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              {{ toastMessage }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Close"
+              (click)="hideToast()"></button>
+          </div>
+    </div>
+  </div>
+</div>

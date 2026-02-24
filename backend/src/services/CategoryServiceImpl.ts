@@ -5,8 +5,9 @@ import { HttpErrors } from "../utils/HttpErrors";
 import { CategoryService } from "./CategoryService";
 import {envs} from "../config/envs"
 import { Metadata, SchemaResponse } from "../config/SchemaResponse";
+import { ObjectLiteral, ReturnDocument, Transaction } from "typeorm";
 
-const PPP = envs.PRODUCTS_PER_PAGE??4;
+const PPP = envs.PRODUCTS_PER_PAGE ?? 4;
 
 export class CategoryServiceImpl implements CategoryService {
     private readonly repo: CategoryRepository;
@@ -15,11 +16,10 @@ export class CategoryServiceImpl implements CategoryService {
     }
     async getAllPaginated(page: number): Promise<SchemaResponse<CategoryDTO[]>> {
         try{
-            const metadata: Metadata = {}
-            const result = await (await this.repo.findAllByPage(PPP * (page - 1), PPP)).map(e => CategoryDTO.fromEntity(e))
+           // const metadata: Metadata = {}
+            const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
             if (result.length === 0) throw HttpErrors.NotFound()
-            metadata.count = await this.repo.count()
-            return new SchemaResponse(result, metadata)
+            return new SchemaResponse(result.map(e => CategoryDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error);
             throw error
