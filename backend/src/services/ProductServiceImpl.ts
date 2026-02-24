@@ -157,4 +157,24 @@ export class ProductServiceImpl implements ProductService {
             throw error
         }
     }
+
+    async getByCategoryName(categoryName: string): Promise<SchemaResponse<ProductDTO[]>> {
+        throw new Error("Method not implemented.");
+    }
+
+    async filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        throw new Error("Method not implemented.");
+    }
+
+    async delete(id: number): Promise<SchemaResponse<ProductDTO>> {
+        throw new Error("Method not implemented.");
+    }
+
+    async listDisabled(page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        throw new Error("Method not implemented.");
+    }
+
+    async findByCategory(dto: CategoryDTO, page: number): Promise<SchemaResponse<ProductDTO[]>> {
+        throw new Error("Method not implemented.");
+    }
 }

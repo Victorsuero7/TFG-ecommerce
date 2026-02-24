@@ -13,7 +13,8 @@ export interface ProductService {
     getByCategoryName(categoryName: string): Promise<SchemaResponse<ProductDTO[]>>
     getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>>
     filterByStock(from: number, to: number, page: number): Promise<SchemaResponse<ProductDTO[]>>
-    delete(id: number): Promise<SchemaResponse<ProductDTO>>
+    softDelete(id: number): Promise<void>
+    delete(id: number): Promise<void>
     listDisabled(page: number): Promise<SchemaResponse<ProductDTO[]>>
     findByCategory(dto: CategoryDTO, page: number): Promise<SchemaResponse<ProductDTO[]>>;
 }
