@@ -55,6 +55,18 @@ export class ProductController {
         }
     }
 
+    updateMany = async (req: Request, res: Response) => {
+        try {
+            const objects: object[] = req.body.array
+            const dtos = objects.map(e=>ProductDTO.createDTO(e))
+            const result = this.service.updateMany(dtos)
+            res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
     getOne = async (req: Request, res: Response) => {
         try {
             const id = req.params.id
