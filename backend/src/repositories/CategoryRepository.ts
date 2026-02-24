@@ -14,4 +14,8 @@ export class CategoryRepository extends TypeORMRepository<Category, number> {
     async findByName(name: string): Promise<Category[] | null> {
         return await this.repo.findBy({ name: ILike(`%${name}%`) })
     }
+
+    findAllByPage(offset: number, limit: number): Promise<Category[]> {
+        return this.repo.find({ skip: offset, take: limit })
+    }
 }

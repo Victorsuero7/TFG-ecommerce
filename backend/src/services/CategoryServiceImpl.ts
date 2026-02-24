@@ -13,16 +13,15 @@ export class CategoryServiceImpl implements CategoryService {
         this.repo = repo;
     }
     async getAllPaginated(page: number): Promise<Category[]> {
-        try {
-            const result = await this.repo.findAllByPage(PPP * (page - 1), PPP)
+      try {
+            const [result] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
             if (result.length === 0) throw HttpErrors.NotFound()
             return result
         } catch (error) {
             console.log(error);
             throw error
         }
-    }
-
+    } 
     async getAll(): Promise<Category[]> {
         try {
             return await this.repo.findAll()
