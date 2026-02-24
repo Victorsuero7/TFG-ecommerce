@@ -7,4 +7,5 @@ export interface CategoryService {
     insert(dto: CategoryDTO): Promise<Category>
     findByName(name: string): Promise<Category[] | null>
     findByDescription(description: string): Promise<Category[] | null>
+    getAllPaginated(page: number): Promise<Category[]>
 }
