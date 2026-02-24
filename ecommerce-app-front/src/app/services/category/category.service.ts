@@ -15,7 +15,19 @@ export class CategoryService extends GenericService<Category> {
 
   override getAll(): Observable<Category[]> {
     return super.getAll().pipe(
-      map((res: any) => Array.isArray(res) ? res : (res?.message ?? []))
+      map((res: any) => Array.isArray(res) ? res : (res?.result ?? res?.message ?? []))
+    );
+  }
+
+  searchByName(name: string): Observable<Category[]> {
+    return this.http.get<any>(`${this.baseUrl}/name/${encodeURIComponent(name)}`).pipe(
+      map((res: any) => Array.isArray(res) ? res : (res?.result ?? []))
+    );
+  }
+
+  searchByDescription(description: string): Observable<Category[]> {
+    return this.http.get<any>(`${this.baseUrl}/description/${encodeURIComponent(description)}`).pipe(
+      map((res: any) => Array.isArray(res) ? res : (res?.result ?? []))
     );
   }
   

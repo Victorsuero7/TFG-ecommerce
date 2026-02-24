@@ -20,6 +20,9 @@ export class CreateProductComponent {
 
   loading = false;
   error = '';
+  toastVisible = false;
+  toastMessage = '';
+  toastVariant: 'primary' | 'success' | 'danger' = 'primary';
 
   constructor(private fb: FormBuilder, private productSvc: ProductService, private categorySvc: CategoryService, public router: Router) {
     this.form = this.fb.group({
@@ -52,11 +55,13 @@ export class CreateProductComponent {
     this.productSvc.create(payload as any).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/products/list']);
+         this.showToast('Productp creado', 'success');
+        setTimeout(() => this.router.navigate(['/products/list']), 800);
       },
       error: err => {
-        console.error('Error creating product', err);
+        console.error('Error creando product', err);
         this.error = 'Error creando producto';
+        this.showToast('Error creando producto', 'error');
         this.loading = false;
       }
     });
@@ -66,9 +71,19 @@ export class CreateProductComponent {
     this.categorySvc.getAll().subscribe({
       next: cats => this.categories = cats,
       error: err => {
-        console.error('Error loading categories', err);
+        console.error('Error cargando categorias', err);
+        this.showToast('Error al cargar categorías', 'error');
         this.categories = [];
       }
     });
+  } 
+
+    showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+    this.toastMessage = message;
+    this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 3500);
   }
+
+  hideToast() { this.toastVisible = false; }
 }

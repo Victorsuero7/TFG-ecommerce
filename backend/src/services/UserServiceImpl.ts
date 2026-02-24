@@ -89,4 +89,10 @@ export class UserServiceImpl implements UserService {
             throw HttpErrors.internalServerError("Something went wrong")
         }
     }
+
+    async emailExists(email: string): Promise<User | null> {
+        const userExists = await this.repo.findByEmail(email)
+        if (userExists) throw HttpErrors.badRequest("User alredy exist")
+        return userExists
+    }
 }
