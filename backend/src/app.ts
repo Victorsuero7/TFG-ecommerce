@@ -5,6 +5,7 @@ import { UserRoutes } from './routes/UserRoutes'
 import { ProductRoutes } from './routes/ProductRoutes'
 import { CategoryRoutes } from './routes/CategoryRoutes'
 import { getPath, ImageUploaderMiddleware } from './utils/ImageUploaderMiddleware';
+import { ConfigRoutes } from './routes/ConfigRoutes';
 import path from 'path';
 import { envs } from './config/envs';
 import { RBACMiddleware } from './utils/AuthorizationMiddleware';
@@ -51,3 +52,4 @@ console.log(path.join(process.cwd(), envs.UPLOADS_DIR));
 app.use('/user', UserRoutes.routes)
 app.use('/product', ProductRoutes.routes)
 app.use('/category', CategoryRoutes.routes)
+app.use('/config', ConfigRoutes.routes)
