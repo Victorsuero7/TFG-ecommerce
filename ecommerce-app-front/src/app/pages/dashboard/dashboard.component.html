@@ -1,35 +1,98 @@
-<div class="dashboard-grid">
-	<div class="card">
-		<h3>Top ventas</h3>
+<div class="dashboard" *ngIf="!loading; else loader">
+	<div class="kpi-row">
+		<div class="kpi-card">
+			<span class="kpi-icon"><i class="bi bi-box-seam"></i></span>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ totalProducts }}</span>
+				<span class="kpi-label">Productos</span>
+			</div>
+		</div>
+		<div class="kpi-card">
+			<span class="kpi-icon"><i class="bi bi-tags"></i></span>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ totalCategories }}</span>
+				<span class="kpi-label">Categorías</span>
+			</div>
+		</div>
+		<div class="kpi-card">
+			<span class="kpi-icon"><i class="bi bi-archive"></i></span>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ totalStock }}</span>
+				<span class="kpi-label">Unidades totales</span>
+			</div>
+		</div>
+		<div class="kpi-card">
+			<span class="kpi-icon"><i class="bi bi-currency-euro"></i></span>
+			<div class="kpi-info">
+				<span class="kpi-value">{{ formatPrice(warehouseValue) }}</span>
+				<span class="kpi-label">Valor en almacén</span>
+			</div>
+		</div>
 	</div>
 
-	<div class="card">
-		<h3>Stock bajo </h3>
-
-	</div>
-
-	<div class="card large">
-		<h3>Ventas por categoría</h3>
+	<div class="dashboard-grid">
+		<div class="dash-card">
+			<h6 class="card-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Stock bajo</h6>
+			<div class="card-body-inner" *ngIf="lowStockProducts.length; else noLow">
+				<div class="mini-row" *ngFor="let p of lowStockProducts">
+					<span class="mini-name">{{ p.name }}</span>
+					<span class="badge" [ngClass]="stockClass(p.stock)">{{ p.stock ?? 0 }}</span>
+				</div>
+			</div>
+			<ng-template #noLow>
+				<p class="text-muted small">Todos los productos tienen stock suficiente.</p>
+			</ng-template>
+		</div>
+		
+		
+		<div class="dash-card">
+			<h6 class="card-title"><i class="bi bi-trophy text-primary me-2"></i>Top valor en almacén</h6>
+			<div class="card-body-inner">
+				<div class="mini-row" *ngFor="let p of topValueProducts; let i = index">
+					<span class="rank">{{ i + 1 }}</span>
+					<span class="mini-name">{{ p.name }}</span>
+					<span class="mini-value">{{ formatPrice((p.price ?? 0) * (p.stock ?? 0)) }}</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="dash-card">
+			<h6 class="card-title"><i class="bi bi-clock-history text-info me-2"></i>Últimos productos añadidos</h6>
+			<div class="card-body-inner">
+				<div class="mini-row" *ngFor="let p of latestProducts">
+					<span class="mini-name">{{ p.name }}</span>
+					<span class="text-muted small">{{ p.categoryName }}</span>
+				</div>
+			</div>
+		</div>
+		<div class="dash-card wide">
+			<h6 class="card-title"><i class="bi bi-bar-chart text-success me-2"></i>Productos por categoría</h6>
+			<div class="card-body-inner">
+				<div class="bar-row" *ngFor="let cat of productsByCategory">
+					<span class="bar-label">{{ cat.name }}</span>
+					<div class="bar-track">
+						<div class="bar-fill" [style.width.%]="barWidth(cat.count)"></div>
+					</div>
+					<span class="bar-count">{{ cat.count }}</span>
+				</div>
+			</div>
 		</div>
 
-	<div class="card">
-		<h3>Categorías</h3>
-		
+
+		<div class="dash-card">
+			<h6 class="card-title"><i class="bi bi-bookmarks text-secondary me-2"></i>Categorías</h6>
+			<div class="card-body-inner">
+				<div class="mini-row" *ngFor="let cat of productsByCategory">
+					<span class="mini-name">{{ cat.name }}</span>
+					<span class="text-muted small">{{ cat.totalStock }} uds.</span>
+				</div>
+			</div>
+		</div>
 	</div>
-
-	<div class="card">
-		<h3>Totales</h3>
-		<p>Total vendido:</p>
-		<p>Total valor en almacén: </p>
-	</div>
-
-  <div class="card">
-    <h3>útlimos productos añadidos</h3>
-  
-  </div>
-
-  <div class="card">
-    <h3></h3>
-  
-  </div>
 </div>
+
+<ng-template #loader>
+	<div class="d-flex justify-content-center align-items-center" style="min-height: 300px">
+		<div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Cargando...</span></div>
+	</div>
+</ng-template>
