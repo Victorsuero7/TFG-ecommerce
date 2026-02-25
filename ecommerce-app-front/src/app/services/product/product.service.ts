@@ -1,3 +1,4 @@
+ 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GenericService } from '../../services/generic/generic.service';
@@ -85,5 +86,8 @@ export class ProductService extends GenericService<Product> {
   uploadImage(id: number, formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/upload-image/${id}`, formData);
   }
- 
+  
+  createWithImage(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/insert`, formData);
+  }
 }
