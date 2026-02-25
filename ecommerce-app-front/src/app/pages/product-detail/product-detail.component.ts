@@ -15,6 +15,7 @@ export class ProductDetailComponent implements OnInit {
   product?: Product;
   loading = false;
   error = '';
+  imageError = false;
   imageUrl: string | ArrayBuffer | null = null;
   uploading = false;
   selectedFile: File | null = null;
@@ -28,7 +29,8 @@ export class ProductDetailComponent implements OnInit {
       this.productSvc.getById(id).subscribe({
         next: (prod) => {
           console.log('Respuesta getById:', prod);
-          this.product = (prod as any).result ?? prod;
+          const p = (prod as any).result ?? prod;
+          this.product = p;
           this.loading = false;
         },
         error: (err) => {
