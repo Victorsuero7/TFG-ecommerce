@@ -18,6 +18,9 @@ export class EditProductComponent implements OnInit {
   loading = false;
   categories: any[] = [];
   productId?: number;
+  selectedFile: File | null = null;
+  imageUrl: string | ArrayBuffer | null = null;
+  productImageUrl: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +44,7 @@ export class EditProductComponent implements OnInit {
   toastMessage = '';
   toastVariant: 'primary' | 'success' | 'danger' = 'primary';
 
- ngOnInit(): void {
+ngOnInit(): void {
   this.route.params.subscribe(params => {
     this.productId = Number(params['id']);
   });
@@ -74,19 +77,18 @@ loadProduct(id: number): void {
   this.loading = true;
   this.productSvc.getById(id).subscribe({
     next: (resp: any) => {
-      const p = resp.message; 
-      console.log(p)
-      const catId  = Number(p?.category?.id ?? p?.categoryId);
-      console.log('Categoria:', catId);
-      this.productLoadedCategoryId = catId;
+      const p = resp.result ?? resp;
+      const catId = p?.category?.id ?? p?.categoryId ?? null;
+      this.productLoadedCategoryId = catId ? Number(catId) : null;
       this.form.patchValue({
         name: p?.name ?? '',
         description: p?.description ?? '',
         price: p?.price ?? 0,
         stock: p?.stock ?? 0,
         size: p?.size ?? '',
-        categoryId: catId
+        categoryId: this.productLoadedCategoryId
       });
+      this.productImageUrl = p?.imageUrl || null;
       this.loading = false;
     },
     error: err => {
@@ -95,6 +97,15 @@ loadProduct(id: number): void {
     }
   });
 }
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = e => this.imageUrl = reader.result;
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
 
 
 
@@ -104,27 +115,48 @@ loadProduct(id: number): void {
       return;
     }
 
-    const payload: any = {
-      name: this.form.value.name,
-      description: this.form.value.description,
-      price: Number(this.form.value.price),
-      stock: Number(this.form.value.stock),
-      size: this.form.value.size,
-      category: { id: Number(this.form.value.categoryId) }
-    };
-
-    this.productSvc.update(this.productId, payload).subscribe({
-      next: () => {
-        this.showToast('Producto actualizado', 'success');
-        setTimeout(() => this.router.navigate(['/products/list']), 800);
-      },
-      error: err => {
-        console.error('Error actualizando producto', err);
-        this.showToast('Error al actualizar producto', 'error');
-      }
-    });
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('id', String(this.productId));
+      formData.append('name', this.form.value.name);
+      formData.append('description', this.form.value.description);
+      formData.append('price', String(this.form.value.price));
+      formData.append('stock', String(this.form.value.stock));
+      formData.append('size', this.form.value.size);
+      formData.append('categoryId', String(this.form.value.categoryId));
+      formData.append('image', this.selectedFile);
+      this.productSvc.update(this.productId, formData).subscribe({
+        next: () => {
+          this.showToast('Producto actualizado', 'success');
+          setTimeout(() => this.router.navigate(['/products/list']), 800);
+        },
+        error: err => {
+          console.error('Error actualizando producto', err);
+          this.showToast('Error al actualizar producto', 'error');
+        }
+      });
+    } else {
+      const formData = new FormData();
+      formData.append('id', String(this.productId));
+      formData.append('name', this.form.value.name);
+      formData.append('description', this.form.value.description);
+      formData.append('price', String(this.form.value.price));
+      formData.append('stock', String(this.form.value.stock));
+      formData.append('size', this.form.value.size);
+      formData.append('categoryId', String(this.form.value.categoryId));
+      this.productSvc.update(this.productId, formData).subscribe({
+        next: () => {
+          this.showToast('Producto actualizado', 'success');
+          setTimeout(() => this.router.navigate(['/products/list']), 800);
+        },
+        error: err => {
+          console.error('Error actualizando producto', err);
+          this.showToast('Error al actualizar producto', 'error');
+        }
+      });
+    }
   }
-
+  
   showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
     this.toastMessage = message;
     this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
@@ -134,3 +166,5 @@ loadProduct(id: number): void {
 
   hideToast() { this.toastVisible = false; }
 }
+
+
