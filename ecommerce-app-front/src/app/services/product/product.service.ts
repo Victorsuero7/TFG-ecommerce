@@ -74,8 +74,8 @@ export class ProductService extends GenericService<Product> {
     );
   }
 
-  override update(id: number, item: Product): Observable<Product> {
-  return this.http.patch<Product>(`${this.baseUrl}/update`, item);
+  override update(id: number, item: Product | FormData): Observable<Product> {
+    return this.http.patch<Product>(`${this.baseUrl}/update`, item);
   }
 
   updateMany(items: Product[]): Observable<any> {
@@ -85,5 +85,12 @@ export class ProductService extends GenericService<Product> {
   uploadImage(id: number, formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/upload-image/${id}`, formData);
   }
- 
+  override getById(id: number): Observable<Product> {
+    return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(
+      map((res: any) => {
+        console.log('getById backend response:', res);
+        return res?.result ?? res?.message ?? res;
+      })
+    );
+  }
 }

@@ -15,7 +15,7 @@ export class ProductRoutes {
         const controller = new ProductController(service);
 
         router.post('/insert', imageHandler.single("image"), controller.insert)
-        router.patch('/update', controller.update)
+        router.patch('/update', imageHandler.single('image'), controller.update)
         router.patch('/update/many', controller.updateMany)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
