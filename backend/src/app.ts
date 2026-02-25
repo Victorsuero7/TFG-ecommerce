@@ -6,7 +6,6 @@ import { ProductRoutes } from './routes/ProductRoutes'
 import { CategoryRoutes } from './routes/CategoryRoutes'
 import { MovementRoutes } from './routes/MovementRoutes'
 import { getPath, ImageUploaderMiddleware } from './utils/ImageUploaderMiddleware';
-import { ConfigRoutes } from './routes/ConfigRoutes';
 import path from 'path';
 import { envs } from './config/envs';
 import { RBACMiddleware } from './utils/AuthorizationMiddleware';
@@ -54,4 +53,3 @@ app.use('/user', UserRoutes.routes)
 app.use('/product', ProductRoutes.routes)
 app.use('/category', CategoryRoutes.routes)
 app.use('/movement', MovementRoutes.routes)
-app.use('/config', ConfigRoutes.routes)

@@ -21,29 +21,16 @@ export class MovementController {
         }
     }
 
-    searchByProductName = async (req: Request, res: Response) => {
-        try {
-            const name = req.params.name
-            if (!name) return res.status(400).json({ message: 'name parameter is required' })
-            const page = Number(req.query.page ?? 1)
-            const result = await this.service.searchByProductName(name, page)
-            return res.status(200).json(result)
-        } catch (error) {
-            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
-            res.status(500).json({ message: "Internal Server Error" })
-        }
-    }
-
     findBy = async (req: Request, res: Response) => {
         try {
             const params: any = {
                 page: Number(req.query.page ?? 1),
-                userId: Number(req.query.user),
-                productId: Number(req.query.produt),
+                userId: Number(req.query.user ?? 0),
+                productId: Number(req.query.product ?? 0),
                 from: req.query.from ?? undefined,
                 to: req.query.to ?? undefined,
             }
-            console.log("PARAMS: ", params);
+            // console.log("PARAMS: ", params);
             // if (params.page < 1) return res.status(400).json({ message: "Page required" })
             const result = await this.service.getByQueryParams(params)
             return res.status(200).json(result)

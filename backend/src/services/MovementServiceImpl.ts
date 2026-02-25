@@ -1,5 +1,5 @@
 import { MovementService } from "./MovementService";
-import { MovementRepository } from "../repositories/MovementsRepository";
+import { MovementRepository } from "../repositories/MovementRepository";
 import { envs } from "../config/envs";
 import { SchemaResponse } from "../config/SchemaResponse";
 import { MovementDTO } from "../dtos/MovementDTO";
@@ -33,19 +33,10 @@ export class MovementServiceImpl implements MovementService {
         }
     }
 
-    async searchByProductName(name: string, page = 1): Promise<SchemaResponse<MovementDTO[]>> {
-        try {
-            const [result, count] = await this.repo.findByProductName(name, PPP * (page - 1), PPP)
-            return new SchemaResponse(result.map(e => MovementDTO.fromEntity(e)), { count })
-        } catch (error) {
-            console.log(error)
-            throw error
-        }
-    }
-
     async getByQueryParams(params: { [key: string]: any; }): Promise<SchemaResponse<MovementDTO[]>> {
         try {
-            const [result, count] = await this.repo.findByConditions({ userId: params.user, from: params.from, to: params.to, productId: params.product }, PPP * (params.page - 1), PPP)
+            // console.log(params);
+            const [result, count] = await this.repo.findByConditions({ userId: params.userId, from: params.from, to: params.to, productId: params.productId }, PPP * (params.page - 1), PPP)
             // const [result, count] = await this.repo.findByConditions({ from: "", to: "2026-02-19" }, PPP * (params.page - 1), PPP)
 
             if (result.length === 0) throw HttpErrors.NotFound()

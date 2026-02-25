@@ -15,7 +15,6 @@ import { InventoryListComponent } from './pages/inventory-list/inventory-list.co
 import { ListUsersComponent } from './pages/list-users/list-users.component';
 import { EditCategoryComponent } from './pages/edit-category/edit-category.component';
 
-import { EditCategoryComponent } from './pages/edit-category/edit-category.component';
 import { CreateInventarioComponent } from './pages/create-inventario/create-inventario.component';
 
 import { UserRegisterComponent } from './pages/user-register/user-register.component';

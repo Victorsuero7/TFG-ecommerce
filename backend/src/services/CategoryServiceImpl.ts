@@ -31,8 +31,7 @@ export class CategoryServiceImpl implements CategoryService {
             const result = (await this.repo.findAll()).map(e => CategoryDTO.fromEntity(e))
             return new SchemaResponse(result)
         } catch (error) {
-            console.log(error);
-            throw error
+            throw error;
         }
     }
 
