@@ -1,9 +1,11 @@
 import { randomBytes } from "crypto"
 
-export function generateToken() {
-    // return crypto.randomUUID
-    return randomBytes(64, (err, buf) => {
-        if (err) throw err;
-        return buf.toString()
-    });
+
+export async function generateToken(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        randomBytes(64, (err, buf) => {
+            if (err) reject(err);
+            return resolve(buf.toString("hex"))
+        });
+    })
 }

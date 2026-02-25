@@ -3,8 +3,8 @@ import { User } from './user.entity';
 
 @Entity()
 export class RefreshToken {
-    @PrimaryColumn()
-    token!: number;
+    @PrimaryColumn({ unique: true })
+    token!: string;
 
     @Column({ type: 'date' })
     validUntil!: Date; //new Date().getTime() + 5*60*60*1000
