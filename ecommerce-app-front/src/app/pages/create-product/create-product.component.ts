@@ -17,12 +17,13 @@ import { Product } from '../../models/product.model';
 export class CreateProductComponent {
   form!: FormGroup;
   categories: Category[] = [];
-
   loading = false;
   error = '';
   toastVisible = false;
   toastMessage = '';
   toastVariant: 'primary' | 'success' | 'danger' = 'primary';
+  selectedFile: File | null = null;
+  imageUrl: string | ArrayBuffer | null = null;
 
   constructor(private fb: FormBuilder, private productSvc: ProductService, private categorySvc: CategoryService, public router: Router) {
     this.form = this.fb.group({
@@ -36,6 +37,16 @@ export class CreateProductComponent {
     this.loadCategories();
   }
 
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = e => this.imageUrl = reader.result;
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -44,18 +55,20 @@ export class CreateProductComponent {
     this.loading = true;
     this.error = '';
     const raw = this.form.value;
-    const payload = {
-      name: raw.name,
-      description: raw.description,
-      price: Number(raw.price),
-      size: raw.size,
-      stock: Number(raw.stock),
-      category: { id: Number(raw.categoryId) }
-    };
-    this.productSvc.create(payload as any).subscribe({
+    const formData = new FormData();
+    formData.append('name', raw.name);
+    formData.append('description', raw.description);
+    formData.append('price', String(raw.price));
+    formData.append('size', raw.size);
+    formData.append('stock', String(raw.stock));
+    formData.append('categoryId', String(raw.categoryId));
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
+    this.productSvc.createWithImage(formData).subscribe({
       next: () => {
         this.loading = false;
-         this.showToast('Productp creado', 'success');
+        this.showToast('Producto creado', 'success');
         setTimeout(() => this.router.navigate(['/products/list']), 800);
       },
       error: err => {
