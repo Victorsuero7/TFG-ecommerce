@@ -13,7 +13,7 @@ export class CategoryController {
         try {
             const dto = CategoryDTO.createDTO(req.body)
             const result = await this.service.insert(dto)
-            res.status(200).json({ category: result })
+            res.status(200).json({ message: "Category saved", category: result })
 
         } catch (error) {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
@@ -21,9 +21,21 @@ export class CategoryController {
         }
     }
 
+    update = async (req: Request, res: Response) => {
+        try{
+            const dto = CategoryDTO.createDTO(req.body)
+            const result = await this.service.update(dto)
+            res.status(200).json({ message: "Category updated", category: result})
+        } catch (error){
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message})
+                return res.status(500)
+        }
+    }
+
     getOne = async (req: Request, res: Response) => {
         try {
             const id = req.params.id
+            if(!id) return res.status(400).json({ message: "ID param is required"})
             const result = await this.service.getById(Number(id))
             res.status(200).json(result)
         } catch (error) {

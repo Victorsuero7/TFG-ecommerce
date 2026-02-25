@@ -51,11 +51,11 @@ export abstract class TypeORMRepository<T extends ObjectLiteral, ID> {
         return await this.repo.find({ where: conditions });
     }
 
-    async count(): Promise<number> {
+    async count (): Promise<number>{
         return await this.repo.count()
     }
 
-    async countByCondition(conditions: Partial<T>): Promise<number> {
+    async countByCondition(conditions: Partial<T>): Promise<number>{
         return await this.repo.count({ where: conditions });
     }
 }

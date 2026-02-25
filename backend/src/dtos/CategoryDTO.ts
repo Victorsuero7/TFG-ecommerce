@@ -6,6 +6,7 @@ export class CategoryDTO {
     public name?: string
     public description?: string
     constructor(
+
     ) { }
 
     static fromEntity(category: Category): CategoryDTO {
@@ -23,7 +24,8 @@ export class CategoryDTO {
     }
 
     static createDTO(object: { [key: string]: any; }): CategoryDTO {
-        const { id, name, description } = object; const dto = new CategoryDTO()
+        const { id, name, description } = object; 
+        const dto = new CategoryDTO()
         dto.id = id
         dto.name = name
         dto.description = description
