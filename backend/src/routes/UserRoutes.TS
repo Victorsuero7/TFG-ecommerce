@@ -18,6 +18,9 @@ export class UserRoutes {
         router.post('/login', controller.login)
         router.post('/sign-up', controller.signUp)
         router.get('/:id', controller.getOne)
+        router.delete('/delete/:id', controller.delete)
+        router.get('/disabled/:page', controller.disabled)
+
 
         // router.post('/register', controller.registerUser)
 
