@@ -16,6 +16,12 @@ export class ListUsersComponent implements OnInit {
   loading = false;
   error = '';
 
+  toastVisible = false;
+  toastMessage = '';
+  toastVariant: 'primary' | 'success' | 'danger' = 'primary';
+
+  selectedDeleteId?: number;
+
   constructor(private userSvc: UserService, private router: Router) {}
 
   ngOnInit(): void {
@@ -41,15 +47,47 @@ export class ListUsersComponent implements OnInit {
     return isNaN(dt.getTime()) ? '-' : dt.toLocaleDateString();
   }
 
-  view(id?: number) { if (id) this.router.navigate(['/dashboard/users/detail', id]); }
-  edit(id?: number) { if (id) this.router.navigate(['/dashboard/users/edit', id]); }
 
-  delete(id?: number) {
+  view(id?: number) {
+    console.log('Ver usuario', id);
+    if (id) this.router.navigate(['/user/detail', id]);
+  }
+
+  edit(id?: number) {
+    console.log('Editar usuario', id);
+    if (id) this.router.navigate(['/user/edit', id]);
+  }
+
+  
+  openDeleteModal(id?: number) {
+    console.log('Abrir modal borrar usuario', id);
     if (!id) return;
-    if (!confirm('¿Eliminar usuario?')) return;
-    this.userSvc.delete(id).subscribe({
-      next: () => this.load(),
-      error: err => { alert('Error al borrar usuario'); console.error(err); }
+    this.selectedDeleteId = id;
+  }
+
+  confirmDelete() {
+    const id = this.selectedDeleteId;
+    if (!id) return;
+    this.userSvc.softdelete(id).subscribe({
+      next: () => {
+        this.showToast('Usuario desactivado correctamente', 'success');
+        this.load();
+        this.selectedDeleteId = undefined;
+      },
+      error: err => {
+        this.showToast('Error al desactivar producto', 'error');
+        console.error(err);
+        this.selectedDeleteId = undefined;
+      }
     });
   }
+
+  showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+    this.toastMessage = message;
+    this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 3500);
+  }
+
+  hideToast() { this.toastVisible = false; }
 }

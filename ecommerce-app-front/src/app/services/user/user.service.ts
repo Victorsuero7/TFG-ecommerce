@@ -30,4 +30,8 @@ export class UserService extends GenericService<User> {
   login(payload: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/login`, payload);
   }
+
+   softdelete(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/delete/${id}`);
+  }
 }
