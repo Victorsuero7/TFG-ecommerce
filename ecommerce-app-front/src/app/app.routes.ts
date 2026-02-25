@@ -4,6 +4,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ListProductsComponent } from './pages/list-products/list-products.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
+import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
 
 import { ListCategoriesComponent } from './pages/list-categories/list-categories.component';
 import { CreateCategoryComponent } from './pages/create-category/create-category.component';
@@ -38,6 +39,7 @@ export const routes: Routes = [
   { path: 'products/list', component: ListProductsComponent },
   { path: 'products/new', component: CreateProductComponent },
   { path: 'products/edit/:id', component: EditProductComponent },
+  { path: 'products/detail/:id', component: ProductDetailComponent },
 
   // categories
   { path: 'categories/list', component: ListCategoriesComponent },
