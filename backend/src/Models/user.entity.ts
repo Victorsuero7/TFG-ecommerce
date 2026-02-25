@@ -26,6 +26,9 @@ export class User {
     @Column({ type: 'enum', default: "USER", enum: ["ADMIN", "ROOT", "USER"] })
     role!: ROLE;
 
+    @Column({ type: 'boolean', default: true })
+    enable!: boolean
+
     // @Column({ type: 'date' })
     // birthDate!: Date;
 }
