@@ -22,8 +22,8 @@
         <span class="text-muted small"> Id: {{ product.id }}</span>
         <ul class="list-group list-group-flush mb-2">
           <li class="list-group-item px-0 py-1"><strong>Descripción:</strong> {{ product.description || '-' }}</li>
-          <li class="list-group-item px-0 py-1" *ngIf="product.category && product.category.description">
-            <strong>Categoría:</strong> {{ product.category.description }}
+          <li class="list-group-item px-0 py-1" *ngIf="product.categoryName">
+            <strong>Categoría:</strong> {{ product.categoryName }}
           </li>
           <li class="list-group-item px-0 py-1"><strong>Precio:</strong> {{ product.price }} €</li>
           <li class="list-group-item px-0 py-1"><strong>Stock:</strong> {{ product.stock }}</li>
