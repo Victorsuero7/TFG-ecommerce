@@ -30,6 +30,7 @@ export class ProductController {
         try {
             const dto = ProductDTO.createDTO(req.body)
             dto.modifiedBy = req.user.id
+            dto.imageUrl = getPath(req.file?.path!)
             const result = await this.service.update(dto)
             res.status(200).json(result)
         } catch (error) {
