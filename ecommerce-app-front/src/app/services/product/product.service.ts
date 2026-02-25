@@ -82,4 +82,8 @@ export class ProductService extends GenericService<Product> {
     return this.http.patch(`${this.baseUrl}/update/many`, items);
   }
 
+  uploadImage(id: number, formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/upload-image/${id}`, formData);
+  }
+ 
 }
