@@ -151,6 +151,7 @@ export class ListProductsComponent implements OnInit, OnDestroy {
 
   onToggleDisabled(): void {
     this.searchTerm = '';
+    this.currentPage = 1;
     this.load();
   }
 
