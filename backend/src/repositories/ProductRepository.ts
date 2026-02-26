@@ -23,7 +23,7 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
     }
 
     async findAllByPage(offset: number, limit: number): Promise<[Product[], number]> {
-        return await this.repo.findAndCount({ where: { enable: true }, skip: offset, take: limit })
+        return await this.repo.findAndCount({ where: { enable: true }, skip: offset, take: limit,  relations: ['category', 'modifiedBy'] })
     }
 
     async findByCategory(category: Category, offset: number, limit: number): Promise<[Product[], number]> {
