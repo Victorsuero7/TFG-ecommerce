@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product/product.service';
 import { Product } from '../../models/product.model';
-
+import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-product-detail',
@@ -41,4 +41,12 @@ export class ProductDetailComponent implements OnInit {
       });
     }
   }
+
+  getImageUrl(imagePath: string | undefined | null): string {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) return imagePath;
+    console.log('Construyendo URL de imagen para:',environment.apiUrl, imagePath);
+    return `${environment.apiUrl}/public/${imagePath}`;
+  }
 }
+

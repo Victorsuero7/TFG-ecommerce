@@ -56,10 +56,15 @@
 
 				<div class="mb-3">
 					<label for="image" class="form-label">Imagen actual</label>
-					<div class="mb-2" *ngIf="imageUrl || productImageUrl">
-						<img [src]="imageUrl || productImageUrl" class="img-fluid" style="max-height: 120px; border-radius: 8px;" />
-					</div>
-					<input id="image" type="file" class="form-control form-control-sm w-auto" (change)="onFileSelected($event)" accept="image/*" />
+					<ng-container *ngIf="imageUrl || productImageUrl; else showFileInput">
+						<div class="mb-2">
+							<img [src]="imageUrl ? imageUrl : getImageUrl(productImageUrl)" class="img-fluid" style="max-height: 120px; border-radius: 8px;" />
+						</div>
+						<input id="image" type="file" class="form-control form-control-sm w-auto" (change)="onFileSelected($event)" accept="image/*" />
+					</ng-container>
+					<ng-template #showFileInput>
+						<input id="image" type="file" class="form-control form-control-sm w-auto" (change)="onFileSelected($event)" accept="image/*" />
+					</ng-template>
 				</div>
 
 				<div class="d-flex align-items-center gap-2">

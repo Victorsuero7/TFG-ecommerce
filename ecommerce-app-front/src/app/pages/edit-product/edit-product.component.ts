@@ -4,6 +4,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService } from '../../services/product/product.service';
 import { CategoryService } from '../../services/category/category.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-edit-product',
@@ -37,8 +38,7 @@ export class EditProductComponent implements OnInit {
       size: ['', Validators.required],
       categoryId: [null, Validators.required]
     });
-  }
-  
+  }  
   productLoadedCategoryId: number | null = null;
   toastVisible = false;
   toastMessage = '';
@@ -89,6 +89,7 @@ loadProduct(id: number): void {
         categoryId: this.productLoadedCategoryId
       });
       this.productImageUrl = p?.imageUrl || null;
+      console.log('[loadProduct] productImageUrl set:', this.productImageUrl);
       this.loading = false;
     },
     error: err => {
@@ -96,6 +97,7 @@ loadProduct(id: number): void {
       this.loading = false;
     }
   });
+  
 }
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -104,6 +106,10 @@ loadProduct(id: number): void {
       const reader = new FileReader();
       reader.onload = e => this.imageUrl = reader.result;
       reader.readAsDataURL(this.selectedFile);
+        
+    console.log('[onFileSelected] imageUrl set:', this.imageUrl);
+      reader.readAsDataURL(this.selectedFile);
+    
     }
   }
 
@@ -125,6 +131,17 @@ loadProduct(id: number): void {
       formData.append('size', this.form.value.size);
       formData.append('categoryId', String(this.form.value.categoryId));
       formData.append('image', this.selectedFile);
+      console.log('FormData preparada para envío:', {
+        id: this.productId,
+        name: this.form.value.name,   
+        description: this.form.value.description,
+        price: this.form.value.price,
+        stock: this.form.value.stock, 
+        size: this.form.value.size,
+        categoryId: this.form.value.categoryId,
+        image: this.selectedFile.name
+      });
+      
       this.productSvc.update(this.productId, formData).subscribe({
         next: () => {
           this.showToast('Producto actualizado', 'success');
@@ -157,6 +174,14 @@ loadProduct(id: number): void {
     }
   }
   
+  getImageUrl(imagePath: string | undefined | null): string {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) return imagePath;
+    console.log('Construyendo URL de imagen para:',environment.apiUrl, imagePath);
+    return `${environment.apiUrl}/public/${imagePath}`;
+  }
+
+    
   showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
     this.toastMessage = message;
     this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
