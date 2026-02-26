@@ -15,6 +15,7 @@ import { GoodsExitComponent } from './pages/goods-exit/goods-exit.component';
 import { InventoryListComponent } from './pages/inventory-list/inventory-list.component';
 import { ListUsersComponent } from './pages/list-users/list-users.component';
 import { EditCategoryComponent } from './pages/edit-category/edit-category.component';
+import { CategoryDetailComponent } from './pages/category-detail/category-detail.component';
 
 import { CreateInventarioComponent } from './pages/create-inventario/create-inventario.component';
 
@@ -47,6 +48,7 @@ export const routes: Routes = [
   { path: 'categories/list', component: ListCategoriesComponent },
   { path: 'categories/new', component: CreateCategoryComponent },
   { path: 'categories/edit/:id', component: EditCategoryComponent},
+  {path: 'categories/detail/:id', component: CategoryDetailComponent },
 
   //users 
   {path: 'users/list', component: ListUsersComponent},

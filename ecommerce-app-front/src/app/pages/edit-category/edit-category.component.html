@@ -26,7 +26,7 @@
     <p class="mb-3"><small class="text-muted">Campos obligatorios <span class="text-danger">*</span></small></p>
 
 				<div class="d-flex align-items-center gap-2">
-					<button class="btn btn-secondary" type="button" (click)="router.navigate(['/category/list'])">Cancelar</button>
+					<button class="btn btn-secondary" type="button" (click)="router.navigate(['/categories/list'])">Cancelar</button>
 					<button class="btn btn-primary" type="submit" [disabled]="loading || form.invalid">{{ loading ? 'Guardando...' : 'Guardar cambios' }}</button>
 				</div>
 
