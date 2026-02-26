@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export interface ProductInventario extends Product {
   cantidad: number;
   stockOriginal: number;
+  category?: { name: string };
 }
 @Component({
   selector: 'app-create-inventario',

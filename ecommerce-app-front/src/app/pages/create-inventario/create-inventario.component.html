@@ -23,7 +23,7 @@
               <td>
                 <strong>{{ producto.name }}</strong>
                 <div class="small text-muted">
-                  {{ producto.categoryName || 'Sin categoría' }}
+                  {{ producto.category?.name || 'Sin categoría' }}
                 </div>
               </td>
               <td class="text-center">
