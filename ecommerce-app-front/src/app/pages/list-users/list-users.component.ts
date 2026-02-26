@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../models/user.model';
+import {map} from 'rxjs';
 
 @Component({
   selector: 'app-list-users',
@@ -16,6 +17,18 @@ export class ListUsersComponent implements OnInit {
   loading = false;
   error = '';
 
+  toastVisible = false;
+  toastMessage = '';
+  toastVariant: 'primary' | 'success' | 'danger' = 'primary';
+
+  PAGE_SIZE = 10;
+  currentPage = 1;
+  totalPages = 1;
+  totalCount = 0;
+  pages: number[] = [];
+
+  selectedDeleteId?: number;
+
   constructor(private userSvc: UserService, private router: Router) {}
 
   ngOnInit(): void {
@@ -25,8 +38,20 @@ export class ListUsersComponent implements OnInit {
   load(): void {
     this.loading = true;
     this.error = '';
-    this.userSvc.getAll().subscribe({
-      next: data => { this.users = data || []; this.loading = false; },
+    
+    this.userSvc.getAllPaginated(this.currentPage).subscribe({
+      next: ({ data, totalCount }) => { 
+              const list = (data || []).map((p: any) => ({
+                ...p ?? null
+              }));
+
+              this.users = list;
+              this.totalCount = totalCount;
+              this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
+              this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+              this.loading = false;
+      
+      },
       error: err => { this.error = 'Error cargando usuarios'; this.loading = false; console.error(err); }
     });
   }
@@ -41,15 +66,53 @@ export class ListUsersComponent implements OnInit {
     return isNaN(dt.getTime()) ? '-' : dt.toLocaleDateString();
   }
 
-  view(id?: number) { if (id) this.router.navigate(['/dashboard/users/detail', id]); }
-  edit(id?: number) { if (id) this.router.navigate(['/dashboard/users/edit', id]); }
 
-  delete(id?: number) {
+  view(id?: number) {
+    console.log('Ver usuario', id);
+    if (id) this.router.navigate(['/user/detail', id]);
+  }
+
+  edit(id?: number) {
+    console.log('Editar usuario', id);
+    if (id) this.router.navigate(['/user/edit', id]);
+  }
+
+  
+  openDeleteModal(id?: number) {
+    console.log('Abrir modal borrar usuario', id);
     if (!id) return;
-    if (!confirm('¿Eliminar usuario?')) return;
-    this.userSvc.delete(id).subscribe({
-      next: () => this.load(),
-      error: err => { alert('Error al borrar usuario'); console.error(err); }
+    this.selectedDeleteId = id;
+  }
+
+  confirmDelete() {
+    const id = this.selectedDeleteId;
+    if (!id) return;
+    this.userSvc.softdelete(id).subscribe({
+      next: () => {
+        this.showToast('Usuario desactivado correctamente', 'success');
+        this.load();
+        this.selectedDeleteId = undefined;
+      },
+      error: err => {
+        this.showToast('Error al desactivar producto', 'error');
+        console.error(err);
+        this.selectedDeleteId = undefined;
+      }
     });
   }
+  
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.currentPage = page;
+    this.load();
+  }
+
+  showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+    this.toastMessage = message;
+    this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 3500);
+  }
+
+  hideToast() { this.toastVisible = false; }
 }
