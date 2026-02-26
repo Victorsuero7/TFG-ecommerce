@@ -13,7 +13,7 @@ export class UserRoutes {
 
         router.post('/insert', controller.insert)
         router.get('/', controller.getAllPaginated)
-        router.get('/all', controller.getAllPaginated)
+        router.get('/all/:page', controller.getAllPaginated)
         router.get('/email-available', controller.validateEmail) //?email=
         router.post('/login', controller.login)
         router.post('/sign-up', controller.signUp)
