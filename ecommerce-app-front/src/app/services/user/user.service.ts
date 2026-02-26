@@ -4,6 +4,8 @@ import { GenericService } from '../../services/generic/generic.service';
 import { User } from '../../models/user.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import {Product} from '../../models/product.model';
+import {PaginatedResponse} from '../product/product.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +16,15 @@ export class UserService extends GenericService<User> {
     super(http, 'user'); 
   }
 
-  override getAll(): Observable<User[]> {
-    return super.getAll().pipe(
-      map((res: any) => Array.isArray(res) ? res : (res?.message ?? []))
-    );
-  }
+  getAllPaginated(page: number): Observable<PaginatedResponse<Product>> {
+      return this.http.get<any>(`${this.baseUrl}/all/${page}`).pipe(
+        map((res: any) => ({
+        data: res.data ?? [],
+        totalCount: res.totalCount ?? 0
+      }))
+      );
+    }
+  
   checkEmail(email: string): Observable<{ exists: boolean }> {
     return this.http.get<{ exists: boolean }>(`${this.baseUrl}/email-available?email=${encodeURIComponent(email)}`);
   }

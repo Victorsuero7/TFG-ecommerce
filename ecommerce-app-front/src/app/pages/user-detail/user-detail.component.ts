@@ -24,8 +24,17 @@ export class UserDetailComponent implements OnInit {
       this.loading = true;
       this.userSvc.getById(id).subscribe({
         next: (u) => {
-          this.user = (u as any).result ?? u;
+          let user: any = u;
+          if (user && typeof user === 'object') {
+            if ('message' in user && user.message && typeof user.message === 'object' && 'result' in user.message) {
+              user = user.message.result;
+            } else if ('result' in user) {
+              user = user.result;
+            }
+          }
+          this.user = user;
           this.loading = false;
+          console.log('Usuario cargado:', this.user);
         },
         error: () => {
           this.error = 'No se pudo cargar el usuario';

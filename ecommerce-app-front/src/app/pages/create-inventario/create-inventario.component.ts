@@ -36,6 +36,7 @@ export class CreateInventarioComponent {
         stockOriginal: p.stock ?? 0,
         cantidad: p.stock ?? 0
       }));
+       console.log('Producto cargado para inventario:', products);
     });
   }
 

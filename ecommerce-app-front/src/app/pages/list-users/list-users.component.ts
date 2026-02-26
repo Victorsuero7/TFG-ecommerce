@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../models/user.model';
+import {map} from 'rxjs';
 
 @Component({
   selector: 'app-list-users',
@@ -20,6 +21,12 @@ export class ListUsersComponent implements OnInit {
   toastMessage = '';
   toastVariant: 'primary' | 'success' | 'danger' = 'primary';
 
+  PAGE_SIZE = 10;
+  currentPage = 1;
+  totalPages = 1;
+  totalCount = 0;
+  pages: number[] = [];
+
   selectedDeleteId?: number;
 
   constructor(private userSvc: UserService, private router: Router) {}
@@ -31,8 +38,20 @@ export class ListUsersComponent implements OnInit {
   load(): void {
     this.loading = true;
     this.error = '';
-    this.userSvc.getAll().subscribe({
-      next: data => { this.users = data || []; this.loading = false; },
+    
+    this.userSvc.getAllPaginated(this.currentPage).subscribe({
+      next: ({ data, totalCount }) => { 
+              const list = (data || []).map((p: any) => ({
+                ...p ?? null
+              }));
+
+              this.users = list;
+              this.totalCount = totalCount;
+              this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.PAGE_SIZE));
+              this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+              this.loading = false;
+      
+      },
       error: err => { this.error = 'Error cargando usuarios'; this.loading = false; console.error(err); }
     });
   }
@@ -80,6 +99,12 @@ export class ListUsersComponent implements OnInit {
         this.selectedDeleteId = undefined;
       }
     });
+  }
+  
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.currentPage = page;
+    this.load();
   }
 
   showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
