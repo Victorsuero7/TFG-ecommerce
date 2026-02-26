@@ -2,6 +2,7 @@ import { User, ROLE } from "../Models/user.entity";
 
 export class UserDTO {
     constructor(
+        public readonly id: number,
         public readonly name: string,
         public readonly lastName: string,
         public readonly email: string,
@@ -10,7 +11,7 @@ export class UserDTO {
         public readonly role: ROLE | null) { }
 
     static fromEntity(user: User): UserDTO {
-        return new UserDTO(user.name, user.lastName, user.email, user.phoneNumber, user.role)
+        return new UserDTO(user?.id, user?.name, user?.lastName, user?.email, user?.phoneNumber, user?.role)
     }
 
     toEntity(): User {
@@ -20,7 +21,7 @@ export class UserDTO {
     }
 
     static createDTO(object: { [key: string]: any; }): UserDTO {
-        const { name, lastName, email, phoneNumber, role } = object;
-        return new UserDTO(name, lastName, email, phoneNumber, role)
+        const { id, name, lastName, email, phoneNumber, role } = object;
+        return new UserDTO(id, name, lastName, email, phoneNumber, role)
     }
 }
