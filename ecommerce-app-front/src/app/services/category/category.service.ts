@@ -32,7 +32,13 @@ export class CategoryService extends GenericService<Category> {
   }
   
   override create(item: Category): Observable<Category> {
-    // backend expects POST to /category/insert
     return this.http.post<Category>(`${this.baseUrl}/insert`, item);
   }
+
+  override update(id: number, item: Category): Observable<Category> {
+    const data = { ...item, id };
+    return this.http.patch<Category>(`${this.baseUrl}/update`, data);
+  }
+
+
 }
