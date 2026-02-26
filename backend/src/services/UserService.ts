@@ -1,13 +1,15 @@
+import { SchemaResponse } from "../config/SchemaResponse";
 import { LoginUserDTO } from "../dtos/LoginUserDTO";
 import { RegisterUserDTO } from "../dtos/RegisterUserDTO";
 import { UserDTO } from "../dtos/UserDTO";
-import { User } from "../Models/user.entity";
 
 export interface UserService {
-    getAll(): Promise<UserDTO[]>
-    getOne(ind: number): Promise<UserDTO | null>
-    insert(user: UserDTO): Promise<User>
-    signUp(dto: RegisterUserDTO): Promise<UserDTO>
+    getAllPaginated(page: number): Promise<SchemaResponse<UserDTO[]>>
+    getOne(id: number): Promise<SchemaResponse<UserDTO | null>>
+    insert(user: UserDTO): Promise<SchemaResponse<UserDTO>>
+    signUp(dto: RegisterUserDTO): Promise<SchemaResponse<UserDTO>>
     login(dto: LoginUserDTO): Promise<string | null>
-    emailExists(email: string): Promise<User | null>
+    emailExists(email: string): Promise<SchemaResponse<string | null>>
+    delete(id: number): Promise<SchemaResponse<UserDTO>>
+    listDisabled(page: number): Promise<SchemaResponse<UserDTO[]>>
 }
