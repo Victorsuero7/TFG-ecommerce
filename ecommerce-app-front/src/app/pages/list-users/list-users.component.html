@@ -1,7 +1,6 @@
 <div class="list-users container-fluid">
   <h6 class="mb-3">Listado de usuarios</h6>
 
-  <div *ngIf="loading" class="mb-3">Cargando...</div>
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
   <div class="table-header d-none d-md-flex fw-bold small px-2">
     <div class="col-1">ID</div>
@@ -11,6 +10,7 @@
     <div class="col-2">Fecha nacimiento</div>
     <div class="col-2 text-end">Acciones</div>
   </div>
+  <div *ngIf="loading" class="mb-3">Cargando...</div>
   <ng-container *ngIf="!loading && users?.length; else noData">
     <div *ngFor="let u of users" class="user-row d-flex align-items-center my-2">
       <div class="col-1 small px-2">{{ u.id }}</div>
