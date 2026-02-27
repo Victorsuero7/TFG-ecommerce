@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export interface ProductInventario extends Product {
   cantidad: number;
   stockOriginal: number;
+  category?: { name: string };
 }
 @Component({
   selector: 'app-create-inventario',
@@ -36,6 +37,7 @@ export class CreateInventarioComponent {
         stockOriginal: p.stock ?? 0,
         cantidad: p.stock ?? 0
       }));
+       console.log('Producto cargado para inventario:', products);
     });
   }
 

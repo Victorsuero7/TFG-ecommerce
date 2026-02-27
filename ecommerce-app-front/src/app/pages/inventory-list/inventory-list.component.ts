@@ -17,11 +17,9 @@ export class InventoryListComponent implements OnInit, OnDestroy {
   loading = false;
   error = '';
   searchTerm = '';
-
-  // Pagination
   currentPage = 1;
   totalItems = 0;
-  pageSize = 2; // Must match backend PRODUCTS_PER_PAGE
+  pageSize = 2; 
   totalPages = 0;
 
   private search$ = new Subject<string>();
@@ -65,6 +63,7 @@ export class InventoryListComponent implements OnInit, OnDestroy {
         this.totalItems = res.count;
         this.totalPages = Math.ceil(this.totalItems / this.pageSize);
         this.loading = false;
+        console.log('Movements loaded:', this.movements);
       },
       error: err => {
         console.error('Error cargando movimientos', err);

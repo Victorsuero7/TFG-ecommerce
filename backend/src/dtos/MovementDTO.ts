@@ -6,15 +6,16 @@ export class MovementDTO {
     constructor(
         public id: number,
         public product: ProductDTO,
+        public finalStock: number,
         public lastModification: Date,
         public modifiedBy: UserDTO
-
     ) { }
 
     static fromEntity(mv: Movement): MovementDTO {
         return new MovementDTO(
             mv.id,
             ProductDTO.fromEntity(mv.product),
+            mv.finalStock,
             mv.lastModification,
             UserDTO.fromEntity(mv.modifiedBy)
         )

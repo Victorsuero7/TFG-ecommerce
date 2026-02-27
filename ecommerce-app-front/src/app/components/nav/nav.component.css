@@ -2,5 +2,24 @@ aside #sidebarMenu{
   position: fixed;
   height: 100vh;
   width: 250px;
-  background-color: #e9e9e9;
+  background: var(--color-light);
+  color: var(--color-dark);
+  list-style: none;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.07);
+  padding: 0.5rem;
+  z-index: 10;
+}
+nav .nav-link {
+  color: var(--color-dark);
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+nav .nav-link:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+nav .nav-link.active {
+  background: var(--color-primary);
+  color: #fff;
 }
