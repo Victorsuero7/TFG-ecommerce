@@ -35,12 +35,17 @@ export class UserController {
         }
     }
 
-    getAll = async (req: Request, res: Response) => {
+    getAllPaginated = async (req: Request, res: Response) => {
         try {
-            const result = await this.service.getAll()
-            res.status(200).json({ message: result })
+            const page = Number(req.params.page ?? 1);
+            const response = await this.service.getAllPaginated(page);
+            return res.status(200).json({
+                data: response.result,
+                totalCount: response.metadata?.count ?? 0,
+            });
         } catch (error) {
-            res.status(500).json({ message: "Internal Server Error" })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 
@@ -88,6 +93,30 @@ export class UserController {
             if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
             // console.log(error);
             res.status(500).json({ message: "Internal server error" })
+        }
+    }
+
+    delete = async (req: Request, res: Response) => {
+        try {
+            const id = req.params.id
+            if (!id) return res.status(400).json({ message: "Missing params" })
+            const result = await this.service.delete(Number(id))
+            if (result)
+                res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
+    disabled = async (req: Request, res: Response) => {
+        try {
+            const page = Number(req.params.page) ?? 1
+            const result = await this.service.listDisabled(page)
+            res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 }

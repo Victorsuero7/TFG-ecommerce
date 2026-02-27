@@ -80,7 +80,7 @@ export class ProductController {
 
     getAllPaginated = async (req: Request, res: Response) => {
         try {
-            const page = Number(req.params.page) || 1;
+            const page = Number(req.params.page ?? 1);
             const response = await this.service.getAllPaginated(page);
             console.log("response from getAllPaginated ", response);
             return res.status(200).json({

@@ -82,15 +82,8 @@ export class ListCategoriesComponent implements OnInit, OnDestroy {
     this.search$.next('');
   }
 
-  view(id?: number) { if (id) this.router.navigate(['/dashboard/categories/detail', id]); }
-  edit(id?: number) { if (id) this.router.navigate(['/categories/edit', id]); }
+  view(id?: number) { if (id) this.router.navigate(['/categories/detail/', id]); }
+  edit(id?: number) { if (id) this.router.navigate(['/categories/edit/', id]); }
 
-  delete(id?: number) {
-    if (!id) return;
-    if (!confirm('¿Eliminar categoría?')) return;
-    this.categorySvc.delete(id).subscribe({
-      next: () => this.load(),
-      error: err => { alert('Error al borrar categoría'); console.error(err); }
-    });
-  }
+  
 }

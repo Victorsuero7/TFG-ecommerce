@@ -12,12 +12,15 @@ export class UserRoutes {
         const controller = new UserController(service);
 
         router.post('/insert', controller.insert)
-        router.get('/', controller.getAll)
-        router.get('/all', controller.getAll)
+        router.get('/', controller.getAllPaginated)
+        router.get('/all/:page', controller.getAllPaginated)
         router.get('/email-available', controller.validateEmail) //?email=
         router.post('/login', controller.login)
         router.post('/sign-up', controller.signUp)
         router.get('/:id', controller.getOne)
+        router.delete('/delete/:id', controller.delete)
+        router.get('/disabled/:page', controller.disabled)
+
 
         // router.post('/register', controller.registerUser)
 

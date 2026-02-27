@@ -52,6 +52,7 @@ export class ProductServiceImpl implements ProductService {
             throw error
         }
     }
+
     async insert(dto: ProductDTO): Promise<SchemaResponse<ProductDTO>> {
         try {
             const product: Product = dto.toEntity()
@@ -193,6 +194,7 @@ export class ProductServiceImpl implements ProductService {
             throw error
         }
     }
+
     async findByCategory(dto: CategoryDTO, page: number): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             const category = dto.toEntity()

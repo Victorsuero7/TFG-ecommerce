@@ -1,0 +1,34 @@
+<div class="container mt-4">
+  <h3>Detalle producto</h3>
+  <div *ngIf="loading" class="alert alert-info">Cargando producto...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="product" class="card mx-auto p-4" style="max-width: 800px;">
+    <div class="row align-items-center">
+      <div class="col-md-5 text-center mb-3 mb-md-0">
+        <img *ngIf="imageUrl; else showProductImg" [src]="imageUrl" class="img-fluid mb-2 shadow-sm" style="max-height: 220px; max-width: 100%; border-radius: 12px;" />
+        <ng-template #showProductImg>
+          <img *ngIf="product.imageUrl; else noImg" [src]="product.imageUrl" class="img-fluid mb-2 shadow-sm" style="max-height: 220px; max-width: 100%; border-radius: 12px;"
+            (error)="imageError = true" (load)="imageError = false" />
+          <div *ngIf="imageError" class="alert alert-warning mt-2">No se puede mostrar la imagen del producto.</div>
+          <ng-template #noImg>
+            <div class="text-muted" style="height: 180px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 12px;">Sin imagen</div>
+          </ng-template>
+        </ng-template>
+      </div>
+      <div class="col-md-7">
+        <div class="d-flex align-items-center mb-2">
+          <h5 class="mb-0 me-2">{{ product.name }}</h5>
+        </div>
+        <span class="text-muted small"> Id: {{ product.id }}</span>
+        <ul class="list-group list-group-flush mb-2">
+          <li class="list-group-item px-0 py-1"><strong>Descripción:</strong> {{ product.description || '-' }}</li>
+          <li class="list-group-item px-0 py-1" *ngIf="product.categoryName">
+            <strong>Categoría:</strong> {{ product.categoryName }}
+          </li>
+          <li class="list-group-item px-0 py-1"><strong>Precio:</strong> {{ product.price }} €</li>
+          <li class="list-group-item px-0 py-1"><strong>Stock:</strong> {{ product.stock }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

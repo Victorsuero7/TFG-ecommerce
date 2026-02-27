@@ -10,64 +10,81 @@
             aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
-    <span class="navbar-brand fw-bold mb-0"><a class="d-block ps-3 py-1" routerLink="/dashboard">Get-Stock</a></span>
   </div>
 </nav>
 
 <aside class="sidebar">
   <div class="collapse d-lg-block" id="sidebarMenu">
 
-    <div class="p-3 d-none d-lg-block">
-      <div class="navbar-brand fw-bold mb-0"><a class="d-block ps-3 py-1 text-decoration-none text-dark" routerLink="/dashboard">Get-Stock</a></div>
-    </div>
+  <a class="navbar-brand w-100 mb-lg-4 d-flex align-items-center justify-content-center py-3" routerLink="/dashboard">
+    <i class="bi bi-box-seam me-2"></i>
+    Get-Stock
+  </a>
+
 
     <nav class="p-3">
-      <h6 class="small text-muted">Dashboard</h6>
-      <ul class="list-unstyled mb-3">
-        <li><a class="d-block ps-3 py-1" routerLink="/dashboard">Dashboard</a></li>
-      </ul>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+          <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </a>
+      </li>
 
-      <h6 class="small text-muted">Control de stock</h6>
-      <ul class="list-unstyled mb-3">
-        <li><a class="d-block ps-3 py-1" routerLink="/inventory/list">Consultar inventarios</a></li>
-        <li><a class="d-block ps-3 py-1" routerLink="/inventory/new">Nuevo inventario</a></li>
-      </ul>
 
-      <h6 class="small text-muted">Productos</h6>
-      <ul class="list-unstyled mb-3">
-        <li><a class="d-block ps-3 py-1" routerLink="/products/list">Consultar productos</a></li>
-        <li><a class="d-block ps-3 py-1" routerLink="/products/new">Nuevo producto</a></li>
-      </ul>
+      <li class="nav-item mt-3 small text-secondary d-none d-lg-block"> Inventario</li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/inventory/list" routerLinkActive="active"> <i class="bi bi-archive me-2"></i>Inventarios </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/inventory/new" routerLinkActive="active"> <i class="bi bi-plus-circle me-2"></i>Nuevo inventario </a>
+      </li>
 
-      <h6 class="small text-muted">Categorías</h6>
-      <ul class="list-unstyled mb-3">
-        <li><a class="d-block ps-3 py-1" routerLink="/categories/list">Consultar categorías</a></li>
-        <li><a class="d-block ps-3 py-1" routerLink="/categories/new">Nueva categoría</a></li>
-      </ul>
 
-      <h6 class="small text-muted">Usuarios</h6>
-      <ul class="list-unstyled mb-3">
-        <li><a class="d-block ps-3 py-1" routerLink="/users/list">Consultar usuarios</a></li>
-      </ul>
+      <li class="nav-item mt-3 small text-secondary d-none d-lg-block"> Productos </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/products/list" routerLinkActive="active" > <i class="bi bi-boxes me-2"></i>Productos </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/products/new" routerLinkActive="active" > <i class="bi bi-plus-circle me-2"></i>Nuevo producto
+        </a>
+      </li>
 
-      <h6 class="small text-muted">Cuenta</h6>
-      <ul class="list-unstyled mb-3"> 
-          @if (!auth.isLoggedIn()) {
-            <li>
-              <a class="d-block ps-3 py-1" routerLink="/login">Accede </a>
-            </li>
+      <li class="nav-item mt-3 small text-secondary d-none d-lg-block">Categorías </li>
 
-            <li>
-              <a class="d-block ps-3 py-1" routerLink="/register"> Registrarse </a>
-            </li>
-          }
-          @if (auth.isLoggedIn()) {
-            <li>
-              <a class="d-block ps-3 py-1 text-danger" style="cursor:pointer" (click)="logout()"> Cerrar sesión </a>
-            </li>
-          }
-        </ul>
+      <li class="nav-item">
+      <a class="nav-link" routerLink="/categories/list" routerLinkActive="active"> <i class="bi bi-tags me-2"></i>Categorías </a> 
+    </li>
+
+      <li class="nav-item">
+      <a class="nav-link" routerLink="/categories/new" routerLinkActive="active" > <i class="bi bi-plus-circle me-2"></i>Nueva categoría </a>
+      </li>
+
+
+      <li class="nav-item mt-3 small text-secondary d-none d-lg-block"> Usuarios</li>
+
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/users/list" routerLinkActive="active"> <i class="bi bi-people me-2"></i>Usuarios
+        </a>
+      </li>
+
+      <li class="nav-item mt-3 small text-secondary d-none d-lg-block"> Cuenta </li>
+      
+      @if (!auth.isLoggedIn()) {
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/login" routerLinkActive="active"> <i class="bi bi-box-arrow-in-right me-2"></i>Accede </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/register" routerLinkActive="active" ><i class="bi bi-person-plus me-2"></i>Registrarse </a>
+      </li>
+      }
+      
+      @if (auth.isLoggedIn()) {
+      <li class="nav-item">
+        <a class="nav-link text-danger" style="cursor:pointer" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión </a>
+      </li>
+        }
+
       </nav>
   </div>
 </aside>

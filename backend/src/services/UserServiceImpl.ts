@@ -7,6 +7,11 @@ import { UserService } from "./UserService";
 import { LoginUserDTO } from "../dtos/LoginUserDTO";
 import { JWTAdapter } from "../utils/Jwt";
 import { UserDTO } from "../dtos/UserDTO";
+import { SchemaResponse } from "../config/SchemaResponse";
+import { envs } from "../config/envs";
+
+const PPP = envs.PRODUCTS_PER_PAGE ?? 20
+
 
 export class UserServiceImpl implements UserService {
     private readonly repo: UserRepository;
@@ -14,35 +19,36 @@ export class UserServiceImpl implements UserService {
         this.repo = repo;
     }
 
-    async getAll(): Promise<UserDTO[]> {
+    async getAllPaginated(page: number): Promise<SchemaResponse<UserDTO[]>> {
         try {
-            const result = await this.repo.findAll()
-            return result.map(e => UserDTO.fromEntity(e))
+            const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result.map(e => UserDTO.fromEntity(e)), { count })
         } catch (error) {
-            console.log(error)
+            console.log(error);
             throw error
         }
     }
 
-    async getOne(id: number): Promise<UserDTO | null> {
+    async getOne(id: number): Promise<SchemaResponse<UserDTO | null>> {
         try {
-            const user = await this.repo.findOneById(id)
-            if (!user) throw HttpErrors.NotFound("User not found")
-            return UserDTO.fromEntity(user)
+            const result = await this.repo.findOneById(id)
+            if (!result) throw HttpErrors.NotFound()
+            return new SchemaResponse(UserDTO.fromEntity(result))
         } catch (error) {
-            console.log(error)
+            console.log(error);
             throw error
         }
     }
 
-    async insert(dto: UserDTO): Promise<User> {
+    async insert(dto: UserDTO): Promise<SchemaResponse<UserDTO>> {
         try {
             const userExists = await this.repo.findByEmail(dto.email)
             if (userExists) throw HttpErrors.badRequest("User alredy exists")
 
             const user = dto.toEntity()
             const result = await this.repo.save(user)
-            return result
+            return new SchemaResponse(UserDTO.fromEntity(result))
         } catch (error) {
             console.log(error)
             throw error
@@ -68,7 +74,7 @@ export class UserServiceImpl implements UserService {
     //     return !!user
     // }
 
-    async signUp(dto: RegisterUserDTO): Promise<UserDTO> {
+    async signUp(dto: RegisterUserDTO): Promise<SchemaResponse<UserDTO>> {
         try {
             const userExists = await this.repo.findByEmail(dto.email)
             if (userExists) throw HttpErrors.badRequest("Ya existe una cuenta con ese email")
@@ -82,7 +88,7 @@ export class UserServiceImpl implements UserService {
             user.password = hash
 
             const userRegistered = await this.repo.save(user)
-            return UserDTO.fromEntity(userRegistered)
+            return new SchemaResponse(UserDTO.fromEntity(userRegistered))
         }
         catch (error) {
             console.log(error)
@@ -90,9 +96,36 @@ export class UserServiceImpl implements UserService {
         }
     }
 
-    async emailExists(email: string): Promise<User | null> {
+    async emailExists(email: string): Promise<SchemaResponse<string | null>> {
         const userExists = await this.repo.findByEmail(email)
         if (userExists) throw HttpErrors.badRequest("User alredy exist")
-        return userExists
+        return new SchemaResponse("Email available")
+
     }
+
+    async listDisabled(page: number): Promise<SchemaResponse<UserDTO[]>> {
+        try {
+            const [result, count] = await this.repo.getDisabled(PPP * (page - 1), PPP)
+            if (result.length === 0) throw HttpErrors.NotFound()
+            return new SchemaResponse(result.map((e) => UserDTO.fromEntity(e)), { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async delete(id: number): Promise<SchemaResponse<UserDTO>> {
+        try {
+            const entity = await this.repo.findOneById(id)
+            if (!entity) throw HttpErrors.NotFound()
+            entity.enable = false
+            const result = await this.repo.save(entity)
+            if (!result) throw HttpErrors.internalServerError()
+            return new SchemaResponse(UserDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
 }
