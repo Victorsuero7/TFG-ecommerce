@@ -20,7 +20,6 @@
 		</div>
 	</div>
 
-	<div *ngIf="loading" class="mb-3">Cargando...</div>
 	<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 	<div class="table-header d-none d-md-flex fw-bold small px-2">
 		<div class="col-1">ID</div>
@@ -28,6 +27,7 @@
 		<div class="col-6">Descripción</div>
 		<div class="col-2 text-end">Acciones</div>
 	</div>
+	<div *ngIf="loading" class="mb-3">Cargando...</div>
 	<ng-container *ngIf="!loading && categories?.length; else noData">
 		<div *ngFor="let c of categories" class="category-row d-flex align-items-center my-2">
 			<div class="col-1 small px-2">{{ c.id }}</div>
