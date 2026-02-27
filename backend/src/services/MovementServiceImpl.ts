@@ -36,7 +36,7 @@ export class MovementServiceImpl implements MovementService {
     async getByQueryParams(params: { [key: string]: any; }): Promise<SchemaResponse<MovementDTO[]>> {
         try {
             // console.log(params);
-            const [result, count] = await this.repo.findByConditions({ userId: params.userId, from: params.from, to: params.to, productId: params.productId }, PPP * (params.page - 1), PPP)
+            const [result, count] = await this.repo.findByConditions(params, PPP * (params.page - 1), PPP)
             // const [result, count] = await this.repo.findByConditions({ from: "", to: "2026-02-19" }, PPP * (params.page - 1), PPP)
 
             if (result.length === 0) throw HttpErrors.NotFound()

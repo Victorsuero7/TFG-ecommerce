@@ -1,12 +1,13 @@
-import { Between, DataSource, EntityManager, FindOptionsWhere } from "typeorm";
+import { Between, DataSource, EntityManager, FindOptionsWhere, ILike, Like } from "typeorm";
 import { TypeORMRepository } from "./TypeORMRepository";
 import { Movement } from "../Models/DataMovements.entity";
 import { User } from "../Models/user.entity";
 import { Product } from "../Models/product.entity";
 
 type Conditions = {
-    userId?: number;
-    productId?: number;
+    userId?: number,
+    productId?: number,
+    productName?: string,
     from?: string,
     to?: string
 };
@@ -19,17 +20,21 @@ export class MovementRepository extends TypeORMRepository<Movement, number> {
     private RELATIONS = ["product", 'modifiedBy']
 
     private buildWhere(conditions: Conditions) {
-        const where: any = {};
+        const where: Partial<Movement> = {};
         if (conditions.userId !== undefined) {
             where.modifiedBy = { id: conditions.userId } as User
         }
-        if (conditions.productId !== undefined) {
-            where.product = { id: conditions.productId } as Product
+        if (conditions.productId !== undefined || conditions.productName !== undefined) {
+            where.product = { id: conditions.productId, name: ILike(`%${conditions.productName ?? ''}%`) } as unknown as Product
         };
+        // if (conditions.productName !== undefined) {
+        //     where.product = { name: ILike(`%${conditions.productName}%`) } as Product
+        // };
         if (conditions.from !== undefined && conditions.to !== undefined) {
             console.log("FECHAS: ", conditions);
             where.lastModification = Between(new Date(conditions.from), new Date(conditions.to)) as unknown as Date
         };
+        console.log('WHERE: ', where);
         return where;
     }
     // private buildWhere(conditions: Conditions) {
@@ -74,7 +79,7 @@ export class MovementRepository extends TypeORMRepository<Movement, number> {
     }
 
     async findByConditions(conditions: Conditions, offset: number, limit: number, relations: string[] = this.RELATIONS): Promise<[Movement[], number]> {
-        console.log(conditions);
+        console.log('CONDITONS: ', conditions);
         return await this.repo.findAndCount({
             where: this.buildWhere(conditions),
             order: {

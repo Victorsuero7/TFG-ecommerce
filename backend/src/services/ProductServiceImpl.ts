@@ -31,10 +31,11 @@ export class ProductServiceImpl implements ProductService {
     async getAllPaginated(page: number): Promise<SchemaResponse<ProductDTO[]>> {
         try {
             // const metadata: Metadata = {}
-            const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
-            if (result.length === 0) throw HttpErrors.NotFound()
+            const [products, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
+            if (products.length === 0) throw HttpErrors.NotFound()
             // const count = await this.repo.count()
-            return new SchemaResponse(result.map(e => ProductDTO.fromEntity(e)), { count })
+            const result = products.map(e => ProductDTO.fromEntity(e))
+            return new SchemaResponse(result, { count })
         } catch (error) {
             console.log(error);
             throw error
