@@ -26,7 +26,12 @@ export class ProductService extends GenericService<Product> {
     if (token) {
       return { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) };
     } else {
-      this.router.navigate(['/login']);
+      if (typeof window !== 'undefined' && typeof (window as any).showAuthToast === 'function') {
+        (window as any).showAuthToast();
+        setTimeout(() => this.router.navigate(['/login']), 100);
+      } else {
+        this.router.navigate(['/login']);
+      }
       return { headers: new HttpHeaders() };
     }
   }

@@ -29,35 +29,30 @@ export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   // Dashboard 
-  { path: 'dashboard', component: DashboardComponent },
-
-  // Goods routes
-  { path: 'goods/entry', component: GoodsEntryComponent },
-  { path: 'goods/exit', component: GoodsExitComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
 
   // Inventory routes
-  { path: 'inventory/list', component: InventoryListComponent },
-  { path: 'inventory/new', component: CreateInventarioComponent },
+  { path: 'inventory/list', component: InventoryListComponent, canActivate: [AuthGuard] },
+  { path: 'inventory/new', component: CreateInventarioComponent, canActivate: [AuthGuard] },
 
-// products
-  { path: 'products/list', component: ListProductsComponent },
-  { path: 'products/new', component: CreateProductComponent },
-  { path: 'products/edit/:id', component: EditProductComponent },
-  { path: 'products/detail/:id', component: ProductDetailComponent },
+  // products
+  { path: 'products/list', component: ListProductsComponent, canActivate: [AuthGuard] },
+  { path: 'products/new', component: CreateProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/edit/:id', component: EditProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/detail/:id', component: ProductDetailComponent, canActivate: [AuthGuard] },
 
   // categories
-  { path: 'categories/list', component: ListCategoriesComponent },
+  { path: 'categories/list', component: ListCategoriesComponent, canActivate: [AuthGuard] },
   { path: 'categories/new', component: CreateCategoryComponent, canActivate: [AuthGuard] },
-  { path: 'categories/edit/:id', component: EditCategoryComponent},
-  {path: 'categories/detail/:id', component: CategoryDetailComponent },
+  { path: 'categories/edit/:id', component: EditCategoryComponent, canActivate: [AuthGuard] },
+  { path: 'categories/detail/:id', component: CategoryDetailComponent, canActivate: [AuthGuard] },
 
   //users 
-  {path: 'users/list', component: ListUsersComponent, canActivate: [AuthGuard]},
-  {path: 'register', component: UserRegisterComponent},
-  {path: 'login', component: UserLoginComponent},
-  {path: 'user/detail/:id', component: UserDetailComponent},
-  {path: 'user/edit/:id', component: UserEditComponent},
+  { path: 'users/list', component: ListUsersComponent, canActivate: [AuthGuard] },
+  { path: 'register', component: UserRegisterComponent },
+  { path: 'login', component: UserLoginComponent },
+  { path: 'user/detail/:id', component: UserDetailComponent, canActivate: [AuthGuard] },
+  { path: 'user/edit/:id', component: UserEditComponent, canActivate: [AuthGuard] },
 
-  
   { path: '**', redirectTo: 'dashboard' }
 ];
