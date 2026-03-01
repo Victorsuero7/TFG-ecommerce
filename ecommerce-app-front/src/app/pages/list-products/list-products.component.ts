@@ -39,8 +39,14 @@ export class ListProductsComponent implements OnInit, OnDestroy {
 
   constructor(private productSvc: ProductService, private router: Router) {
     (window as any).showAuthToast = () => {
+      localStorage.setItem('auth_redirect_toast', 'Debes estar autenticado para acceder');
       this.showToast('Debes estar autenticado para acceder', 'error');
     };
+    const authToast = localStorage.getItem('auth_redirect_toast');
+    if (authToast) {
+      this.showToast(authToast, 'error');
+      localStorage.removeItem('auth_redirect_toast');
+    }
   }
 
   ngOnInit(): void {

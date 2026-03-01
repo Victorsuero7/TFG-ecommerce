@@ -38,8 +38,9 @@ export class DashboardComponent implements OnInit {
     private categorySvc: CategoryService,
     private movementSvc: MovementService
   ) {
-    (window as any).showAuthToast = () => {
-      this.showToast('Debes estar autenticado para acceder', 'error');
+    (window as any).showAuthToast = (message = 'Debes estar autenticado para acceder', kind: 'success' | 'error' | 'info' = 'error') => {
+      localStorage.setItem('auth_redirect_toast', message);
+      this.showToast(message, kind);
     };
   }
 

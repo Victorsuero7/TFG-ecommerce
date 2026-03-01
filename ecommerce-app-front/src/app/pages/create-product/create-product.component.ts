@@ -36,6 +36,13 @@ export class CreateProductComponent {
     });
     this.loadCategories();
   }
+  ngOnInit(): void {
+    const authToast = localStorage.getItem('auth_redirect_toast');
+    if (authToast) {
+      this.showToast(authToast, 'error');
+      localStorage.removeItem('auth_redirect_toast');
+    }
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
