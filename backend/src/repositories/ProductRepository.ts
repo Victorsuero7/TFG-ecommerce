@@ -11,7 +11,7 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
         return await this.repo.find({ where: { enable: true }, relations: ['category', 'modifiedBy'] });
     }
 
-    async transaction(cb: (entityManager: EntityManager) => Promise<unknown>){
+    async transaction(cb: (entityManager: EntityManager) => Promise<unknown>) {
         return this.datasource.transaction(cb)
     }
 
@@ -23,7 +23,7 @@ export class ProductRepository extends TypeORMRepository<Product, number> {
     }
 
     async findAllByPage(offset: number, limit: number): Promise<[Product[], number]> {
-        return await this.repo.findAndCount({ where: { enable: true }, skip: offset, take: limit,  relations: ['category', 'modifiedBy'] })
+        return await this.repo.findAndCount({ where: { enable: true }, skip: offset, take: limit, relations: ['category', 'modifiedBy'] })
     }
 
     async findByCategory(category: Category, offset: number, limit: number): Promise<[Product[], number]> {

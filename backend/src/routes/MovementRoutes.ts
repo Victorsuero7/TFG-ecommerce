@@ -12,7 +12,7 @@ export class MovementRoutes {
         const controller = new MovementController(service);
 
         router.get('/all/:page', controller.getAll)
-        router.get('/find', controller.findBy) //accept this params ?page, ?user (id), ?product (id), ?from, ?to //both dates required in fomrat YYYY-mm-dd
+        router.get('/find', controller.findBy) //accept this params ?page, ?user (id), ?product (id), ? name (product name contains) ?from, ?to //both dates required in fomrat YYYY-mm-dd
         return router;
     }
 }
