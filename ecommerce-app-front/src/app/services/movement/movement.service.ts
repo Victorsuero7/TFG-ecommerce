@@ -27,7 +27,7 @@ export class MovementService {
   }
 
   searchByProductName(name: string, page: number = 1): Observable<{ data: Movement[], count: number }> {
-    return this.http.get<any>(`${this.baseUrl}/product/${encodeURIComponent(name)}`, { params: { page: page.toString() } }).pipe(
+    return this.http.get<any>(`${this.baseUrl}/find`, { params: { name, page: page.toString() } }).pipe(
       map((res: any) => {
         const data = Array.isArray(res) ? res : (res?.result ?? []);
         const count = res?.metadata?.count ?? data.length;
@@ -38,7 +38,6 @@ export class MovementService {
       })
     );
   }
-
   private mapMovement(m: any): Movement {
     return {
       id: m.id,
