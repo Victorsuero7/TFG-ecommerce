@@ -30,6 +30,9 @@ export class EditProductComponent implements OnInit {
     private productSvc: ProductService,
     private categorySvc: CategoryService
   ) {
+    (window as any).showAuthToast = () => {
+      this.showToast('Debes estar autenticado para acceder', 'error');
+    };
     this.form = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],

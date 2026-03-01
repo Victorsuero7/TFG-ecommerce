@@ -37,7 +37,11 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
 
-  constructor(private productSvc: ProductService, private router: Router) {}
+  constructor(private productSvc: ProductService, private router: Router) {
+    (window as any).showAuthToast = () => {
+      this.showToast('Debes estar autenticado para acceder', 'error');
+    };
+  }
 
   ngOnInit(): void {
     fetch(environment.apiUrl + '/config')

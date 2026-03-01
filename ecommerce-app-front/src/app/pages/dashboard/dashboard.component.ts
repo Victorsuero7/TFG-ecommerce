@@ -30,11 +30,27 @@ export class DashboardComponent implements OnInit {
   productsByCategory: { name: string; count: number; totalStock: number }[] = [];
   topValueProducts: Product[] = [];
 
+  toastVisible = false;
+  toastMessage = '';
+  toastVariant: 'primary' | 'success' | 'danger' = 'primary';
   constructor(
     private productSvc: ProductService,
     private categorySvc: CategoryService,
     private movementSvc: MovementService
-  ) {}
+  ) {
+    (window as any).showAuthToast = () => {
+      this.showToast('Debes estar autenticado para acceder', 'error');
+    };
+  }
+
+  showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+    this.toastMessage = message;
+    this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
+    this.toastVisible = true;
+    setTimeout(() => this.toastVisible = false, 3500);
+  }
+
+  hideToast() { this.toastVisible = false; }
 
   ngOnInit(): void {
     forkJoin([

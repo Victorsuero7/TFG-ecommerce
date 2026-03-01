@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Movement } from '../../models/movement.model';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +13,21 @@ import { Movement } from '../../models/movement.model';
 export class MovementService {
   private baseUrl = `${environment.apiUrl}/movement`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
+
+  private getAuthHeaders(): { headers: HttpHeaders } {
+    const token = this.authService.getToken();
+    if (token) {
+      return { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) };
+    } else {
+      this.router.navigate(['/login']);
+      return { headers: new HttpHeaders() };
+    }
+  }
 
   getAll(page: number = 1): Observable<{ data: Movement[], count: number }> {
-    return this.http.get<any>(`${this.baseUrl}/all/${page}`).pipe(
+    const options = this.getAuthHeaders();
+    return this.http.get<any>(`${this.baseUrl}/all/${page}`, options).pipe(
       map((res: any) => {
         const data = Array.isArray(res) ? res : (res?.result ?? []);
         const count = res?.metadata?.count ?? data.length;
@@ -27,7 +40,8 @@ export class MovementService {
   }
 
   searchByProductName(name: string, page: number = 1): Observable<{ data: Movement[], count: number }> {
-    return this.http.get<any>(`${this.baseUrl}/find`, { params: { name, page: page.toString() } }).pipe(
+    const options = this.getAuthHeaders();
+    return this.http.get<any>(`${this.baseUrl}/find`, { params: { name, page: page.toString() }, ...options }).pipe(
       map((res: any) => {
         const data = Array.isArray(res) ? res : (res?.result ?? []);
         const count = res?.metadata?.count ?? data.length;
