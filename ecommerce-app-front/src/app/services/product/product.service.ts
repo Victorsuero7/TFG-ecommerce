@@ -86,7 +86,8 @@ export class ProductService extends GenericService<Product> {
   uploadImage(id: number, formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/upload-image/${id}`, formData);
   }
-   override getById(id: number): Observable<Product> {
+  
+  override getById(id: number): Observable<Product> {
     return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(
       map((res: any) => {
         console.log('getById backend response:', res);

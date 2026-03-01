@@ -7,7 +7,7 @@
       <div class="col-md-5 text-center mb-3 mb-md-0">
         <img *ngIf="imageUrl; else showProductImg" [src]="imageUrl" class="img-fluid mb-2 shadow-sm" style="max-height: 220px; max-width: 100%; border-radius: 12px;" />
         <ng-template #showProductImg>
-          <img *ngIf="product.imageUrl; else noImg" [src]="product.imageUrl" class="img-fluid mb-2 shadow-sm" style="max-height: 220px; max-width: 100%; border-radius: 12px;"
+          <img *ngIf="productImageUrl; else noImg" [src]="productImageUrl" class="img-fluid mb-2 shadow-sm" style="max-height: 220px; max-width: 100%; border-radius: 12px;"
             (error)="imageError = true" (load)="imageError = false" />
           <div *ngIf="imageError" class="alert alert-warning mt-2">No se puede mostrar la imagen del producto.</div>
           <ng-template #noImg>
