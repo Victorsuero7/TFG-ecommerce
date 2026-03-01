@@ -25,8 +25,10 @@ export class EditCategoryComponent implements OnInit{
     private route: ActivatedRoute,
     public router: Router,
     private categorySvc: CategoryService
-
   ){
+    (window as any).showAuthToast = () => {
+      this.showToast('Debes estar autenticado para acceder', 'error');
+    };
     this.form = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required]

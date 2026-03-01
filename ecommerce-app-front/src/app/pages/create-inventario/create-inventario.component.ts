@@ -21,7 +21,11 @@ export class CreateInventarioComponent {
   productos: ProductInventario[] = [];
   loading = false;
 
-  constructor(private productService: ProductService, public router: Router) {}
+  constructor(private productService: ProductService, public router: Router) {
+    (window as any).showAuthToast = () => {
+      this.showToast('Debes estar autenticado para acceder', 'error');
+    };
+  }
   toastVisible = false;
   toastMessage = '';
   toastVariant: 'primary' | 'success' | 'danger' = 'primary';

@@ -23,6 +23,7 @@ import { UserRegisterComponent } from './pages/user-register/user-register.compo
 import { UserLoginComponent } from './pages/user-login/user-login.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 import { UserEditComponent } from './pages/user-edit/user-edit.component';  
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -46,12 +47,12 @@ export const routes: Routes = [
 
   // categories
   { path: 'categories/list', component: ListCategoriesComponent },
-  { path: 'categories/new', component: CreateCategoryComponent },
+  { path: 'categories/new', component: CreateCategoryComponent, canActivate: [AuthGuard] },
   { path: 'categories/edit/:id', component: EditCategoryComponent},
   {path: 'categories/detail/:id', component: CategoryDetailComponent },
 
   //users 
-  {path: 'users/list', component: ListUsersComponent},
+  {path: 'users/list', component: ListUsersComponent, canActivate: [AuthGuard]},
   {path: 'register', component: UserRegisterComponent},
   {path: 'login', component: UserLoginComponent},
   {path: 'user/detail/:id', component: UserDetailComponent},

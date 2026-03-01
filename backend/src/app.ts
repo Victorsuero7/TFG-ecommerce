@@ -14,9 +14,13 @@ import { RBACMiddleware } from './utils/AuthorizationMiddleware';
 const app = express();
 const port = 3000;
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 // app.use(RBACMiddleware.requireAutentication())
-// app.use('/product',RBACMiddleware.requireAutentication(), ProductRoutes.routes)
+app.use('/product',RBACMiddleware.requireAutentication(), ProductRoutes.routes)
 
 ; (async () => {
     try {
@@ -50,7 +54,7 @@ app.use("/public", express.static(process.cwd()))
 console.log(path.join(process.cwd(), envs.UPLOADS_DIR));
 
 app.use('/user', UserRoutes.routes)
-app.use('/product', ProductRoutes.routes)
+//app.use('/product', ProductRoutes.routes)
 app.use('/category', CategoryRoutes.routes)
 app.use('/movement', MovementRoutes.routes)
 

@@ -20,6 +20,11 @@ export class CreateCategoryComponent {
   toastVariant: 'primary' | 'success' | 'danger' = 'primary';
 
   constructor(private fb: FormBuilder, private categorySvc: CategoryService, public router: Router) {
+    if (typeof window !== 'undefined') {
+      (window as any).showAuthToast = () => {
+        this.showToast('Debes estar autenticado para acceder', 'error');
+      };
+    }
     this.form = this.fb.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]]
@@ -42,9 +47,14 @@ export class CreateCategoryComponent {
         setTimeout(() => this.router.navigate(['/categories/list']), 800);
       },
       error: err => {
-        console.error('Error creando categoria', err);
-        this.showToast('Error al crear categoría', 'error');
         this.loading = false;
+        if (err && err.status === 401) {
+          this.showToast('Debes estar autenticado para acceder', 'error');
+          setTimeout(() => this.router.navigate(['/login']), 100);
+        } else {
+          console.error('Error creando categoria', err);
+          this.showToast('Error al crear categoría', 'error');
+        }
       }
     });
   }
