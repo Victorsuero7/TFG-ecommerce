@@ -24,7 +24,7 @@ export class Product {
     @Column({ type: 'int' })
     stock!: number;
 
-    @Column({ type: "varchar", length: 255 })
+    @Column({ type: "varchar", length: 255, default: null })
     imageUrl!: string
 
     @UpdateDateColumn()

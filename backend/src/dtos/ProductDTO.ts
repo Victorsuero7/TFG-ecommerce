@@ -42,7 +42,7 @@ export class ProductDTO {
     static createDTO(object: { [key: string]: any }, path?: string | undefined): ProductDTO {
         const { id, name, description, price, size, stock, categoryId } = object;
         const dto = new ProductDTO()
-        dto.id = id
+        dto.id = Number(id)
         dto.name = name
         dto.description = description
         dto.price = price

@@ -29,13 +29,14 @@ export class ProductController {
     update = async (req: Request, res: Response) => {
         try {
             const dto = ProductDTO.createDTO(req.body)
-            dto.modifiedBy = req.user.id
+            // dto.modifiedBy = req.user.id ?? undefined
             dto.imageUrl = getPath(req.file?.path!)
             const result = await this.service.update(dto)
             res.status(200).json(result)
         } catch (error) {
+            console.log(error);
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
-            return res.status(500).json({ message: "error.message" })
+            return res.status(500).json({ message: error })
         }
     }
 
