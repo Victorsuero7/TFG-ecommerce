@@ -58,7 +58,7 @@
 					<label for="image" class="form-label">Imagen actual</label>
 					<ng-container *ngIf="imageUrl || productImageUrl; else showFileInput">
 						<div class="mb-2">
-							<img [src]="imageUrl ? imageUrl : getImageUrl(productImageUrl)" class="img-fluid" style="max-height: 120px; border-radius: 8px;" />
+							  <img [src]="imageUrl ? imageUrl : productImageUrl" class="img-fluid" style="max-height: 120px; border-radius: 8px;" />
 						</div>
 						<input id="image" type="file" class="form-control form-control-sm w-auto" (change)="onFileSelected($event)" accept="image/*" />
 					</ng-container>

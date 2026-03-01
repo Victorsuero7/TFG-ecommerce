@@ -88,7 +88,7 @@ loadProduct(id: number): void {
         size: p?.size ?? '',
         categoryId: this.productLoadedCategoryId
       });
-      this.productImageUrl = p?.imageUrl || null;
+      this.productImageUrl = this.getImageUrl(p?.imageUrl || null);
       console.log('[loadProduct] productImageUrl set:', this.productImageUrl);
       this.loading = false;
     },
@@ -106,10 +106,7 @@ loadProduct(id: number): void {
       const reader = new FileReader();
       reader.onload = e => this.imageUrl = reader.result;
       reader.readAsDataURL(this.selectedFile);
-        
-    console.log('[onFileSelected] imageUrl set:', this.imageUrl);
-      reader.readAsDataURL(this.selectedFile);
-    
+      console.log('[onFileSelected] imageUrl set:', this.imageUrl);
     }
   }
 
@@ -140,7 +137,7 @@ loadProduct(id: number): void {
       stock: this.form.value.stock,
       size: this.form.value.size,
       categoryId: this.form.value.categoryId,
-      image: this.selectedFile ? this.selectedFile.name : undefined
+      image: this.selectedFile
     });
     this.productSvc.update(this.productId, formData).subscribe({
       next: () => {
