@@ -26,7 +26,7 @@ export class ProductDTO {
         dto.price = product.price
         dto.size = product.size
         dto.stock = product.stock
-        dto.imageUrl = product.imageUrl
+        dto.imageUrl = product?.imageUrl
         dto.lastModification = product.lastModification
         dto.modifiedBy = product.modifiedBy?.email
         dto.category = product.category
@@ -49,7 +49,7 @@ export class ProductDTO {
         dto.size = size
         dto.stock = stock
         dto.category = categoryId
-        dto.imageUrl = path
+        dto.imageUrl = path  
         return dto
     }
 }
