@@ -42,13 +42,14 @@ export class ProductController {
 
     updateMany = async (req: Request, res: Response) => {
         try {
-            console.log('[updateMany] req.body:', JSON.stringify(req.body));
+            // console.log('[updateMany] req.body:', JSON.stringify(req.body));
             const objects: object[] = Array.isArray(req.body) ? req.body : req.body.array;
-            console.log('[updateMany] objects to update:', objects?.length);
+            // console.log('[updateMany] objects to update:', objects?.length);
             const dtos = objects.map(e => ProductDTO.createDTO(e))
-            console.log('[updateMany] dtos created:', dtos.length);
+            dtos.forEach(e=>e.modifiedBy = req.user?.id)
+            // console.log('[updateMany] dtos created:', dtos.length);
             const result = await this.service.updateMany(dtos)
-            console.log('[updateMany] result:', JSON.stringify(result));
+            // console.log('[updateMany] result:', JSON.stringify(result));
             res.status(200).json({ result })
         } catch (error) {
             console.error('[updateMany] error:', error);
