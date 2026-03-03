@@ -3,6 +3,7 @@ import { UserServiceImpl } from '../services/UserServiceImpl';
 import { UserRepository } from '../repositories/UserRepository';
 import { UserController } from '../controllers/UserController';
 import { MySQLDataSource } from '../config/MySQL-datasource';
+import { RBACMiddleware } from '../utils/AuthorizationMiddleware';
 
 export class UserRoutes {
     static get routes(): Router {
@@ -11,12 +12,15 @@ export class UserRoutes {
         const service = new UserServiceImpl(repository);
         const controller = new UserController(service);
 
+        router.post('/login', controller.login)
+        router.post('/sign-up', controller.signUp)
+
+        router.use(RBACMiddleware.requireAutentication())
+
         router.post('/insert', controller.insert)
         router.get('/', controller.getAllPaginated)
         router.get('/all/:page', controller.getAllPaginated)
         router.get('/email-available', controller.validateEmail) //?email=
-        router.post('/login', controller.login)
-        router.post('/sign-up', controller.signUp)
         router.get('/:id', controller.getOne)
         router.delete('/delete/:id', controller.delete)
         router.get('/disabled/:page', controller.disabled)

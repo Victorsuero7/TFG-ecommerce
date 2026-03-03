@@ -4,6 +4,7 @@ import { ProductRepository } from '../repositories/ProductRepository';
 import { ProductController } from '../controllers/ProductController';
 import { MySQLDataSource } from '../config/MySQL-datasource';
 import { ImageUploaderMiddleware } from '../utils/ImageUploaderMiddleware';
+import { RBACMiddleware } from '../utils/AuthorizationMiddleware';
 
 const imageHandler = ImageUploaderMiddleware.create("products")
 
@@ -13,6 +14,8 @@ export class ProductRoutes {
         const repository = new ProductRepository(MySQLDataSource);
         const service = new ProductServiceImpl(repository);
         const controller = new ProductController(service);
+
+        router.use(RBACMiddleware.requireAutentication())
 
         router.post('/insert', imageHandler.single("image"), controller.insert)
         router.patch('/update', imageHandler.single('image'), controller.update)
