@@ -32,11 +32,11 @@ export class CategoryService extends GenericService<Category> {
   }
 
   override getAll(): Observable<Category[]> {
-    const options = this.getAuthHeaders();
-    return super.getAll().pipe(
-      map((res: any) => Array.isArray(res) ? res : (res?.result ?? res?.message ?? []))
-    );
-  }
+  const options = this.getAuthHeaders();
+  return this.http.get<Category[]>(`${this.baseUrl}`, options).pipe(
+    map((res: any) => Array.isArray(res) ? res : (res?.result ?? res?.message ?? []))
+  );
+}
 
   searchByName(name: string): Observable<Category[]> {
     const options = this.getAuthHeaders();
