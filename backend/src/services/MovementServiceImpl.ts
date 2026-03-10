@@ -15,6 +15,7 @@ export class MovementServiceImpl implements MovementService {
     async getAllPaginated(page = 1): Promise<SchemaResponse<MovementDTO[]>> {
         try {
             const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
+            if (result.length === 0) throw HttpErrors.NotFound()
             return new SchemaResponse(result.map(e => MovementDTO.fromEntity(e)), { count })
         } catch (error) {
             console.log(error)
