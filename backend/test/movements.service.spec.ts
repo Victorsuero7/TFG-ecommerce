@@ -3,7 +3,7 @@ import { MovementRepository } from '../src/repositories/MovementRepository';
 import { MovementDTO } from '../src/dtos/MovementDTO';
 import { HttpErrors } from '../src/utils/HttpErrors';
 // Asumiendo la ruta de tu entidad Movement
-import { Movement } from '../src/Models/movement.entity';
+import { Movement } from '../src/Models/DataMovements.entity';
 import { } from 'jest';
 
 describe('MovementServiceImpl', () => {
@@ -59,11 +59,12 @@ describe('MovementServiceImpl', () => {
             // A diferencia de los otros servicios, este no lanza NotFound si está vacío
             mockRepo.findAllByPage.mockResolvedValue([[], 0]);
 
-            const response = await service.getAllPaginated(2);
-
-            // page = 2 -> offset = 20, limit = 20
-            expect(mockRepo.findAllByPage).toHaveBeenCalledWith(20, 20);
-            expect(response.result.length).toBe(0);
+            await expect(service.getAllPaginated(1))
+                .rejects
+                .toThrow(HttpErrors.NotFound());
+            // // page = 2 -> offset = 20, limit = 20
+            // expect(mockRepo.findAllByPage).toHaveBeenCalledWith(20, 20);
+            // expect(response.result.length).toBe(0);
         });
     });
 

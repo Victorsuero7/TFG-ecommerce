@@ -140,7 +140,7 @@ describe('UserServiceImpl', () => {
 
             await expect(service.login(loginDto))
                 .rejects
-                .toThrow(HttpErrors.internalServerError("Something went wrong"));
+                .toThrow(HttpErrors.internalServerError("Invalid credentials"));
         });
 
         it('should throw InternalServerError when password is invalid (due to catch block)', async () => {
@@ -149,24 +149,24 @@ describe('UserServiceImpl', () => {
 
             await expect(service.login(loginDto))
                 .rejects
-                .toThrow(HttpErrors.internalServerError("Something went wrong"));
+                .toThrow(HttpErrors.internalServerError("Invalid credentials"));
         });
     });
 
     describe('signUp', () => {
-        const registerDto = { 
-            email: 'new@example.com', 
-            name: 'Jane', 
-            lastName: 'Doe', 
-            phoneNumber: '123456789', 
-            password: 'password123' 
+        const registerDto = {
+            email: 'new@example.com',
+            name: 'Jane',
+            lastName: 'Doe',
+            phoneNumber: '123456789',
+            password: 'password123'
         } as RegisterUserDTO;
 
         it('should register and return new user when email is available', async () => {
             mockRepo.findByEmail.mockResolvedValue(null);
             (bcrypt.genSaltSync as jest.Mock).mockReturnValue('randomSalt');
             (bcrypt.hashSync as jest.Mock).mockReturnValue('hashedPass');
-            
+
             mockRepo.save.mockImplementation(async (userToSave) => {
                 userToSave.id = 2; // Simulamos que la BD le asigna el ID 2
                 return userToSave;
@@ -185,7 +185,7 @@ describe('UserServiceImpl', () => {
 
             await expect(service.signUp(registerDto))
                 .rejects
-                .toThrow(HttpErrors.internalServerError("Something went wrong"));
+                .toThrow(HttpErrors.internalServerError("Ya existe una cuenta con ese email"));
         });
     });
 

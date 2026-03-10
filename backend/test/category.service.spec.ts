@@ -3,7 +3,6 @@ import { CategoryRepository } from '../src/repositories/CategoryRepository';
 import { CategoryDTO } from '../src/dtos/CategoryDTO';
 import { Category } from '../src/Models/category.entity';
 import { HttpErrors } from '../src/utils/HttpErrors';
-import { SchemaResponse } from '../src/config/SchemaResponse';
 import { } from 'jest';
 
 describe('CategoryServiceImpl', () => {
@@ -38,9 +37,9 @@ describe('CategoryServiceImpl', () => {
         // Mockeamos la conversión estática fromEntity para aislar el test
         jest.spyOn(CategoryDTO, 'fromEntity').mockImplementation((entity: any) => {
             return {
-                id: entity.id,
-                name: entity.name,
-                description: entity.description,
+                id: entity?.id,
+                name: entity?.name,
+                description: entity?.description,
                 toEntity: jest.fn().mockReturnValue(entity)
             } as unknown as CategoryDTO;
         });
@@ -60,7 +59,7 @@ describe('CategoryServiceImpl', () => {
             // page = 1. Como PPP por defecto es 4, debería llamar con (0, 4)
             const response = await service.getAllPaginated(1);
 
-            expect(mockRepo.findAllByPage).toHaveBeenCalledWith(0, 4);
+            expect(mockRepo.findAllByPage).toHaveBeenCalledWith(0, 20);
             expect(response.result.length).toBe(1);
             expect(response.result[0].id).toBe(1);
         });

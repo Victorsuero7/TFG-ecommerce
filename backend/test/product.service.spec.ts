@@ -40,7 +40,7 @@ describe('ProductServiceImpl', () => {
             const result = await service.getById(1);
 
             expect(mockRepo.findOneById).toHaveBeenCalledWith(1);
-            expect(result.result.id).toBe(1);
+            expect(result.result?.id).toBe(1);
         });
 
         it('should throw NotFound when product does not exist', async () => {
