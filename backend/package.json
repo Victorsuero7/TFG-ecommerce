@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "app.js",
 	"scripts": {
-		"dev": "tsnd --respawn --clear src/app.ts",
+		"dev": "tsnd --respawn --clear src/server.ts",
 		"lint": "biome check .",
 		"format": "biome format --write ."
 	},
