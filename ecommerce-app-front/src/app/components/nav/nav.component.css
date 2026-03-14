@@ -23,3 +23,8 @@ nav .nav-link.active {
   background: var(--color-primary);
   color: #fff;
 }
+
+.nav-link-button {
+  border: 0;
+  background: transparent;
+}

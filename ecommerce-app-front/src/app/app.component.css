@@ -3,6 +3,10 @@
         margin-left: 250px; 
         padding: 20px;
     }
+
+    .main-content.main-content-auth {
+        padding: 0;
+    }
 }
 
 :host {
@@ -13,4 +17,24 @@
     --color-danger: #dc3545;
     --color-light: #f8f9fa;
     --color-dark: #212529;
+    --page-bg: #f4f6fb;
+    --page-text: #212529;
+    background: var(--page-bg);
+    color: var(--page-text);
+}
+
+:host-context([data-bs-theme='dark']) {
+    --color-primary: #6f9ae0;
+    --color-secondary: #9ba8b3;
+    --color-success: #3fb67a;
+    --color-warning: #e2b84b;
+    --color-danger: #e8707b;
+    --color-light: #1f2933;
+    --color-dark: #e9ecef;
+    --page-bg: #0f1720;
+    --page-text: #e9ecef;
+}
+
+.main-content {
+    min-height: 100vh;
 }

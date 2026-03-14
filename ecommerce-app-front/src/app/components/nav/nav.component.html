@@ -1,5 +1,5 @@
 
-<nav class="navbar bg-light d-lg-none">
+<nav class="navbar bg-body-tertiary d-lg-none">
   <div class="container-fluid d-flex align-items-center">
       <button class="navbar-toggler me-2" 
             type="button"
@@ -15,14 +15,11 @@
 
 <aside class="sidebar">
   <div class="collapse d-lg-block" id="sidebarMenu">
-
-  <a class="navbar-brand w-100 mb-lg-4 d-flex align-items-center justify-content-center py-3" routerLink="/dashboard">
-    <i class="bi bi-box-seam me-2"></i>
-    Get-Stock
-  </a>
-
-
     <nav class="p-3">
+      <a class="navbar-brand w-100 mb-lg-4 d-flex align-items-center justify-content-center py-2" routerLink="/dashboard">
+        <i class="bi bi-box-seam me-2"></i>
+        Get-Stock
+      </a>
       <li class="nav-item">
         <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
           <i class="bi bi-speedometer2 me-2"></i>Dashboard
@@ -68,23 +65,33 @@
       </li>
 
       <li class="nav-item mt-3 small text-secondary d-none d-lg-block"> Cuenta </li>
-      
       @if (!auth.isLoggedIn()) {
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/login" routerLinkActive="active"> <i class="bi bi-box-arrow-in-right me-2"></i>Accede </a>
-      </li>
-      
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/register" routerLinkActive="active" ><i class="bi bi-person-plus me-2"></i>Registrarse </a>
-      </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active"> <i class="bi bi-box-arrow-in-right me-2"></i>Accede </a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/register" routerLinkActive="active" ><i class="bi bi-person-plus me-2"></i>Registrarse </a>
+        </li>
       }
       
       @if (auth.isLoggedIn()) {
-      <li class="nav-item">
-        <a class="nav-link text-danger" style="cursor:pointer" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión </a>
-      </li>
-        }
-
-      </nav>
+        <li class="nav-item">
+          <a class="nav-link text-danger" style="cursor:pointer" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión </a>
+        </li>
+      }
+      
+      <li class="nav-item mt-3 small text-secondary d-none d-lg-block"> Configuración </li>
+            <li class="nav-item">
+              <button class="nav-link nav-link-button w-100 text-start" type="button" (click)="toggleTheme()">
+                @if (theme.isDark()) {
+                  <i class="bi bi-sun me-2"></i>Modo claro
+                } @else {
+                  <i class="bi bi-moon-stars me-2"></i>Modo noche
+                }
+              </button>
+            </li>
+            
+    </nav>
   </div>
 </aside>
