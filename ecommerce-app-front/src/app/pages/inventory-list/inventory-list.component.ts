@@ -15,7 +15,7 @@ import { environment } from '../../../environments/environment';
 })
 export class InventoryListComponent implements OnInit, OnDestroy {
   movements: Movement[] = [];
-  loading = false;
+  loading = true;
   error = '';
   searchTerm = '';
   currentPage = 1;

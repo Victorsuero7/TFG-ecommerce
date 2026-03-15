@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { NavComponent } from './components/nav/nav.component';
 
 @Component({
@@ -11,4 +12,19 @@ import { NavComponent } from './components/nav/nav.component';
 })
 export class AppComponent {
   title = 'ecommerce-app-front';
+  private readonly router = inject(Router);
+
+  readonly isAuthRoute = signal(this.isAuthPath(this.router.url ?? ''));
+
+  constructor() {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.isAuthRoute.set(this.isAuthPath((event as NavigationEnd).urlAfterRedirects));
+      });
+  }
+
+  private isAuthPath(url: string): boolean {
+    return url.startsWith('/login') || url.startsWith('/register');
+  }
 }

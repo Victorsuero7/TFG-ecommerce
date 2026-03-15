@@ -16,7 +16,7 @@ import {environment} from '../../../environments/environment';
 export class EditProductComponent implements OnInit {
   form: FormGroup;
   error: string | null = null;
-  loading = false;
+  loading = true;
   categories: any[] = [];
   productId?: number;
   selectedFile: File | null = null;

@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductDetailComponent implements OnInit {
   product?: Product;
-  loading = false;
+  loading = true;
   error = '';
   imageError = false;
   imageUrl: string | ArrayBuffer | null = null;

@@ -100,4 +100,46 @@
 	}
 }
 
+.create-form-page {
+	max-width: 980px;
+}
 
+.card {
+	border: 1px solid var(--list-border);
+	border-radius: 12px;
+	box-shadow: var(--list-shadow);
+	background: var(--list-row-bg);
+}
+
+.card-body {
+	padding: 1.75rem;
+}
+
+.invalid-feedback.d-block {
+	color: #dc3545;
+}
+
+.text-danger {
+	color: #dc3545 !important;
+}
+
+@media (max-width: 576px) {
+	.card { margin: 0 8px; }
+}
+
+
+.table-themed thead th {
+	background: var(--list-header-bg);
+	color: var(--list-header-text);
+	border-color: var(--list-border);
+	font-weight: 600;
+}
+
+.table-themed tbody td {
+	border-color: var(--list-border);
+	background: var(--list-row-bg);
+}
+
+.table-themed tbody tr:hover td {
+	background: var(--list-row-hover-bg);
+}

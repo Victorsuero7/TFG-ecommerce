@@ -16,7 +16,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ListProductsComponent implements OnInit, OnDestroy {
   products: Product[] = [];
-  loading = false;
+  loading = true;
   error = '';
   selectedDeleteId?: number;
 

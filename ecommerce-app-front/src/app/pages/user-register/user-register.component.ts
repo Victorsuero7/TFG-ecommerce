@@ -17,7 +17,7 @@ import { AuthService } from '../../services/auth/auth.service';
 
 export class UserRegisterComponent {
   error: string | null = null;
-  loading = false;
+  loading = true;
   submitting = false;
   form!: FormGroup;
   toastMessage: string | null = null;
@@ -82,7 +82,7 @@ export class UserRegisterComponent {
     const cp = cpControl.value;
 
     if (!cp) {
-      if (cpControl.hasError('Las contraseñas no coinciden')) {
+      if (cpControl.hasError('mismatch')) {
         const errors = { ...cpControl.errors };
         delete (errors as any).mismatch;
         if (Object.keys(errors).length === 0) cpControl.setErrors(null);
@@ -94,7 +94,7 @@ export class UserRegisterComponent {
     if (pwd !== cp) {
       cpControl.setErrors({ ...(cpControl.errors || {}), mismatch: true });
     } else {
-      if (cpControl.hasError('Las contraseñas no coinciden')) {
+      if (cpControl.hasError('mismatch')) {
         const errors = { ...cpControl.errors };
         delete (errors as any).mismatch;
         if (Object.keys(errors).length === 0) cpControl.setErrors(null);

@@ -15,7 +15,7 @@ import { Category } from '../../models/category.model';
 })
 export class ListCategoriesComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
-  loading = false;
+  loading = true;
   error = '';
   searchTerm = '';
   searchField: 'all' | 'name' | 'description' = 'all';
