@@ -20,6 +20,7 @@ export interface ProductInventario extends Product {
 export class CreateInventarioComponent {
   productos: ProductInventario[] = [];
   loading = true;
+  productsLoadError = false;
 
   constructor(private productService: ProductService, public router: Router, private authService: AuthService) {
     (window as any).showAuthToast = () => {
@@ -35,6 +36,7 @@ export class CreateInventarioComponent {
   }
 
   loadProducts() {
+    this.productsLoadError = false;
     this.productService.getAll().subscribe({
       next: products => {
         this.productos = products.map(p => ({
@@ -44,7 +46,12 @@ export class CreateInventarioComponent {
         }));
         this.loading = false;
       },
-      error: () => { this.loading = false; }
+      error: err => {
+        console.error('Error cargando productos', err);
+        this.productos = [];
+        this.productsLoadError = true;
+        this.loading = false;
+      }
     });
   }
 

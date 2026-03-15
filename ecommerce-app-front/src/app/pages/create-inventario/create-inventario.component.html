@@ -42,8 +42,8 @@
               </td>
             </tr>
             <tr *ngIf="productos.length === 0">
-              <td colspan="3" class="text-center py-4 text-muted">
-                No hay productos disponibles
+              <td colspan="3" class="text-center py-4" [ngClass]="productsLoadError ? 'text-danger' : 'text-muted'">
+                {{ productsLoadError ? 'Error cargando los productos' : 'No hay productos disponibles' }}
               </td>
             </tr>
 

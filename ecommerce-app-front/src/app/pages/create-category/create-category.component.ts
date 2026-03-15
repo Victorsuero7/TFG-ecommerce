@@ -13,7 +13,7 @@ import { CategoryService } from '../../services/category/category.service';
 })
 export class CreateCategoryComponent {
   form!: FormGroup;
-  loading = true;
+  loading = false;
   error = '';
   toastVisible = false;
   toastMessage = '';

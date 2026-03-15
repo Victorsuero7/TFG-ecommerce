@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ProductService } from '../../services/product/product.service';
 import { CategoryService } from '../../services/category/category.service';
 import { Product } from '../../models/product.model';
@@ -19,6 +20,7 @@ import { Movement } from '../../models/movement.model';
 export class DashboardComponent implements OnInit {
     latestMovements: Movement[] = [];
   loading = true;
+  loadWarnings: string[] = [];
 
   totalProducts = 0;
   totalCategories = 0;
@@ -54,19 +56,54 @@ export class DashboardComponent implements OnInit {
   hideToast() { this.toastVisible = false; }
 
   ngOnInit(): void {
-    forkJoin([
-      this.productSvc.getAll(),
-      this.categorySvc.getAll(),
-      this.movementSvc.getAll(1)
-    ]).subscribe({
-      next: ([products, categories, movements]) => {
+    this.loadWarnings = [];
+    forkJoin({
+      products: this.productSvc.getAll().pipe(
+        catchError(err => {
+          this.handleLoadError('productos', err);
+          return of([] as Product[]);
+        })
+      ),
+      categories: this.categorySvc.getAll().pipe(
+        catchError(err => {
+          this.handleLoadError('categorías', err);
+          return of([] as Category[]);
+        })
+      ),
+      movements: this.movementSvc.getAll(1).pipe(
+        catchError(err => {
+          this.handleLoadError('movimientos', err);
+          return of({ data: [], count: 0 });
+        })
+      )
+    }).subscribe({
+      next: ({ products, categories, movements }) => {
         this.buildDashboard(products, categories);
         this.latestMovements = (movements.data ?? []).sort((a, b) => new Date(b.lastModification).getTime() - new Date(a.lastModification).getTime()).slice(0, 5);
         console.log('Dashboard datos:', { products, categories, movements });
+        if (this.loadWarnings.length > 0) {
+          this.showToast('Error cargando parte de los datos del dashboard', 'error');
+        }
         this.loading = false;
       },
-      error: () => { this.loading = false; }
+      error: err => {
+        console.error('Error cargando dashboard', err);
+        this.loadWarnings = ['Error cargando los datos del dashboard'];
+        this.showToast('Error cargando los datos del dashboard', 'error');
+        this.loading = false;
+      }
     });
+  }
+
+  private handleLoadError(section: string, err: any): void {
+    console.error(`Error cargando ${section}:`, err);
+    const isAuthError = err?.status === 401;
+    const message = isAuthError
+      ? `No autorizado al cargar ${section}`
+      : `Error cargando ${section}`;
+    if (!this.loadWarnings.includes(message)) {
+      this.loadWarnings.push(message);
+    }
   }
 
   private buildDashboard(products: Product[], categories: Category[]): void {
