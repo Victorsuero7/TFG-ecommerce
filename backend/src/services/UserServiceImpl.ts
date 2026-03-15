@@ -65,6 +65,7 @@ export class UserServiceImpl implements UserService {
             return token
         } catch (error) {
             console.log(error)
+            if (error instanceof HttpErrors) throw error;
             throw HttpErrors.internalServerError("Something went wrong")
         }
     }
@@ -92,6 +93,7 @@ export class UserServiceImpl implements UserService {
         }
         catch (error) {
             console.log(error)
+            if (error instanceof HttpErrors) throw error;
             throw HttpErrors.internalServerError("Something went wrong")
         }
     }
