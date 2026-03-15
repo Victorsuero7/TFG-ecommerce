@@ -1,10 +1,18 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter([]),
+      ],
     }).compileComponents();
   });
 
@@ -20,10 +28,11 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('ecommerce-app-front');
   });
 
-  it('should render title', () => {
+  it('should render shell layout', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ecommerce-app-front');
+    expect(compiled.querySelector('app-nav')).not.toBeNull();
+    expect(compiled.querySelector('section.main-content')).not.toBeNull();
   });
 });
