@@ -1,14 +1,8 @@
-module.exports = {
+export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  clearMocks: true,
-  moduleFileExtensions: ['ts', 'js', 'json'],
+  runInBand: true,
+  globalTeardown: './test/global-teardown.ts',
+  globalSetup: './test/global-setup.ts',    // ← crea schema ANTES de todo
 
-  testMatch: ['**/?(*.)+(spec|test).ts'],
-
-  transform: {
-    '^.+\\.ts$': 'ts-jest'
-  },
-
-  moduleDirectories: ['node_modules', 'src']
 };

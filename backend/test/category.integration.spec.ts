@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../src/app';
 import { TestDataSource } from './test-datasource';
 import { Category } from '../src/Models/category.entity';
+import { clearAllTables, setupTestDB, teardownTestDB } from './setup-db';
 
 // Mock middleware de autorización
 jest.mock('../src/utils/AuthorizationMiddleware', () => ({
@@ -19,11 +20,13 @@ jest.mock('../src/config/MySQL-datasource', () => {
 describe('Category Integration Tests', () => {
     // --- Conexión a DB de test ---
     beforeAll(async () => {
-        if (!TestDataSource.isInitialized) {
-            await TestDataSource.initialize();
-        }
+        await setupTestDB();
+        await clearAllTables(); // ← mismo fix
     });
 
+    afterAll(async () => {
+        await teardownTestDB();
+    });
     // --- Limpiar datos entre tests usando transacciones ---
     let queryRunner: any;
 
@@ -39,9 +42,7 @@ describe('Category Integration Tests', () => {
     // });
 
     afterAll(async () => {
-        if (TestDataSource.isInitialized) {
-            await TestDataSource.destroy();
-        }
+        await teardownTestDB(); // cierra la conexión de este archivo
     });
 
     // --- TESTS ---

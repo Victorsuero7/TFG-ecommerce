@@ -3,6 +3,7 @@ import { app } from '../src/app';
 import { Category } from '../src/Models/category.entity';
 import { TestDataSource } from './test-datasource';
 import { JWTAdapter } from '../src/utils/Jwt';
+import { clearAllTables, setupTestDB, teardownTestDB } from './setup-db';
 
 // Mock dinámico de MySQLDataSource
 jest.mock('../src/config/MySQL-datasource', () => {
@@ -16,22 +17,16 @@ describe('Authentication Integration Tests (Category Routes)', () => {
     // Inicialización de la base de datos
     // -------------------------------
     beforeAll(async () => {
-        if (!TestDataSource.isInitialized) {
-            await TestDataSource.initialize();
-        }
-
-        // Limpiamos tabla Category y User para tests limpios
-        await TestDataSource.getRepository(Category).clear();
-        await TestDataSource.getRepository('user').clear(); // o User entity si la tienes
-
-        // Insertamos categoría de prueba
-        await TestDataSource.getRepository(Category).save({ name: 'Security', description: 'Test' });
+        await setupTestDB();
+        await clearAllTables(); // ← DELETE en orden correcto, sin FK issues
+        await TestDataSource.getRepository(Category).save({
+            name: 'Security',
+            description: 'Test'
+        });
     });
 
     afterAll(async () => {
-        if (TestDataSource.isInitialized) {
-            await TestDataSource.destroy();
-        }
+        await teardownTestDB();
     });
 
     describe('Security checks', () => {
