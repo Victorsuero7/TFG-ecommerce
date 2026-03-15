@@ -17,7 +17,7 @@ import { Product } from '../../models/product.model';
 export class CreateProductComponent {
   form!: FormGroup;
   categories: Category[] = [];
-  loading = true;
+  loading = false;
   error = '';
   toastVisible = false;
   toastMessage = '';
