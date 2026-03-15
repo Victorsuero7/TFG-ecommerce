@@ -1,7 +1,7 @@
 {
 	"name": "backend",
 	"version": "1.0.0",
-	"main": "app.js",
+	"main": "server.js",
 	"scripts": {
 		"dev": "tsnd --respawn --clear src/server.ts",
 		"lint": "biome check .",
@@ -40,6 +40,7 @@
 		"multer": "2.0.2",
 		"mysql2": "3.15.3",
 		"reflect-metadata": "0.2.2",
+		"sqlite3": "^5.1.7",
 		"typeorm": "0.3.27"
 	}
 }

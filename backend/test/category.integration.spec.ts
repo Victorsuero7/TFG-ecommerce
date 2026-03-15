@@ -1,9 +1,9 @@
 import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { app } from '../src/app';
-// Importamos tus entidades para la base de datos de prueba
 import { Category } from '../src/Models/category.entity';
 import { Product } from '../src/Models/product.entity';
+import { TestDataSource } from './test-datasource';
 
 // ==========================================
 // 1. MOCKS (Deben ir antes de las importaciones que los usan)
@@ -16,21 +16,21 @@ jest.mock('../src/utils/AuthorizationMiddleware', () => ({
     }
 }));
 
-// Creamos una Base de Datos SQLite en memoria puramente para los tests
-// Es rapidísima, se destruye al acabar, y no toca tu MySQL real.
-const TestDataSource = new DataSource({
-    type: 'sqlite',
-    database: ':memory:', // Base de datos efímera en RAM
-    entities: [Category, Product], // Añadimos las entidades relacionadas
-    synchronize: true, // Crea las tablas automáticamente
-    logging: false,
-});
+// // Creamos una Base de Datos SQLite en memoria puramente para los tests
+// const TestDataSource = new DataSource({
+//     type: 'sqlite',
+//     database: ':memory:',
+//     entities: [Category, Product],
+//     synchronize: true,
+//     logging: true,
+// });
 
-// Mockeamos tu archivo de configuración de MySQL para que tu CategoryRoutes 
-// recoja esta base de datos de prueba en lugar de la original.
-jest.mock('../src/config/MySQL-datasource', () => ({
-    MySQLDataSource: TestDataSource
-}));
+// Mockeamos tu archivo de configuración de MySQL usando un **getter dinámico**
+// Esto evita el ReferenceError por Temporal Dead Zone
+jest.mock('../src/config/MySQL-datasource', () => {
+    const { TestDataSource } = require('./test-datasource'); // <-- dinámico
+    return { MySQLDataSource: TestDataSource };
+});
 
 // ==========================================
 // 2. SUITE DE TESTS
@@ -38,18 +38,18 @@ jest.mock('../src/config/MySQL-datasource', () => ({
 
 describe('Category Integration Tests', () => {
 
-    // Antes de todos los tests: Inicializamos la BD de prueba en memoria
+    // Inicializamos la BD de prueba antes de todos los tests
     beforeAll(async () => {
         await TestDataSource.initialize();
     });
 
-    // Después de cada test: Limpiamos la tabla para que un test no afecte a otro
+    // Limpiamos datos después de cada test
     afterEach(async () => {
         const categoryRepo = TestDataSource.getRepository(Category);
         await categoryRepo.clear();
     });
 
-    // Después de todos los tests: Cerramos la conexión
+    // Cerramos la conexión al finalizar todos los tests
     afterAll(async () => {
         await TestDataSource.destroy();
     });
@@ -63,17 +63,14 @@ describe('Category Integration Tests', () => {
                 description: 'Devices and gadgets'
             };
 
-            // Hacemos una petición HTTP REAL a tu app
             const response = await request(app)
                 .post('/category/insert')
                 .send(newCategoryData);
 
-            // Validamos que el servidor responde correctamente
-            expect(response.status).toBe(200); // O 201 si así lo tienes configurado
+            expect(response.status).toBe(200);
             expect(response.body.result).toHaveProperty('id');
             expect(response.body.result.name).toBe('Electronics');
 
-            // Validamos que DE VERDAD se guardó en la base de datos
             const categoryRepo = TestDataSource.getRepository(Category);
             const savedCategory = await categoryRepo.findOneBy({ name: 'Electronics' });
 
@@ -84,17 +81,14 @@ describe('Category Integration Tests', () => {
 
     describe('GET /category/', () => {
         it('should return a list of categories', async () => {
-            // 1. Preparamos el terreno insertando un dato directamente en la BD de prueba
             const categoryRepo = TestDataSource.getRepository(Category);
             const cat = new Category();
             cat.name = 'Books';
             cat.description = 'Library items';
             await categoryRepo.save(cat);
 
-            // 2. Hacemos la petición a tu endpoint
             const response = await request(app).get('/category/');
 
-            // 3. Comprobamos la respuesta
             expect(response.status).toBe(200);
             expect(Array.isArray(response.body.result)).toBe(true);
             expect(response.body.result.length).toBe(1);
@@ -117,11 +111,8 @@ describe('Category Integration Tests', () => {
             expect(response.body.result.name).toBe('Toys');
         });
 
-        it('should return 404 (or error code) if category does not exist', async () => {
-            // Suponiendo que tu HttpErrors.NotFound() devuelve un 404
+        it('should return 404 if category does not exist', async () => {
             const response = await request(app).get(`/category/9999`);
-
-            // Ajusta este expect al código de estado real que devuelva tu manejador de errores
             expect(response.status).toBe(404);
         });
     });

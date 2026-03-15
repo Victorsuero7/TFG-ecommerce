@@ -16,9 +16,10 @@ const TestDataSource = new DataSource({
     logging: false,
 });
 
-jest.mock('../src/config/MySQL-datasource', () => ({
-    MySQLDataSource: TestDataSource
-}));
+jest.mock('../src/config/MySQL-datasource', () => {
+    const { TestDataSource } = require('./test-datasource'); // <-- dinámico
+    return { MySQLDataSource: TestDataSource };
+});
 
 // ¡FÍJATE QUE AQUÍ NO MOCKEAMOS EL RBACMiddleware! 
 // Queremos que actúe de verdad.

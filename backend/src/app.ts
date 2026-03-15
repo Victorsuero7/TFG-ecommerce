@@ -1,11 +1,12 @@
-import express from 'express';
-import cors from 'cors';
+import express from 'express'
+import cors from 'cors'
 import { UserRoutes } from './routes/UserRoutes'
 import { ProductRoutes } from './routes/ProductRoutes'
 import { CategoryRoutes } from './routes/CategoryRoutes'
 import { MovementRoutes } from './routes/MovementRoutes'
 import path from 'path';
 import { envs } from './config/envs';
+import { ConfigRoutes } from './routes/ConfigRoutes'
 
 
 const app = express();
@@ -42,7 +43,7 @@ app.use('/movement', MovementRoutes.routes)
 
 
 //Es para poner el número de páginas en el paginado al listar porfi no me lo borreis 
-const { ConfigRoutes } = require('./routes/ConfigRoutes');
+// const { ConfigRoutes } = require('./routes/ConfigRoutes');
 app.use('/config', ConfigRoutes.routes);
 
 export { app }
