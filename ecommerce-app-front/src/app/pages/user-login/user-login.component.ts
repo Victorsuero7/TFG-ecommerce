@@ -31,12 +31,13 @@ error: string | null = null;
       email: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-    // Mostrar toast si viene de redirección por falta de autenticación
     setTimeout(() => {
-      const authToast = localStorage.getItem('auth_redirect_toast');
-      if (authToast) {
-        this.showToast(authToast, 'error');
-        localStorage.removeItem('auth_redirect_toast');
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const authToast = localStorage.getItem('auth_redirect_toast');
+        if (authToast) {
+          this.showToast(authToast, 'error');
+          localStorage.removeItem('auth_redirect_toast');
+        }
       }
     }, 0);
   }

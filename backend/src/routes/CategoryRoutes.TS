@@ -3,6 +3,7 @@ import { CategoryServiceImpl } from '../services/CategoryServiceImpl';
 import { CategoryRepository } from '../repositories/CategoryRepository';
 import { CategoryController } from '../controllers/CategoryController';
 import { MySQLDataSource } from '../config/MySQL-datasource';
+import { RBACMiddleware } from '../utils/AuthorizationMiddleware';
 
 export class CategoryRoutes {
     static get routes(): Router {
@@ -10,6 +11,8 @@ export class CategoryRoutes {
         const repository = new CategoryRepository(MySQLDataSource);
         const service = new CategoryServiceImpl(repository);
         const controller = new CategoryController(service);
+
+        router.use(RBACMiddleware.requireAutentication())
 
         router.post('/insert', controller.insert)
         router.patch('/update', controller.update)
