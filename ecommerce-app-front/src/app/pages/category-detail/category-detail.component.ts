@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class CategoryDetailComponent {
  category?: Category;
-  loading = false;
+  loading = true;
   error = '';
 
   constructor(private route: ActivatedRoute, private CategorySvc: CategoryService) {}

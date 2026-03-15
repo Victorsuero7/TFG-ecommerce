@@ -15,7 +15,7 @@ export class EditCategoryComponent implements OnInit{
   
   form: FormGroup;
   error: string | null = null;
-  loading = false;
+  loading = true;
   categories: any[] = [];
   categoryId ?: number;
   

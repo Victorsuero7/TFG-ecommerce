@@ -14,7 +14,7 @@ import {AuthService} from '../../services/auth/auth.service';
 })
 export class UserLoginComponent {
 error: string | null = null;
-  loading = false;
+  loading = true;
   submitting = false;
   form!: FormGroup;
   toastMessage: string | null = null;
