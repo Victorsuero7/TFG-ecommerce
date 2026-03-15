@@ -1,5 +1,5 @@
 <div class="inventory-list container-fluid">
-  <h6 class="mb-3">Historial de movimientos en inventarios</h6>
+  <h4 class="mb-3">Historial de movimientos en inventarios</h4>
 
   <div class="search-bar row mb-3 g-2 align-items-center justify-content-end">
     <div class="col-12 col-md-6 offset-md-6">
@@ -21,7 +21,7 @@
 
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <div class="table-header d-none d-md-flex fw-bold small px-2">
+  <div *ngIf="!loading && !error && movements?.length" class="table-header d-none d-md-flex fw-bold small px-2">
     <div class="col-1">ID</div>
     <div class="col">Producto</div>
     <div class="col-2">Stock final</div>
@@ -30,22 +30,24 @@
   </div>
   <div *ngIf="loading" class="mb-3">Cargando...</div>
 
-  <ng-container *ngIf="!loading && movements?.length; else noData">
-    <div *ngFor="let m of movements" class="movement-row d-flex align-items-center my-2">
-      <div class="col-1 small px-2">{{ m.id }}</div>
-      <div class="col small px-2">{{ m.productName }}</div>
-      <div class="col-2 small px-2">{{ m.finalStock }}</div>
-      <div class="col-2 small px-2">{{ m.modifiedByEmail }}</div>
-      <div class="col-3 small px-2">{{ formatDate(m.lastModification) }}</div>
+  <ng-container *ngIf="!loading && !error && movements?.length; else noData">
+    <div class="list-body">
+      <div *ngFor="let m of movements" class="movement-row d-flex align-items-center">
+        <div class="col-1 small px-2">{{ m.id }}</div>
+        <div class="col small px-2">{{ m.productName }}</div>
+        <div class="col-2 small px-2">{{ m.finalStock }}</div>
+        <div class="col-2 small px-2">{{ m.modifiedByEmail }}</div>
+        <div class="col-3 small px-2">{{ formatDate(m.lastModification) }}</div>
+      </div>
     </div>
   </ng-container>
 
   <ng-template #noData>
-    <div *ngIf="!loading" class="mt-3 text-muted">No hay movimientos registrados.</div>
+    <div *ngIf="!loading && !error" class="mt-3 text-muted">No hay movimientos registrados.</div>
   </ng-template>
 
 
-  <nav *ngIf="totalPages > 1" aria-label="Paginación de movimientos" class="mt-3 d-flex flex-column align-items-end gap-1">
+  <nav *ngIf="!loading && !error && totalPages > 1" aria-label="Paginación de movimientos" class="mt-3 d-flex flex-column align-items-end gap-1">
     <ul class="pagination pagination-sm mb-0">
       <li class="page-item" [class.disabled]="currentPage === 1">
         <button class="page-link" (click)="goToPage(currentPage - 1)">&laquo;</button>

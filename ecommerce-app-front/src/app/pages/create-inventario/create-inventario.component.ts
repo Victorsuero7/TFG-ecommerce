@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product/product.service';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../../services/auth/auth.service';
 
 export interface ProductInventario extends Product {
   cantidad: number;
@@ -19,9 +19,10 @@ export interface ProductInventario extends Product {
 })
 export class CreateInventarioComponent {
   productos: ProductInventario[] = [];
-  loading = false;
+  loading = true;
+  productsLoadError = false;
 
-  constructor(private productService: ProductService, public router: Router) {
+  constructor(private productService: ProductService, public router: Router, private authService: AuthService) {
     (window as any).showAuthToast = () => {
       this.showToast('Debes estar autenticado para acceder', 'error');
     };
@@ -35,13 +36,22 @@ export class CreateInventarioComponent {
   }
 
   loadProducts() {
-    this.productService.getAll().subscribe(products => {
-      this.productos = products.map(p => ({
-        ...p,
-        stockOriginal: p.stock ?? 0,
-        cantidad: p.stock ?? 0
-      }));
-       console.log('Producto cargado para inventario:', products);
+    this.productsLoadError = false;
+    this.productService.getAll().subscribe({
+      next: products => {
+        this.productos = products.map(p => ({
+          ...p,
+          stockOriginal: p.stock ?? 0,
+          cantidad: p.stock ?? 0
+        }));
+        this.loading = false;
+      },
+      error: err => {
+        console.error('Error cargando productos', err);
+        this.productos = [];
+        this.productsLoadError = true;
+        this.loading = false;
+      }
     });
   }
 
@@ -56,36 +66,49 @@ export class CreateInventarioComponent {
   }
 
   guardarInventario() {
-  this.loading = true;
-  const productosActualizados = this.productos
-    .filter(p => p.cantidad !== p.stockOriginal)
-    .map(p => ({
-      ...p,
-      stock: p.cantidad
-    }));
+    this.loading = true;
+    const userId = this.getUserId();
+    const productosActualizados = this.productos
+      .filter(p => p.cantidad !== p.stockOriginal)
+      .map(p => ({
+        ...p,
+        stock: p.cantidad,
+        modifiedById: userId
+      }));
 
-  if (productosActualizados.length === 0) {
-    this.showToast('No hay cambios que guardar', 'info');
-    this.loading = false;
-    return;
+    if (productosActualizados.length === 0) {
+      this.showToast('No hay cambios que guardar', 'info');
+      this.loading = false;
+      return;
+    }
+
+    this.productService.updateMany(productosActualizados as any)
+      .subscribe({
+        next: () => {
+          this.loading = false;
+          this.showToast('Inventario actualizado', 'success');
+          setTimeout(() => this.router.navigate(['/inventory/list']), 800);
+        },
+        error: err => {
+          this.loading = false;
+          console.error('Error actualizando inventario', err);
+          this.showToast('Error al actualizar inventario', 'error');
+        }
+      });
   }
 
-  this.productService.updateMany(productosActualizados as any)
-    .subscribe({
-          next: () => {
-            this.loading = false;
-            this.showToast('Inventario actualizado', 'success');
-            setTimeout(() => this.router.navigate(['/inventory/list']), 800);
-          },
-          error: err => {
-            this.loading = false;
-            console.error('Error actualizando inventario', err);
-            this.showToast('Error al actualizar inventario', 'error');
-          }
-        });
-      }
+  getUserId(): number | null {
+    const token = this.authService.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id || null;
+    } catch {
+      return null;
+    }
+  }
 
- showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
+  showToast(message: string, kind: 'success' | 'error' | 'info' = 'info') {
     this.toastMessage = message;
     this.toastVariant = kind === 'success' ? 'success' : (kind === 'error' ? 'danger' : 'primary');
     this.toastVisible = true;

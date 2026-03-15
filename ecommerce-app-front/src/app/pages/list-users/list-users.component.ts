@@ -14,7 +14,7 @@ import {map} from 'rxjs';
 })
 export class ListUsersComponent implements OnInit {
   users: User[] = [];
-  loading = false;
+  loading = true;
   error = '';
 
   toastVisible = false;

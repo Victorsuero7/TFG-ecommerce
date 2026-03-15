@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { inject } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +31,16 @@ export class CategoryService extends GenericService<Category> {
   }
 
   override getAll(): Observable<Category[]> {
+  const options = this.getAuthHeaders();
+  return this.http.get<Category[]>(`${this.baseUrl}`, options).pipe(
+    map((res: any) => Array.isArray(res) ? res : (res?.result ?? res?.message ?? []))
+  );
+}
+
+  override getById(id: number): Observable<Category> {
     const options = this.getAuthHeaders();
-    return super.getAll().pipe(
-      map((res: any) => Array.isArray(res) ? res : (res?.result ?? res?.message ?? []))
+    return this.http.get<any>(`${this.baseUrl}/${id}`, options).pipe(
+      map((res: any) => (res?.result ?? res?.message ?? res) as Category)
     );
   }
 

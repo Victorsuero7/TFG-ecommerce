@@ -12,12 +12,15 @@ export class UserRoutes {
         const service = new UserServiceImpl(repository);
         const controller = new UserController(service);
 
+        router.post('/login', controller.login)
+        router.post('/sign-up', controller.signUp)
+
+        router.use(RBACMiddleware.requireAutentication())
+
         router.post('/insert', controller.insert)
         router.get('/', controller.getAllPaginated)
         router.get('/all/:page', controller.getAllPaginated)
         router.get('/email-available', controller.validateEmail) //?email=
-        router.post('/login', controller.login)
-        router.post('/sign-up', controller.signUp)
         router.get('/:id', controller.getOne)
         router.delete('/delete/:id', RBACMiddleware.requireRole(["ADMIN", "ROOT"]), controller.delete)
         router.get('/disabled/:page', RBACMiddleware.requireRole(["ADMIN", "ROOT"]), controller.disabled)

@@ -14,7 +14,7 @@ import { UserService } from '../../services/user/user.service';
 export class UserEditComponent implements OnInit {
   form: FormGroup;
   error: string | null = null;
-  loading = false;
+  loading = true;
   userId?: number;
   toastVisible = false;
   toastMessage = '';

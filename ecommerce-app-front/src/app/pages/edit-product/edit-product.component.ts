@@ -77,7 +77,6 @@ loadCategories(): Promise<void> {
 }
 
 loadProduct(id: number): void {
-  this.loading = true;
   this.productSvc.getById(id).subscribe({
     next: (resp: any) => {
       const p = resp.result ?? resp;
@@ -93,11 +92,9 @@ loadProduct(id: number): void {
       });
       this.productImageUrl = this.getImageUrl(p?.imageUrl || null);
       console.log('[loadProduct] productImageUrl set:', this.productImageUrl);
-      this.loading = false;
     },
     error: err => {
       console.error('Error cargando producto', err);
-      this.loading = false;
     }
   });
   
@@ -120,6 +117,8 @@ loadProduct(id: number): void {
       this.form.markAllAsTouched();
       return;
     }
+
+    this.loading = true;
 
     const formData = new FormData();
     formData.append('id', String(this.productId));
@@ -144,10 +143,12 @@ loadProduct(id: number): void {
     });
     this.productSvc.update(this.productId, formData).subscribe({
       next: () => {
+        this.loading = false;
         this.showToast('Producto actualizado', 'success');
         setTimeout(() => this.router.navigate(['/products/list']), 800);
       },
       error: err => {
+        this.loading = false;
         console.error('Error actualizando producto', err);
         this.showToast('Error al actualizar producto', 'error');
       }

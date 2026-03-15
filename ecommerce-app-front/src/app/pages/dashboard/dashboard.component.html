@@ -1,4 +1,9 @@
 <div class="dashboard" *ngIf="!loading; else loader">
+	<div *ngIf="loadWarnings.length" class="alert alert-danger" role="alert">
+		<strong>Error cargando dashboard.</strong>
+		<div *ngFor="let warning of loadWarnings">{{ warning }}</div>
+	</div>
+
 	<div class="kpi-row">
 		<div class="kpi-card">
 			<span class="kpi-icon"><i class="bi bi-box-seam"></i></span>

@@ -1,4 +1,4 @@
 <app-nav></app-nav>
-<section class="main-content">
+<section class="main-content" [class.main-content-auth]="isAuthRoute()">
     <router-outlet></router-outlet>
 </section>

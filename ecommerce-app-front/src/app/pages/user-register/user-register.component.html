@@ -1,58 +1,65 @@
+<div class="auth-page bg-body-secondary w-100">
+  <div class="auth-card-wrap">
+    <div class="card shadow-lg p-4 auth-card">
+      <div class="text-center mb-4">
+        <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
+        <h3 class="fw-bold">Registrate</h3>
+      </div>
 
-<div class="bg-light w-100" style="position:relative; min-height:100vh;">
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:2;">
-    <div class="card shadow-lg p-4" style="min-width:400px; max-width:600px; border-radius: 1.5rem;">
-    <div class="text-center mb-4">
-      <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
-      <h3 class="fw-bold">Registrate</h3>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input class="form-control" formControlName="name"
+            [class.is-invalid]="form.get('name')?.touched && form.get('name')?.invalid">
+          <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="invalid-feedback">El nombre es obligatorio.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Apellidos</label>
+          <input class="form-control" formControlName="lastName">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input class="form-control" formControlName="email"
+            [class.is-invalid]="form.get('email')?.touched && form.get('email')?.invalid">
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')" class="invalid-feedback">El email es obligatorio.</div>
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')" class="invalid-feedback">Introduce un email válido.</div>
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('emailTaken')" class="invalid-feedback">Ya existe una cuenta con ese email.</div>
+          <div *ngIf="form.get('email')?.pending" class="form-text text-muted">Comprobando disponibilidad...</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Teléfono</label>
+          <input class="form-control" formControlName="phoneNumber" inputmode="numeric"
+            [class.is-invalid]="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">
+          <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('required')" class="invalid-feedback">El teléfono es obligatorio.</div>
+          <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('pattern')" class="invalid-feedback">Introduce un número de teléfono válido.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-control" formControlName="password"
+            [class.is-invalid]="form.get('password')?.touched && form.get('password')?.invalid">
+          <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Repetir contraseña</label>
+          <input type="password" class="form-control" formControlName="confirmPassword"
+            [class.is-invalid]="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.invalid">
+          <div *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')"
+            class="invalid-feedback">Debes repetir la contraseña.</div>
+          <div *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('mismatch')"
+            class="invalid-feedback">Las contraseñas no coinciden.</div>
+        </div>
+
+        <div class="d-flex justify-content-between gap-2">
+          <button class="btn btn-outline-primary" type="button" (click)="goToLogin()"><i class="bi bi-box-arrow-in-right me-1"></i>Accede</button>
+          <button class="btn btn-primary" type="submit" [disabled]="submitting">{{ submitting ? 'Registrando...' : 'Registrate' }}</button>
+        </div>
+      </form>
     </div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-      <div class="mb-3">
-        <label class="form-label">Nombre</label>
-        <input class="form-control" formControlName="name"
-          [class.is-invalid]="form.get('name')?.touched && form.get('name')?.invalid">
-        <div *ngIf="form.get('name')?.touched && form.get('name')?.invalid" class="invalid-feedback">El nombre es obligatorio.</div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Apellidos</label>
-        <input class="form-control" formControlName="lastName">
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input class="form-control" formControlName="email"
-          [class.is-invalid]="form.get('email')?.touched && form.get('email')?.invalid">
-        <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')" class="invalid-feedback">El email es obligatorio.</div>
-        <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')" class="invalid-feedback">Introduce un email válido.</div>
-        <div *ngIf="form.get('email')?.touched && form.get('email')?.hasError('emailTaken')" class="invalid-feedback">Ya existe una cuenta con ese email.</div>
-        <div *ngIf="form.get('email')?.pending" class="form-text text-muted">Comprobando disponibilidad...</div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Teléfono</label>
-        <input class="form-control" formControlName="phoneNumber" inputmode="numeric"
-          [class.is-invalid]="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">
-        <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('required')" class="invalid-feedback">El teléfono es obligatorio.</div>
-        <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('pattern')" class="invalid-feedback">Introduce un número de teléfono válido.</div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Contraseña</label>
-        <input type="password" class="form-control" formControlName="password"
-          [class.is-invalid]="form.get('password')?.touched && form.get('password')?.invalid">
-        <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Repetir contraseña</label>
-        <input type="password" class="form-control" formControlName="confirmPassword"
-          [class.is-invalid]="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.invalid">
-        <div *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')"
-          class="invalid-feedback">Debes repetir la contraseña.</div>
-        <div *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('mismatch')"
-          class="invalid-feedback">Las contraseñas no coinciden.</div>
-      </div>
-      <div class="d-flex justify-content-between">
-        <button class="btn btn-outline-primary" type="button" (click)="goToLogin()"><i class="bi bi-box-arrow-in-right me-1"></i>Accede</button>
-        <button class="btn btn-primary" type="submit" [disabled]="submitting">{{ submitting ? 'Registrando...' : 'Registrate' }}</button>
-      </div>
-    </form>
   </div>
 
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">

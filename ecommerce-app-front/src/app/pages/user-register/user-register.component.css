@@ -1,0 +1,23 @@
+.auth-page {
+	position: relative;
+	min-height: 100vh;
+}
+
+.auth-card-wrap {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
+	width: min(92vw, 600px);
+}
+
+.auth-card {
+	border-radius: 1.5rem;
+}
+
+@media (max-width: 576px) {
+	.auth-card-wrap {
+		width: calc(100vw - 24px);
+	}
+}
