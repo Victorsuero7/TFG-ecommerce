@@ -3,6 +3,7 @@ import { UserServiceImpl } from '../services/UserServiceImpl';
 import { UserRepository } from '../repositories/UserRepository';
 import { UserController } from '../controllers/UserController';
 import { MySQLDataSource } from '../config/MySQL-datasource';
+import { RBACMiddleware } from '../utils/AuthorizationMiddleware';
 
 export class UserRoutes {
     static get routes(): Router {
@@ -18,8 +19,8 @@ export class UserRoutes {
         router.post('/login', controller.login)
         router.post('/sign-up', controller.signUp)
         router.get('/:id', controller.getOne)
-        router.delete('/delete/:id', controller.delete)
-        router.get('/disabled/:page', controller.disabled)
+        router.delete('/delete/:id', RBACMiddleware.requireRole(["ADMIN", "ROOT"]), controller.delete)
+        router.get('/disabled/:page', RBACMiddleware.requireRole(["ADMIN", "ROOT"]), controller.disabled)
 
 
         // router.post('/register', controller.registerUser)
