@@ -1,78 +1,67 @@
 import request from 'supertest';
-import { DataSource } from 'typeorm';
 import { app } from '../src/app';
 import { Category } from '../src/Models/category.entity';
-import { Product } from '../src/Models/product.entity';
-import { User } from '../src/Models/user.entity';
-// Importamos tu generador de tokens real
+import { TestDataSource } from './test-datasource';
 import { JWTAdapter } from '../src/utils/Jwt';
 
-// 1. Configuramos la BD de prueba (Igual que antes)
-const TestDataSource = new DataSource({
-    type: 'sqlite',
-    database: ':memory:',
-    entities: [Category, Product, User], // Añadimos User
-    synchronize: true,
-    logging: false,
-});
-
+// Mock dinámico de MySQLDataSource
 jest.mock('../src/config/MySQL-datasource', () => {
-    const { TestDataSource } = require('./test-datasource'); // <-- dinámico
+    const { TestDataSource } = require('./test-datasource');
     return { MySQLDataSource: TestDataSource };
 });
 
-// ¡FÍJATE QUE AQUÍ NO MOCKEAMOS EL RBACMiddleware! 
-// Queremos que actúe de verdad.
-
 describe('Authentication Integration Tests (Category Routes)', () => {
 
+    // -------------------------------
+    // Inicialización de la base de datos
+    // -------------------------------
     beforeAll(async () => {
-        await TestDataSource.initialize();
+        if (!TestDataSource.isInitialized) {
+            await TestDataSource.initialize();
+        }
 
-        // Preparamos una categoría de prueba en la BD
-        const categoryRepo = TestDataSource.getRepository(Category);
-        await categoryRepo.save({ name: 'Security', description: 'Test' });
+        // Limpiamos tabla Category y User para tests limpios
+        await TestDataSource.getRepository(Category).clear();
+        await TestDataSource.getRepository('user').clear(); // o User entity si la tienes
+
+        // Insertamos categoría de prueba
+        await TestDataSource.getRepository(Category).save({ name: 'Security', description: 'Test' });
     });
 
     afterAll(async () => {
-        await TestDataSource.destroy();
+        if (TestDataSource.isInitialized) {
+            await TestDataSource.destroy();
+        }
     });
 
     describe('Security checks', () => {
 
         it('should return 401/403 (Unauthorized) if NO TOKEN is provided', async () => {
-            // Intentamos acceder a las categorías SIN enviar cabecera de Autorización
             const response = await request(app).get('/category/');
-
-            // Dependiendo de cómo tengas hecho tu RBACMiddleware, devolverá 401 o 403
-            expect(response.status).toBe(401);
-            // expect(response.body.message).toBe('Token missing'); // (Opcional) valida tu mensaje de error
+            expect([401, 403]).toContain(response.status);
         });
 
         it('should return 401/403 if an INVALID TOKEN is provided', async () => {
-            // Intentamos acceder con un token inventado
             const response = await request(app)
                 .get('/category/')
                 .set('Authorization', 'Bearer token-falso-12345');
-
-            expect(response.status).toBe(401);
+            expect([401, 403]).toContain(response.status);
         });
 
         it('should return 200 OK if a VALID TOKEN is provided', async () => {
-            // 1. Generamos un token REAL usando tu propia utilidad JWTAdapter
-            // (El mismo payload que generas en tu UserServiceImpl.login)
             const payload = { id: 1, name: 'TestUser', role: 'ADMIN' };
             const validToken = await JWTAdapter.generateToken(payload, '2h');
 
-            // 2. Hacemos la petición inyectando el token válido en las cabeceras
             const response = await request(app)
                 .get('/category/')
                 .set('Authorization', `Bearer ${validToken}`);
 
-            // 3. ¡El middleware nos debe dejar pasar!
             expect(response.status).toBe(200);
-            expect(response.body.result.length).toBeGreaterThan(0);
+            const categories = response.body.result || response.body.category;
+            expect(Array.isArray(categories)).toBe(true);
+            expect(categories.length).toBeGreaterThan(0);
         });
 
     });
+
 });

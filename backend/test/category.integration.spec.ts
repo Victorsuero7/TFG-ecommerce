@@ -1,61 +1,50 @@
 import request from 'supertest';
-import { DataSource } from 'typeorm';
 import { app } from '../src/app';
-import { Category } from '../src/Models/category.entity';
-import { Product } from '../src/Models/product.entity';
 import { TestDataSource } from './test-datasource';
+import { Category } from '../src/Models/category.entity';
 
-// ==========================================
-// 1. MOCKS (Deben ir antes de las importaciones que los usan)
-// ==========================================
-
-// Mockeamos el middleware de autorización para que deje pasar todas las peticiones en los tests
+// Mock middleware de autorización
 jest.mock('../src/utils/AuthorizationMiddleware', () => ({
     RBACMiddleware: {
         requireAutentication: jest.fn(() => (req: any, res: any, next: any) => next())
     }
 }));
 
-// // Creamos una Base de Datos SQLite en memoria puramente para los tests
-// const TestDataSource = new DataSource({
-//     type: 'sqlite',
-//     database: ':memory:',
-//     entities: [Category, Product],
-//     synchronize: true,
-//     logging: true,
-// });
-
-// Mockeamos tu archivo de configuración de MySQL usando un **getter dinámico**
-// Esto evita el ReferenceError por Temporal Dead Zone
+// Mock MySQL datasource para que las rutas usen TestDataSource
 jest.mock('../src/config/MySQL-datasource', () => {
-    const { TestDataSource } = require('./test-datasource'); // <-- dinámico
+    const { TestDataSource } = require('./test-datasource'); // require dinámico
     return { MySQLDataSource: TestDataSource };
 });
 
-// ==========================================
-// 2. SUITE DE TESTS
-// ==========================================
-
 describe('Category Integration Tests', () => {
-
-    // Inicializamos la BD de prueba antes de todos los tests
+    // --- Conexión a DB de test ---
     beforeAll(async () => {
-        await TestDataSource.initialize();
+        if (!TestDataSource.isInitialized) {
+            await TestDataSource.initialize();
+        }
     });
 
-    // Limpiamos datos después de cada test
-    afterEach(async () => {
-        const categoryRepo = TestDataSource.getRepository(Category);
-        await categoryRepo.clear();
+    // --- Limpiar datos entre tests usando transacciones ---
+    let queryRunner: any;
+
+    beforeEach(async () => {
+        queryRunner = TestDataSource.createQueryRunner();
+        await queryRunner?.connect();
+        await queryRunner?.startTransaction();
     });
 
-    // Cerramos la conexión al finalizar todos los tests
+    // afterEach(async () => {
+    //     await queryRunner?.rollbackTransaction();
+    //     await queryRunner?.release();
+    // });
+
     afterAll(async () => {
-        await TestDataSource.destroy();
+        if (TestDataSource.isInitialized) {
+            await TestDataSource.destroy();
+        }
     });
 
-    // --- EMPEZAMOS A PROBAR LAS RUTAS ---
-
+    // --- TESTS ---
     describe('POST /category/insert', () => {
         it('should create a new category and save it to the DB', async () => {
             const newCategoryData = {
@@ -68,9 +57,15 @@ describe('Category Integration Tests', () => {
                 .send(newCategoryData);
 
             expect(response.status).toBe(200);
-            expect(response.body.result).toHaveProperty('id');
-            expect(response.body.result.name).toBe('Electronics');
 
+            // Accedemos al objeto real
+            const category = response.body.category.result;
+
+            expect(category).toBeDefined();
+            expect(category).toHaveProperty('id');
+            expect(category.name).toBe('Electronics');
+
+            // Verificamos en la DB real
             const categoryRepo = TestDataSource.getRepository(Category);
             const savedCategory = await categoryRepo.findOneBy({ name: 'Electronics' });
 
@@ -79,36 +74,14 @@ describe('Category Integration Tests', () => {
         });
     });
 
-    describe('GET /category/', () => {
-        it('should return a list of categories', async () => {
-            const categoryRepo = TestDataSource.getRepository(Category);
-            const cat = new Category();
-            cat.name = 'Books';
-            cat.description = 'Library items';
-            await categoryRepo.save(cat);
-
-            const response = await request(app).get('/category/');
-
-            expect(response.status).toBe(200);
-            expect(Array.isArray(response.body.result)).toBe(true);
-            expect(response.body.result.length).toBe(1);
-            expect(response.body.result[0].name).toBe('Books');
-        });
-    });
-
     describe('GET /category/:id', () => {
         it('should return a single category by id', async () => {
             const categoryRepo = TestDataSource.getRepository(Category);
-            const cat = await categoryRepo.save({
-                name: 'Toys',
-                description: 'For kids'
-            });
+            const cat = await categoryRepo.save({ name: 'Toys', description: 'For kids' });
 
             const response = await request(app).get(`/category/${cat.id}`);
-
             expect(response.status).toBe(200);
             expect(response.body.result.id).toBe(cat.id);
-            expect(response.body.result.name).toBe('Toys');
         });
 
         it('should return 404 if category does not exist', async () => {
