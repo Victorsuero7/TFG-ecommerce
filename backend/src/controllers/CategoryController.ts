@@ -87,4 +87,17 @@ export class CategoryController {
             if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
         }
     }
+
+    delete = async (req: Request, res: Response) => {
+        try {
+            const id = req.params.id
+            if (!id) return res.status(400).json({ message: "Missing params" })
+            const result = await this.service.delete(Number(id))
+            if (result)
+                res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
 }

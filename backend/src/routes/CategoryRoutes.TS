@@ -14,14 +14,16 @@ export class CategoryRoutes {
 
         router.use(RBACMiddleware.requireAutentication())
 
-        router.post('/insert', controller.insert)
-        router.patch('/update', controller.update)
+        router.post('/insert', RBACMiddleware.excludedRole(["VIEW_ONLY"]), controller.insert)
+        router.patch('/update', RBACMiddleware.excludedRole(["VIEW_ONLY"]), controller.update)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/name/:name', controller.getByName)
         router.get('/description/:description', controller.getByDescription)
         router.get('/all/:page', controller.getAllPaginated)
         router.get('/:id', controller.getOne)
+        router.delete('/delete/:id', RBACMiddleware.requireRole(["ADMIN", "ROOT"]), controller.delete)
+
 
         return router;
     }

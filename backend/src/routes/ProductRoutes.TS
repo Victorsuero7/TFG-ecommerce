@@ -17,9 +17,9 @@ export class ProductRoutes {
 
         router.use(RBACMiddleware.requireAutentication())
 
-        router.post('/insert', imageHandler.single("image"), controller.insert)
-        router.patch('/update', imageHandler.single('image'), controller.update)
-        router.patch('/update/many', controller.updateMany)
+        router.post('/insert', RBACMiddleware.excludedRole(["VIEW_ONLY"]), imageHandler.single("image"), controller.insert)
+        router.patch('/update', RBACMiddleware.excludedRole(["VIEW_ONLY"]), imageHandler.single('image'), controller.update)
+        router.patch('/update/many', RBACMiddleware.excludedRole(["VIEW_ONLY"]), controller.updateMany)
         router.get('/', controller.getAll)
         router.get('/all', controller.getAll)
         router.get('/all/:page', controller.getAllPaginated)
@@ -30,7 +30,7 @@ export class ProductRoutes {
         router.get('/stock/:min/:max', controller.getByStock)
         router.get('/disabled/:page', controller.disabled)
         router.get('/:id', controller.getOne)
-        router.delete('/delete/:id', controller.delete)
+        router.delete('/delete/:id', RBACMiddleware.excludedRole(["VIEW_ONLY"]), controller.delete)
         // router.post('/update', controller.update)
 
         return router;

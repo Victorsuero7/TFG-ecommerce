@@ -10,4 +10,6 @@ export interface CategoryService {
     findByName(name: string): Promise<SchemaResponse<CategoryDTO[]>>
     findByDescription(description: string): Promise<SchemaResponse<CategoryDTO[]>>
     getAllPaginated(page: number): Promise<SchemaResponse<CategoryDTO[]>>
+    delete(id: number): Promise<SchemaResponse<CategoryDTO>>
+
 }

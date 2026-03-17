@@ -33,4 +33,15 @@ export class RBACMiddleware {
             }
         }
     }
+
+    static excludedRole(excludedRoles: ROLE[]) {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                if (excludedRoles.includes(req.user.role)) return res.status(403).json({ message: "Forbidden" })
+                next()
+            } catch (error) {
+                return res.status(500).json({ mesage: "something went wrong" })
+            }
+        }
+    }
 }
