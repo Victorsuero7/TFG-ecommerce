@@ -94,4 +94,17 @@ export class CategoryServiceImpl implements CategoryService {
             throw error
         }
     }
+
+    async delete(id: number): Promise<SchemaResponse<CategoryDTO>> {
+        try {
+            const entity = await this.repo.findOneById(id)
+            if (!entity) throw HttpErrors.NotFound()
+            const result = await this.repo.remove(entity)
+            if (!result) throw HttpErrors.internalServerError()
+            return new SchemaResponse(CategoryDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
 }
