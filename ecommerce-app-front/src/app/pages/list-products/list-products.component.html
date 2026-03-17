@@ -1,29 +1,33 @@
 
 <div class="list-products container-fluid">
-	<h4 class="mb-3">Listado de productos</h4>
+	<h1 class="h4 mb-3">Listado de productos</h1>
 	<div class="search-bar d-flex flex-wrap align-items-center gap-2 mb-3">
 		<div class="input-group input-group-sm search-text-group">
+			<label class="visually-hidden" for="product-search-input">Buscar productos</label>
 			<input
+				id="product-search-input"
 				type="text"
 				class="form-control"
 				placeholder="Buscar productos..."
+				aria-label="Buscar productos"
 				[(ngModel)]="searchTerm"
 				(input)="onSearch()"
 				/>
-			<select class="form-select form-select-sm" [(ngModel)]="searchField" (change)="onSearch()">
+			<label class="visually-hidden" for="product-search-field">Campo de búsqueda de productos</label>
+			<select id="product-search-field" class="form-select form-select-sm" aria-label="Campo de búsqueda de productos" [(ngModel)]="searchField" (change)="onSearch()">
 				<option value="all">Todo</option>
 				<option value="name">Nombre</option>
 				<option value="description">Descripción</option>
 				<option value="category">Categoría</option>
 			</select>
-			<button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+			<button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda de productos">
 				<i class="bi bi-x-lg"></i>
 			</button>
 		</div>
 		<div class="input-group input-group-sm stock-filter-group">
 			<span class="input-group-text"><i class="bi bi-box-seam"></i></span>
-			<input type="number" class="form-control" placeholder="Min" [(ngModel)]="minStock" (input)="onStockFilterChange()" />
-			<input type="number" class="form-control" placeholder="Max" [(ngModel)]="maxStock" (input)="onStockFilterChange()" />
+			<input type="number" class="form-control" placeholder="Min" aria-label="Stock mínimo" [(ngModel)]="minStock" (input)="onStockFilterChange()" />
+			<input type="number" class="form-control" placeholder="Max" aria-label="Stock máximo" [(ngModel)]="maxStock" (input)="onStockFilterChange()" />
 		</div>
 	</div>
 	<div class="d-flex justify-content-end form-check form-switch mb-3">
@@ -39,7 +43,7 @@
 		<div class="col-2">Precio</div>
 		<div class="col-2">Stock</div>
 		<div class="col-3">Categoría</div>
-		<div class="col-2 text-end">Acciones</div>
+		<div class="col-2 text-end actions-column"><span class="actions-header-label">Acciones</span></div>
 	</div>
 	<ng-container *ngIf="!loading && !error && products?.length; else noData">
 		<div class="list-body">
@@ -49,12 +53,14 @@
 				<div class="col-2 small px-2">{{ formatPrice(p.price) }}</div>
 				<div class="col-2 small px-2">{{ p.stock ?? '-' }}</div>
 				<div class="col-3 small px-2">{{ p.categoryName ?? '-' }}</div>
-				<div class="col-2 text-end px-2">
-					<button class="btn btn-sm btn-outline-secondary me-1" (click)="view(p.id)" title="Ver"><i class="bi bi-eye"></i></button>
+				<div class="col-2 text-end px-2 actions-column">
+					<div class="actions-buttons">
+						<button class="btn btn-sm btn-outline-secondary me-1" (click)="view(p.id)" title="Ver" [attr.aria-label]="'Ver producto ' + p.name"><i class="bi bi-eye"></i></button>
 					<ng-container *ngIf="!showDisabled">
-						<button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(p.id)" title="Editar"><i class="bi bi-pencil"></i></button>
-						<button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(p.id)" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+							<button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(p.id)" title="Editar" [attr.aria-label]="'Editar producto ' + p.name"><i class="bi bi-pencil"></i></button>
+							<button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(p.id)" title="Eliminar" [attr.aria-label]="'Eliminar producto ' + p.name" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
 					</ng-container>
+					</div>
 				</div>
 			</div>
 		</div>

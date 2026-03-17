@@ -1,0 +1,12 @@
+.page-title {
+	font-size: 1.75rem;
+	font-weight: 700;
+}
+
+.form-helper-text {
+	color: #4c5c6c;
+}
+
+:host-context([data-bs-theme='dark']) .form-helper-text {
+	color: #d0dae4;
+}

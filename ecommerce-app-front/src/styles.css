@@ -1,5 +1,5 @@
 :root {
-	--list-header-bg: #5f83c6;
+	--list-header-bg: #3b63a3;
 	--list-header-text: #ffffff;
 	--list-border: #cfdced;
 	--list-row-bg: #ffffff;
@@ -72,6 +72,39 @@
 .list-users .list-body > .user-row:last-child,
 .inventory-list .list-body > .movement-row:last-child {
 	border-bottom: 0;
+}
+
+.list-products .table-header > .text-end,
+.list-categories .table-header > .text-end,
+.list-users .table-header > .text-end,
+.inventory-list .table-header > .text-end,
+.list-products .list-body > .product-row > .text-end,
+.list-categories .list-body > .category-row > .text-end,
+.list-users .list-body > .user-row > .text-end,
+.inventory-list .list-body > .movement-row > .text-end {
+	padding-right: 1rem !important;
+}
+
+.actions-header-label,
+.actions-buttons {
+	display: inline-flex;
+	width: min(100%, 7rem);
+	box-sizing: border-box;
+}
+
+.actions-header-label {
+	justify-content: flex-start;
+	text-align: left;
+}
+
+.actions-buttons {
+	justify-content: flex-start;
+	gap: 0.35rem;
+	flex-wrap: nowrap;
+}
+
+.actions-buttons .btn {
+	margin-right: 0 !important;
 }
 
 .list-products .pagination .page-link,

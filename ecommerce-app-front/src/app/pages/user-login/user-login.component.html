@@ -1,22 +1,22 @@
 <div class="auth-page bg-body-secondary w-100">
   <div class="auth-card-wrap">
-    <div class="card shadow-lg p-4 auth-card">
+    <div class="card shadow-lg p-4 auth-card" aria-labelledby="login-title">
       <div class="text-center mb-4">
-        <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
-        <h3 class="fw-bold">Accede</h3>
+        <i class="bi bi-box-seam fs-1 text-primary mb-2" aria-hidden="true"></i>
+        <h1 id="login-title" class="fw-bold h3 mb-0">Accede</h1>
       </div>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
         <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input class="form-control" formControlName="email"
+          <label class="form-label" for="login-email">Email</label>
+          <input id="login-email" class="form-control" type="email" formControlName="email" autocomplete="email"
             [class.is-invalid]="form.get('email')?.touched && form.get('email')?.invalid">
           <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="invalid-feedback">Introduce un email válido.</div>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Contraseña</label>
-          <input type="password" class="form-control" formControlName="password"
+          <label class="form-label" for="login-password">Contraseña</label>
+          <input id="login-password" type="password" class="form-control" formControlName="password" autocomplete="current-password"
             [class.is-invalid]="form.get('password')?.touched && form.get('password')?.invalid">
           <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="invalid-feedback">La contraseña es obligatoria.</div>
         </div>

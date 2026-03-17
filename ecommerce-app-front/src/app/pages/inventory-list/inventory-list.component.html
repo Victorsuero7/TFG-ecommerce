@@ -1,17 +1,20 @@
 <div class="inventory-list container-fluid">
-  <h4 class="mb-3">Historial de movimientos en inventarios</h4>
+  <h1 class="h4 mb-3">Historial de movimientos en inventarios</h1>
 
   <div class="search-bar row mb-3 g-2 align-items-center justify-content-end">
     <div class="col-12 col-md-6 offset-md-6">
       <div class="input-group input-group-sm">
+        <label class="visually-hidden" for="inventory-search-input">Buscar por producto</label>
         <input
+          id="inventory-search-input"
           type="text"
           class="form-control"
           placeholder="Buscar por producto..."
+          aria-label="Buscar por producto"
           [(ngModel)]="searchTerm"
           (input)="onSearch()"
         />
-        <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+        <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda de movimientos">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>

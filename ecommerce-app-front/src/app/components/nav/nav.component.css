@@ -9,6 +9,7 @@ aside #sidebarMenu{
   padding: 0.5rem;
   z-index: 10;
 }
+
 nav .nav-link {
   color: var(--color-dark);
   padding: 0.5rem 1rem;
@@ -19,12 +20,47 @@ nav .nav-link:hover {
   background: var(--color-primary);
   color: #fff;
 }
+
 nav .nav-link.active {
   background: var(--color-primary);
   color: #fff;
 }
 
+.nav-section-title {
+  color: #4c5c6c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  list-style: none;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem 0;
+}
+
 .nav-link-button {
   border: 0;
   background: transparent;
+}
+
+.nav-link-danger {
+  color: #9f1d1d;
+}
+
+.nav-link-danger:hover,
+.nav-link-danger.active {
+  background: #9f1d1d;
+  color: #fff;
+}
+
+:host-context([data-bs-theme='dark']) .nav-section-title {
+  color: #c5d2df;
+}
+
+:host-context([data-bs-theme='dark']) .nav-link-danger {
+  color: #ff9a9a;
+}
+
+:host-context([data-bs-theme='dark']) .nav-link-danger:hover,
+:host-context([data-bs-theme='dark']) .nav-link-danger.active {
+  background: #a63a3a;
+  color: #fff;
 }

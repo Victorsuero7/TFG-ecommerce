@@ -1,5 +1,5 @@
 <div class="list-users container-fluid">
-  <h4 class="mb-3">Listado de usuarios</h4>
+  <h1 class="h4 mb-3">Listado de usuarios</h1>
 
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
   <div *ngIf="!loading && !error && users?.length" class="table-header d-none d-md-flex fw-bold small px-2">
@@ -8,7 +8,7 @@
     <div class="col-2">Teléfono</div>
     <div class="col-3">Email</div>
     <div class="col-2">Fecha nacimiento</div>
-    <div class="col-2 text-end">Acciones</div>
+    <div class="col-2 text-end actions-column"><span class="actions-header-label">Acciones</span></div>
   </div>
   <div *ngIf="loading" class="mb-3">Cargando...</div>
   <ng-container *ngIf="!loading && !error && users?.length; else noData">
@@ -19,10 +19,12 @@
         <div class="col-2 small px-2">{{ u.phoneNumber }}</div>
         <div class="col-3 small px-2">{{ u.email }}</div>
         <div class="col-2 small px-2">{{ formatDate(u.birthDate) }}</div>
-        <div class="col-2 text-end px-2">
-          <button class="btn btn-sm btn-outline-secondary me-1" (click)="view(u.id)" title="Ver"><i class="bi bi-eye"></i></button>
-          <button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(u.id)" title="Editar"><i class="bi bi-pencil"></i></button>
-          <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(u.id)" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+        <div class="col-2 text-end px-2 actions-column">
+          <div class="actions-buttons">
+            <button class="btn btn-sm btn-outline-secondary me-1" (click)="view(u.id)" title="Ver" [attr.aria-label]="'Ver usuario ' + fullName(u)"><i class="bi bi-eye"></i></button>
+            <button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(u.id)" title="Editar" [attr.aria-label]="'Editar usuario ' + fullName(u)"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(u.id)" title="Eliminar" [attr.aria-label]="'Eliminar usuario ' + fullName(u)" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+          </div>
         </div>
       </div>
     </div>

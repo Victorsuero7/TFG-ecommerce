@@ -1,4 +1,11 @@
 <div class="dashboard" *ngIf="!loading; else loader">
+	<header class="dashboard-header">
+		<div>
+			<h1 class="dashboard-title">Dashboard</h1>
+			<p class="dashboard-subtitle">Resumen general del inventario, categorías y valor actual del almacén.</p>
+		</div>
+	</header>
+
 	<div *ngIf="loadWarnings.length" class="alert alert-danger" role="alert">
 		<strong>Error cargando dashboard.</strong>
 		<div *ngFor="let warning of loadWarnings">{{ warning }}</div>
@@ -37,7 +44,10 @@
 
 	<div class="dashboard-grid">
 		<div class="dash-card">
-			<h6 class="card-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Stock bajo</h6>
+			<h2 class="card-title">
+				<span class="card-title-icon card-title-icon-warning" aria-hidden="true"><i class="bi bi-exclamation-triangle"></i></span>
+				Stock bajo
+			</h2>
 			<div class="card-body-inner" *ngIf="lowStockProducts.length; else noLow">
 				<div class="mini-row" *ngFor="let p of lowStockProducts">
 					<span class="mini-name">{{ p.name }}</span>
@@ -45,13 +55,16 @@
 				</div>
 			</div>
 			<ng-template #noLow>
-				<p class="text-muted small">Todos los productos tienen stock suficiente.</p>
+				<p class="empty-state">Todos los productos tienen stock suficiente.</p>
 			</ng-template>
 		</div>
 		
 		
 		<div class="dash-card">
-			<h6 class="card-title"><i class="bi bi-trophy text-primary me-2"></i>Top valor en almacén</h6>
+			<h2 class="card-title">
+				<span class="card-title-icon card-title-icon-primary" aria-hidden="true"><i class="bi bi-trophy"></i></span>
+				Top valor en almacén
+			</h2>
 			<div class="card-body-inner">
 				<div class="mini-row" *ngFor="let p of topValueProducts; let i = index">
 					<span class="rank">{{ i + 1 }}</span>
@@ -62,16 +75,22 @@
 		</div>
 		
 		<div class="dash-card">
-			<h6 class="card-title"><i class="bi bi-clock-history text-info me-2"></i>Últimos productos añadidos</h6>
+			<h2 class="card-title">
+				<span class="card-title-icon card-title-icon-info" aria-hidden="true"><i class="bi bi-clock-history"></i></span>
+				Últimos productos añadidos
+			</h2>
 			<div class="card-body-inner">
 				<div class="mini-row" *ngFor="let p of latestProducts">
 					<span class="mini-name">{{ p.name }}</span>
-					<span class="text-muted small">{{ p.categoryName }}</span>
+					<span class="mini-meta">{{ p.categoryName }}</span>
 				</div>
 			</div>
 		</div>
 		<div class="dash-card wide">
-			<h6 class="card-title"><i class="bi bi-bar-chart text-success me-2"></i>Productos por categoría</h6>
+			<h2 class="card-title">
+				<span class="card-title-icon card-title-icon-success" aria-hidden="true"><i class="bi bi-bar-chart"></i></span>
+				Productos por categoría
+			</h2>
 			<div class="card-body-inner">
 				<div class="bar-row" *ngFor="let cat of productsByCategory">
 					<span class="bar-label">{{ cat.name }}</span>
@@ -85,11 +104,14 @@
 
 
 		<div class="dash-card">
-			<h6 class="card-title"><i class="bi bi-bookmarks text-secondary me-2"></i>Categorías</h6>
+			<h2 class="card-title">
+				<span class="card-title-icon card-title-icon-secondary" aria-hidden="true"><i class="bi bi-bookmarks"></i></span>
+				Categorías
+			</h2>
 			<div class="card-body-inner">
 				<div class="mini-row" *ngFor="let cat of productsByCategory">
 					<span class="mini-name">{{ cat.name }}</span>
-					<span class="text-muted small">{{ cat.totalStock }} uds.</span>
+					<span class="mini-meta">{{ cat.totalStock }} uds.</span>
 				</div>
 			</div>
 		</div>
