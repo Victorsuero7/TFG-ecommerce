@@ -107,6 +107,37 @@
 	margin-right: 0 !important;
 }
 
+/* Prevent text overlap in list rows on medium/large screens */
+.list-products .product-row > div,
+.list-categories .category-row > div,
+.list-users .user-row > div,
+.inventory-list .movement-row > div {
+	min-width: 0;
+}
+
+.list-users .user-row > :nth-child(4),
+.inventory-list .movement-row > :nth-child(4) {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.list-categories .category-row > :nth-child(3),
+.list-products .product-row > :nth-child(2),
+.list-products .product-row > :nth-child(5),
+.inventory-list .movement-row > :nth-child(2) {
+	overflow-wrap: anywhere;
+}
+
+.list-users .table-header > :nth-child(5),
+.list-users .user-row > :nth-child(5),
+.list-users .table-header > :nth-child(6),
+.list-users .user-row > :nth-child(6),
+.inventory-list .table-header > :nth-child(5),
+.inventory-list .movement-row > :nth-child(5) {
+	white-space: nowrap;
+}
+
 .list-products .pagination .page-link,
 .list-categories .pagination .page-link,
 .list-users .pagination .page-link,
@@ -130,6 +161,110 @@
 	.list-users .list-body,
 	.inventory-list .list-body {
 		border-radius: 10px;
+	}
+
+	.list-products .list-body > .product-row,
+	.list-categories .list-body > .category-row,
+	.list-users .list-body > .user-row,
+	.inventory-list .list-body > .movement-row {
+		display: grid !important;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.4rem 0.75rem;
+		align-items: start;
+		padding: 0.75rem;
+	}
+
+	.list-products .list-body > .product-row > div,
+	.list-categories .list-body > .category-row > div,
+	.list-users .list-body > .user-row > div,
+	.inventory-list .list-body > .movement-row > div {
+		width: auto !important;
+		max-width: none !important;
+		flex: initial !important;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+
+	.list-products .product-row > div::before,
+	.list-categories .category-row > div::before,
+	.list-users .user-row > div::before,
+	.inventory-list .movement-row > div::before {
+		display: block;
+		font-size: 0.68rem;
+		font-weight: 600;
+		line-height: 1.1;
+		margin-bottom: 0.2rem;
+		color: #5b6f8d;
+	}
+
+	[data-bs-theme='dark'] .list-products .product-row > div::before,
+	[data-bs-theme='dark'] .list-categories .category-row > div::before,
+	[data-bs-theme='dark'] .list-users .user-row > div::before,
+	[data-bs-theme='dark'] .inventory-list .movement-row > div::before {
+		color: #a8c0e6;
+	}
+
+	.list-users .user-row > :nth-child(1)::before { content: 'ID'; }
+	.list-users .user-row > :nth-child(2)::before { content: 'Nombre'; }
+	.list-users .user-row > :nth-child(3)::before { content: 'Telefono'; }
+	.list-users .user-row > :nth-child(4)::before { content: 'Email'; }
+	.list-users .user-row > :nth-child(5)::before { content: 'Fecha nacimiento'; }
+	.list-users .user-row > :nth-child(6)::before { content: 'Rol'; }
+	.list-users .user-row > :nth-child(7)::before { content: 'Acciones'; }
+
+	.list-products .product-row > :nth-child(1)::before { content: 'ID'; }
+	.list-products .product-row > :nth-child(2)::before { content: 'Nombre'; }
+	.list-products .product-row > :nth-child(3)::before { content: 'Precio'; }
+	.list-products .product-row > :nth-child(4)::before { content: 'Stock'; }
+	.list-products .product-row > :nth-child(5)::before { content: 'Categoria'; }
+	.list-products .product-row > :nth-child(6)::before { content: 'Acciones'; }
+
+	.list-categories .category-row > :nth-child(1)::before { content: 'ID'; }
+	.list-categories .category-row > :nth-child(2)::before { content: 'Nombre'; }
+	.list-categories .category-row > :nth-child(3)::before { content: 'Descripcion'; }
+	.list-categories .category-row > :nth-child(4)::before { content: 'Acciones'; }
+
+	.inventory-list .movement-row > :nth-child(1)::before { content: 'ID'; }
+	.inventory-list .movement-row > :nth-child(2)::before { content: 'Producto'; }
+	.inventory-list .movement-row > :nth-child(3)::before { content: 'Stock final'; }
+	.inventory-list .movement-row > :nth-child(4)::before { content: 'Modificado por'; }
+	.inventory-list .movement-row > :nth-child(5)::before { content: 'Fecha'; }
+
+	.list-users .user-row > :nth-child(2),
+	.list-products .product-row > :nth-child(2),
+	.list-categories .category-row > :nth-child(2),
+	.inventory-list .movement-row > :nth-child(2) {
+		grid-column: 1 / -1;
+		font-weight: 600;
+	}
+
+	.list-categories .category-row > :nth-child(3),
+	.list-products .product-row > :nth-child(5),
+	.inventory-list .movement-row > :nth-child(5) {
+		grid-column: 1 / -1;
+	}
+
+	.list-users .user-row > :nth-child(7),
+	.list-products .product-row > :nth-child(6),
+	.list-categories .category-row > :nth-child(4) {
+		grid-column: 1 / -1;
+		justify-self: end;
+	}
+
+	.list-users .user-row > :nth-child(4),
+	.inventory-list .movement-row > :nth-child(4) {
+		overflow-wrap: anywhere;
+		white-space: normal;
+		text-overflow: unset;
+	}
+
+	.actions-header-label,
+	.actions-buttons {
+		width: auto;
+	}
+
+	.actions-buttons {
+		justify-content: flex-end;
 	}
 }
 
@@ -158,6 +293,23 @@
 
 @media (max-width: 576px) {
 	.card { margin: 0 8px; }
+
+	.list-products .list-body > .product-row,
+	.list-categories .list-body > .category-row,
+	.list-users .list-body > .user-row,
+	.inventory-list .list-body > .movement-row {
+		grid-template-columns: 1fr;
+	}
+
+	.list-users .user-row > :nth-child(7),
+	.list-products .product-row > :nth-child(6),
+	.list-categories .category-row > :nth-child(4) {
+		justify-self: stretch;
+	}
+
+	.actions-buttons {
+		justify-content: flex-start;
+	}
 }
 
 

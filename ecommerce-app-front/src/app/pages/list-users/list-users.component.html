@@ -6,8 +6,9 @@
     <div class="col-1">ID</div>
     <div class="col">Nombre</div>
     <div class="col-2">Teléfono</div>
-    <div class="col-3">Email</div>
+    <div class="col-2">Email</div>
     <div class="col-2">Fecha nacimiento</div>
+    <div class="col-1">Rol</div>
     <div class="col-2 text-end actions-column"><span class="actions-header-label">Acciones</span></div>
   </div>
   <div *ngIf="loading" class="mb-3">Cargando...</div>
@@ -17,8 +18,9 @@
         <div class="col-1 small px-2">{{ u.id }}</div>
         <div class="col small px-2">{{ fullName(u) }}</div>
         <div class="col-2 small px-2">{{ u.phoneNumber }}</div>
-        <div class="col-3 small px-2">{{ u.email }}</div>
+        <div class="col-2 small px-2">{{ u.email }}</div>
         <div class="col-2 small px-2">{{ formatDate(u.birthDate) }}</div>
+        <div class="col-1 small px-2">{{ u.role || '-' }}</div>
         <div class="col-2 text-end px-2 actions-column">
           <div class="actions-buttons">
             <button class="btn btn-sm btn-outline-secondary me-1" (click)="view(u.id)" title="Ver" [attr.aria-label]="'Ver usuario ' + fullName(u)"><i class="bi bi-eye"></i></button>

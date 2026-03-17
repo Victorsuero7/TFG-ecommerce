@@ -26,6 +26,11 @@ export class UserController {
 
     update = async (req: Request, res: Response) => {
         try {
+            const roleInPayload = Object.prototype.hasOwnProperty.call(req.body ?? {}, 'role')
+            if (roleInPayload && !['ADMIN', 'ROOT'].includes(req.user?.role)) {
+                return res.status(403).json({ message: "No tienes permisos para modificar el rol" })
+            }
+
             const dto = UserDTO.createDTO(req.body)
             const result = await this.service.update(dto)
             return res.status(200).json({ message: "User updated", user: result })
