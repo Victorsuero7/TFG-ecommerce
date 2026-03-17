@@ -19,7 +19,8 @@ export interface ProductInventario extends Product {
 })
 export class CreateInventarioComponent {
   productos: ProductInventario[] = [];
-  loading = true;
+  loadingProducts = true;
+  saving = false;
   productsLoadError = false;
 
   constructor(private productService: ProductService, public router: Router, private authService: AuthService) {
@@ -44,13 +45,13 @@ export class CreateInventarioComponent {
           stockOriginal: p.stock ?? 0,
           cantidad: p.stock ?? 0
         }));
-        this.loading = false;
+        this.loadingProducts = false;
       },
       error: err => {
         console.error('Error cargando productos', err);
         this.productos = [];
         this.productsLoadError = true;
-        this.loading = false;
+        this.loadingProducts = false;
       }
     });
   }
@@ -66,7 +67,7 @@ export class CreateInventarioComponent {
   }
 
   guardarInventario() {
-    this.loading = true;
+    this.saving = true;
     const userId = this.getUserId();
     const productosActualizados = this.productos
       .filter(p => p.cantidad !== p.stockOriginal)
@@ -78,19 +79,19 @@ export class CreateInventarioComponent {
 
     if (productosActualizados.length === 0) {
       this.showToast('No hay cambios que guardar', 'info');
-      this.loading = false;
+      this.saving = false;
       return;
     }
 
     this.productService.updateMany(productosActualizados as any)
       .subscribe({
         next: () => {
-          this.loading = false;
+          this.saving = false;
           this.showToast('Inventario actualizado', 'success');
           setTimeout(() => this.router.navigate(['/inventory/list']), 800);
         },
         error: err => {
-          this.loading = false;
+          this.saving = false;
           console.error('Error actualizando inventario', err);
           this.showToast('Error al actualizar inventario', 'error');
         }

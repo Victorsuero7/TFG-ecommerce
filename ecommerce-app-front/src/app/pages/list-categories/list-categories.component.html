@@ -1,20 +1,24 @@
 <div class="list-categories container-fluid">
-	<h4 class="mb-3">Listado de categorías</h4>
+	<h1 class="h4 mb-3">Listado de categorías</h1>
 	<div class="search-bar d-flex align-items-center gap-2 mb-3">
 		<div class="input-group input-group-sm ms-auto">
+			<label class="visually-hidden" for="category-search-input">Buscar categorías</label>
 			<input
+				id="category-search-input"
 				type="text"
 				class="form-control"
 				placeholder="Buscar categorías..."
+				aria-label="Buscar categorías"
 				[(ngModel)]="searchTerm"
 				(input)="onSearch()"
 			/>
-			<select class="form-select form-select-sm w-auto" [(ngModel)]="searchField" (change)="onSearch()">
+			<label class="visually-hidden" for="category-search-field">Campo de búsqueda de categorías</label>
+			<select id="category-search-field" class="form-select form-select-sm w-auto" aria-label="Campo de búsqueda de categorías" [(ngModel)]="searchField" (change)="onSearch()">
 				<option value="all">Todo</option>
 				<option value="name">Nombre</option>
 				<option value="description">Descripción</option>
 			</select>
-			<button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+			<button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda de categorías">
 				<i class="bi bi-x-lg"></i>
 			</button>
 		</div>
@@ -25,7 +29,7 @@
 		<div class="col-1">ID</div>
 		<div class="col">Nombre</div>
 		<div class="col-6">Descripción</div>
-		<div class="col-2 text-end">Acciones</div>
+		<div class="col-2 text-end actions-column"><span class="actions-header-label">Acciones</span></div>
 	</div>
 	<div *ngIf="loading" class="mb-3">Cargando...</div>
 	<ng-container *ngIf="!loading && !error && categories?.length; else noData">
@@ -34,9 +38,11 @@
 				<div class="col-1 small px-2">{{ c.id }}</div>
 				<div class="col small px-2">{{ c.name }}</div>
 				<div class="col-6 small px-2">{{ c.description ?? '-' }}</div>
-				<div class="col-2 text-end px-2">
-					<button class="btn btn-sm btn-outline-secondary me-1" (click)="view(c.id)" title="Ver"><i class="bi bi-eye"></i></button>
-					<button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(c.id)" title="Editar"><i class="bi bi-pencil"></i></button>
+				<div class="col-2 text-end px-2 actions-column">
+					<div class="actions-buttons">
+						<button class="btn btn-sm btn-outline-secondary me-1" (click)="view(c.id)" title="Ver" [attr.aria-label]="'Ver categoría ' + c.name"><i class="bi bi-eye"></i></button>
+						<button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(c.id)" title="Editar" [attr.aria-label]="'Editar categoría ' + c.name"><i class="bi bi-pencil"></i></button>
+					</div>
 				</div>
 			</div>
 		</div>

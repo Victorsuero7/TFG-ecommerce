@@ -150,10 +150,10 @@ export class DashboardComponent implements OnInit {
   }
 
   stockClass(stock?: number): string {
-    if (stock == null) return '';
-    if (stock === 0) return 'stock-out';
-    if (stock <= 5) return 'stock-low';
-    return 'stock-ok';
+    if (stock == null) return 'text-bg-secondary';
+    if (stock === 0) return 'text-danger-emphasis bg-danger-subtle';
+    if (stock <= 5) return 'text-warning-emphasis bg-warning-subtle';
+    return 'text-primary-emphasis bg-primary-subtle';
   }
 
   barWidth(count: number): number {
