@@ -95,6 +95,7 @@ export class UserServiceImpl implements UserService {
         try {
             const user = await this.repo.findByEmail(dto.email)
             if (!user) throw HttpErrors.badRequest("Invalid credentials")
+            if (!user.enable) throw HttpErrors.forbidden("Usuario desactivado")
             const validPassword = await bcrypt.compare(dto.password, user!.password)
             if (!validPassword) throw HttpErrors.badRequest("Invalid credentials")
             const token = await JWTAdapter.generateToken({ id: user!.id, name: user!.name, role: user!.role }, '2h')

@@ -26,11 +26,6 @@ export class UserController {
 
     update = async (req: Request, res: Response) => {
         try {
-            const roleInPayload = Object.prototype.hasOwnProperty.call(req.body ?? {}, 'role')
-            if (roleInPayload && !['ADMIN', 'ROOT'].includes(req.user?.role)) {
-                return res.status(403).json({ message: "No tienes permisos para modificar el rol" })
-            }
-
             const dto = UserDTO.createDTO(req.body)
             const result = await this.service.update(dto)
             return res.status(200).json({ message: "User updated", user: result })
@@ -55,6 +50,7 @@ export class UserController {
         try {
             const page = Number(req.params.page ?? 1);
             const response = await this.service.getAllPaginated(page);
+            console.log('RESPONSE:', response);
             return res.status(200).json({
                 data: response.result,
                 totalCount: response.metadata?.count ?? 0,
@@ -78,7 +74,7 @@ export class UserController {
             //Pendiente redireccionar a la home o alguna pagina por determinar
         }
         catch (error) {
-            if (error instanceof HttpErrors) return res.status(400).json({ message: "Invalid credentials" })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             console.error('ERROR EN EL CONTROLLER:', error);
             res.status(500).json({ message: "Internal Server Error" })
         }
