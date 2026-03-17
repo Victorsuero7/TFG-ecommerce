@@ -3,11 +3,11 @@ import { Category } from "../Models/category.entity";
 import { CategoryRepository } from "../repositories/CategoryRepository";
 import { HttpErrors } from "../utils/HttpErrors";
 import { CategoryService } from "./CategoryService";
-import {envs} from "../config/envs"
+import { envs } from "../config/envs"
 import { Metadata, SchemaResponse } from "../config/SchemaResponse";
 import { ObjectLiteral, ReturnDocument, Transaction } from "typeorm";
 
-const PPP = envs.PRODUCTS_PER_PAGE ?? 4;
+const PPP = envs.PRODUCTS_PER_PAGE ?? 20;
 
 /**
  * Implementación del servicio de categorías.
@@ -32,8 +32,8 @@ export class CategoryServiceImpl implements CategoryService {
      * @returns Devuelve una lista CategoryDTO.
      */
     async getAllPaginated(page: number): Promise<SchemaResponse<CategoryDTO[]>> {
-        try{
-           // const metadata: Metadata = {}
+        try {
+            // const metadata: Metadata = {}
             const [result, count] = await this.repo.findAllByPage(PPP * (page - 1), PPP)
             if (result.length === 0) throw HttpErrors.NotFound()
             return new SchemaResponse(result.map(e => CategoryDTO.fromEntity(e)), { count })
@@ -64,7 +64,7 @@ export class CategoryServiceImpl implements CategoryService {
     async getById(id: number): Promise<SchemaResponse<CategoryDTO | null>> {
         try {
             const result = await this.repo.findOneById(id)
-            if (!result) throw HttpErrors.NotFound
+            if (!result) throw HttpErrors.NotFound()
             return new SchemaResponse(CategoryDTO.fromEntity(result))
         } catch (error) {
             console.log(error);
@@ -97,10 +97,11 @@ export class CategoryServiceImpl implements CategoryService {
         try{
             const category: Category = dto.toEntity()
             const entity = this.repo.preload(category)
-            if(!entity) throw HttpErrors.internalServerError("Something went wrong")
+            if (!entity) throw HttpErrors.internalServerError("Something went wrong")
             const result = await this.repo.save(category)
+            if (!result) throw HttpErrors.internalServerError("Something went wrong")
             return new SchemaResponse(CategoryDTO.fromEntity(result))
-        } catch (error){
+        } catch (error) {
             console.log(error);
             throw error
         }
@@ -113,10 +114,10 @@ export class CategoryServiceImpl implements CategoryService {
      */
     async findByName(name: string): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
-           const [entities, count]= await this.repo.findByName(name)
-           if (entities.length === 0) throw HttpErrors.NotFound()
-           const result = entities.map(e => CategoryDTO.fromEntity(e))
-           return new SchemaResponse (result, { count })
+            const [entities, count] = await this.repo.findByName(name)
+            if (entities.length === 0) throw HttpErrors.NotFound()
+            const result = entities.map(e => CategoryDTO.fromEntity(e))
+            return new SchemaResponse(result, { count })
         } catch (error) {
             console.log(error);
             throw error
@@ -130,11 +131,24 @@ export class CategoryServiceImpl implements CategoryService {
      */
     async findByDescription(description: string): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
-           const [entities, count] = await this.repo.findByDescription(description)
-           if (entities.length === 0) throw HttpErrors.NotFound()
-           const result = entities.map(e => CategoryDTO.fromEntity(e))
-           
-           return new SchemaResponse( result, {count})
+            const [entities, count] = await this.repo.findByDescription(description)
+            if (entities.length === 0) throw HttpErrors.NotFound()
+            const result = entities.map(e => CategoryDTO.fromEntity(e))
+
+            return new SchemaResponse(result, { count })
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    async delete(id: number): Promise<SchemaResponse<CategoryDTO>> {
+        try {
+            const entity = await this.repo.findOneById(id)
+            if (!entity) throw HttpErrors.NotFound()
+            const result = await this.repo.remove(entity)
+            if (!result) throw HttpErrors.internalServerError()
+            return new SchemaResponse(CategoryDTO.fromEntity(result))
         } catch (error) {
             console.log(error);
             throw error

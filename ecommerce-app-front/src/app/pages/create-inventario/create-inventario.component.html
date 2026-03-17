@@ -1,25 +1,25 @@
-<div class="container">
+<div class="container inventory-create">
   <div class="row mb-4">
     <div class="col">
-      <h2 class="fw-bold">Nuevo inventario</h2>
+      <h1 class="h4">Nuevo inventario</h1>
       <p class="text-muted">Modifica el stock de los productos</p>
     </div>
   </div>
  
-  <div class="card shadow-sm">
+  <div class="card">
     <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
+      <div class="table-responsive rounded">
+        <table class="table table-hover align-middle mb-0 table-themed">
+          <thead>
             <tr>
-              <th>Producto</th>
-              <th class="text-center">Stock actual</th>
-              <th class="text-center">Nuevo stock</th>
+              <th scope="col">Producto</th>
+              <th scope="col" class="text-center">Stock actual</th>
+              <th scope="col" class="text-center">Nuevo stock</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr *ngFor="let producto of productos">
+            <tr *ngFor="let producto of productos; let index = index">
               <td>
                 <strong>{{ producto.name }}</strong>
                 <div class="small text-muted">
@@ -31,19 +31,31 @@
               </td>
               <td class="text-center">
                 <div class="d-inline-flex align-items-center gap-2">
-                  <button class="btn btn-outline-danger btn-sm" (click)="disminuir(producto)"
-                    [disabled]="producto.cantidad <= 0"> &minus;
+                  <label class="visually-hidden" [for]="'cantidad-' + index">
+                    Nuevo stock para {{ producto.name }}
+                  </label>
+                  <button class="btn btn-outline-danger btn-sm" type="button" (click)="disminuir(producto)"
+                    [attr.aria-label]="'Reducir stock de ' + producto.name" [disabled]="producto.cantidad <= 0">
+                    <span aria-hidden="true">&minus;</span>
                   </button>
-                  <input type="number" class="form-control form-control-sm text-center" style="width: 80px;"
-                    [(ngModel)]="producto.cantidad" min="0" />
-                  <button class="btn btn-outline-success btn-sm" (click)="aumentar(producto)"> +
+                  <input [id]="'cantidad-' + index" type="number" class="form-control form-control-sm text-center" style="width: 80px;"
+                    [(ngModel)]="producto.cantidad" [name]="'cantidad-' + index" min="0" inputmode="numeric"
+                    [attr.aria-label]="'Nuevo stock para ' + producto.name" />
+                  <button class="btn btn-outline-success btn-sm" type="button" (click)="aumentar(producto)"
+                    [attr.aria-label]="'Aumentar stock de ' + producto.name">
+                    <span aria-hidden="true">+</span>
                   </button>
                 </div>
               </td>
             </tr>
-            <tr *ngIf="productos.length === 0">
+            <tr *ngIf="loadingProducts">
               <td colspan="3" class="text-center py-4 text-muted">
-                No hay productos disponibles
+                Cargando productos...
+              </td>
+            </tr>
+            <tr *ngIf="!loadingProducts && productos.length === 0">
+              <td colspan="3" class="text-center py-4" [ngClass]="productsLoadError ? 'text-danger' : 'text-muted'">
+                {{ productsLoadError ? 'Error cargando los productos' : 'No hay productos disponibles' }}
               </td>
             </tr>
 
@@ -57,7 +69,7 @@
 
   <div class="d-flex align-items-center gap-2 mt-3">
     <button class="btn btn-secondary" type="button" (click)="router.navigate(['/inventory/list'])">Cancelar</button>
-    <button class="btn btn-primary" type="button" (click)="guardarInventario()" [disabled]="loading">{{ loading ? 'Guardando...' : 'Guardar' }}</button>
+    <button class="btn btn-primary" type="button" (click)="guardarInventario()" [disabled]="loadingProducts || saving || productsLoadError">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
   </div>
 
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">

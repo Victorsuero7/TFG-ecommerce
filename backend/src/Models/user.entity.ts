@@ -6,7 +6,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
  * Determinan los permisos y nivel de acceso que tiene un usuario.
  */
 
-export type ROLE = "ADMIN" | "ROOT" | "USER"
+export type ROLE = "ADMIN" | "ROOT" | "USER" | "VIEW_ONLY"
 
 
 /**
@@ -63,7 +63,7 @@ export class User {
      * Rol asignado al usuario.
      * Define los permisos que tendrá el usuario dentro de la aplicación.
      */
-    @Column({ type: 'enum', default: "USER", enum: ["ADMIN", "ROOT", "USER"] })
+    @Column({ type: 'enum', default: "USER", enum: ["ADMIN", "ROOT", "USER", "VIEW_ONLY"] })
     role!: ROLE;
 
     /**

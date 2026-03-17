@@ -13,7 +13,7 @@ import { User } from '../../models/user.model';
 })
 export class UserDetailComponent implements OnInit {
   user?: User;
-  loading = false;
+  loading = true;
   error = '';
 
   constructor(private route: ActivatedRoute, private userSvc: UserService) {}

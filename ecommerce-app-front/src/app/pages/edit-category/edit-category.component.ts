@@ -70,6 +70,8 @@ export class EditCategoryComponent implements OnInit{
       return;
     }
 
+    this.loading = true;
+
     const payload: any = {
       name: this.form.value.name,
       description: this.form.value.description
@@ -77,10 +79,12 @@ export class EditCategoryComponent implements OnInit{
 
     this.categorySvc.update(this.categoryId, payload).subscribe({
       next: () => {
+        this.loading = false;
         this.showToast('Categoría actualizada', 'success');
         setTimeout(() => this.router.navigate(['/categories/list']), 800);
       },
       error: err => {
+        this.loading = false;
         console.error('Error actualizando categoría', err);
         this.showToast('Error al actualizar categoría', 'error');
       }

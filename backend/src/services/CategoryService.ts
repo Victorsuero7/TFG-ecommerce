@@ -21,4 +21,6 @@ export interface CategoryService {
     findByDescription(description: string): Promise<SchemaResponse<CategoryDTO[]>>
     /** Obtiene todas las categorías con paginación. */
     getAllPaginated(page: number): Promise<SchemaResponse<CategoryDTO[]>>
+    delete(id: number): Promise<SchemaResponse<CategoryDTO>>
+
 }

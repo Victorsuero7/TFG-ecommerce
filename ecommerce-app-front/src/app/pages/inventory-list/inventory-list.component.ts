@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, Subscription, of, switchMap, debounceTime, distinctUntilChanged, catchError } from 'rxjs';
 import { MovementService } from '../../services/movement/movement.service';
 import { Movement } from '../../models/movement.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-inventory-list',
@@ -14,12 +15,12 @@ import { Movement } from '../../models/movement.model';
 })
 export class InventoryListComponent implements OnInit, OnDestroy {
   movements: Movement[] = [];
-  loading = false;
+  loading = true;
   error = '';
   searchTerm = '';
   currentPage = 1;
   totalItems = 0;
-  pageSize = 2; 
+  pageSize = 10;
   totalPages = 0;
 
   private search$ = new Subject<string>();
@@ -28,7 +29,7 @@ export class InventoryListComponent implements OnInit, OnDestroy {
   constructor(private movementSvc: MovementService) {}
 
   ngOnInit(): void {
-    this.load();
+    this.initPageSizeAndLoad();
 
     this.searchSub = this.search$.pipe(
       debounceTime(350),
@@ -99,5 +100,19 @@ export class InventoryListComponent implements OnInit, OnDestroy {
       day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     });
+  }
+
+  private initPageSizeAndLoad(): void {
+    fetch(environment.apiUrl + '/config')
+      .then(res => res.json())
+      .then(cfg => {
+        const configuredPageSize = Number(cfg?.productsPerPage);
+        this.pageSize = configuredPageSize > 0 ? configuredPageSize : 10;
+        this.load();
+      })
+      .catch(() => {
+        this.pageSize = 10;
+        this.load();
+      });
   }
 }

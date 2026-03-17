@@ -22,20 +22,20 @@ export class CategoryController {
     }
 
     update = async (req: Request, res: Response) => {
-        try{
+        try {
             const dto = CategoryDTO.createDTO(req.body)
             const result = await this.service.update(dto)
-            res.status(200).json({ message: "Category updated", category: result})
-        } catch (error){
-            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message})
-                return res.status(500)
+            res.status(200).json({ message: "Category updated", category: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 
     getOne = async (req: Request, res: Response) => {
         try {
             const id = req.params.id
-            if(!id) return res.status(400).json({ message: "ID param is required"})
+            if (!id) return res.status(400).json({ message: "ID param is required" })
             const result = await this.service.getById(Number(id))
             res.status(200).json(result)
         } catch (error) {
@@ -84,7 +84,20 @@ export class CategoryController {
             const result = await this.service.getAllPaginated(Number.parseInt(page))
             res.status(200).json({ message: result })
         } catch (error) {
-            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message})
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+        }
+    }
+
+    delete = async (req: Request, res: Response) => {
+        try {
+            const id = req.params.id
+            if (!id) return res.status(400).json({ message: "Missing params" })
+            const result = await this.service.delete(Number(id))
+            if (result)
+                res.status(200).json({ result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
         }
     }
 }
