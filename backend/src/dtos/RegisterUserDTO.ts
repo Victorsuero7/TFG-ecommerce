@@ -2,18 +2,17 @@
 
 export class RegisterUserDTO {
 
-    // birthDate!: Date;
-
     private constructor(
         public readonly name: string,
         public readonly lastName: string,
         public readonly email: string,
         public readonly phoneNumber: string,
-        public readonly password: string) { }
+        public readonly password: string,
+        public readonly birthDate?: Date | null) { }
 
     static create(body: { [key: string]: any; }): [string | null, RegisterUserDTO?] {
 
-        const { name, lastName, email, password, phoneNumber } = body;
+        const { name, lastName, email, password, phoneNumber, birthDate } = body;
         if (!name) return ['Missing name'];
         if (!email) return ['Missing email'];
         if (!phoneNumber) return ['Missing phone number'];
@@ -22,7 +21,17 @@ export class RegisterUserDTO {
         // if (!Validators.validatePassword(password)) return ['Password is not valid'];
         if (password.length < 6) return ['Password too short'];
 
-        const dto = new RegisterUserDTO(name, lastName, email, phoneNumber, password)
+        let normalizedBirthDate: Date | null | undefined = undefined;
+        if (Object.prototype.hasOwnProperty.call(body, 'birthDate')) {
+            if (!birthDate) {
+                normalizedBirthDate = null;
+            } else {
+                const parsedBirthDate = new Date(birthDate);
+                normalizedBirthDate = Number.isNaN(parsedBirthDate.getTime()) ? null : parsedBirthDate;
+            }
+        }
+
+        const dto = new RegisterUserDTO(name, lastName, email, phoneNumber, password, normalizedBirthDate)
         return [null, dto];
     }
 }

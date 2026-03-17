@@ -24,6 +24,17 @@ export class UserController {
         }
     }
 
+    update = async (req: Request, res: Response) => {
+        try {
+            const dto = UserDTO.createDTO(req.body)
+            const result = await this.service.update(dto)
+            return res.status(200).json({ message: "User updated", user: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
     getOne = async (req: Request, res: Response) => {
         try {
             const id = req.params.id

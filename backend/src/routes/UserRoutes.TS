@@ -18,6 +18,7 @@ export class UserRoutes {
         router.use(RBACMiddleware.requireAutentication())
 
         router.post('/insert', RBACMiddleware.excludedRole(["VIEW_ONLY"]), controller.insert)
+        router.patch('/update', RBACMiddleware.excludedRole(["VIEW_ONLY"]), controller.update)
         router.get('/', controller.getAllPaginated)
         router.get('/all/:page', controller.getAllPaginated)
         router.get('/email-available', controller.validateEmail) //?email=

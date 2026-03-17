@@ -55,6 +55,42 @@ export class UserServiceImpl implements UserService {
         }
     }
 
+    async update(dto: UserDTO): Promise<SchemaResponse<UserDTO>> {
+        try {
+            if (!dto.id) throw HttpErrors.badRequest("Missing user id")
+
+            const entity = await this.repo.findOneById(dto.id)
+            if (!entity) throw HttpErrors.NotFound()
+
+            if (dto.email && dto.email !== entity.email) {
+                const userExists = await this.repo.findByEmail(dto.email)
+                if (userExists && userExists.id !== entity.id) {
+                    throw HttpErrors.badRequest("User alredy exists")
+                }
+            }
+
+            if (dto.phoneNumber && dto.phoneNumber !== entity.phoneNumber) {
+                const phoneExists = await this.repo.findByPhoneNumber(dto.phoneNumber)
+                if (phoneExists && phoneExists.id !== entity.id) {
+                    throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+                }
+            }
+
+            entity.name = dto.name ?? entity.name
+            entity.lastName = dto.lastName ?? entity.lastName
+            entity.email = dto.email ?? entity.email
+            entity.phoneNumber = dto.phoneNumber ?? entity.phoneNumber
+            if (dto.birthDate !== undefined) entity.birthDate = dto.birthDate
+            if (dto.role) entity.role = dto.role
+
+            const result = await this.repo.save(entity)
+            return new SchemaResponse(UserDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error)
+            throw error
+        }
+    }
+
     async login(dto: LoginUserDTO): Promise<string | null> {
         try {
             const user = await this.repo.findByEmail(dto.email)
@@ -91,6 +127,7 @@ export class UserServiceImpl implements UserService {
             user.lastName = dto!.lastName
             user.phoneNumber = dto!.phoneNumber
             user.password = hash
+            if (dto.birthDate !== undefined) user.birthDate = dto.birthDate
 
             const userRegistered = await this.repo.save(user)
             return new SchemaResponse(UserDTO.fromEntity(userRegistered))

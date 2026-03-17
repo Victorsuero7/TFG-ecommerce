@@ -29,6 +29,6 @@ export class User {
     @Column({ type: 'boolean', default: true })
     enable!: boolean
 
-    // @Column({ type: 'date' })
-    // birthDate!: Date;
+    @Column({ type: 'date', nullable: true })
+    birthDate!: Date | null;
 }

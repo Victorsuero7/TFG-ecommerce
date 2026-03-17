@@ -60,7 +60,7 @@ export class ListUsersComponent implements OnInit {
     return `${u.name} ${u.lastName}`;
   }
 
-  formatDate(d?: string | Date) {
+  formatDate(d?: string | Date | null) {
     if (!d) return '-';
     const dt = d instanceof Date ? d : new Date(d);
     return isNaN(dt.getTime()) ? '-' : dt.toLocaleDateString();
@@ -94,7 +94,7 @@ export class ListUsersComponent implements OnInit {
         this.selectedDeleteId = undefined;
       },
       error: err => {
-        this.showToast('Error al desactivar producto', 'error');
+        this.showToast('Error al desactivar usuario', 'error');
         console.error(err);
         this.selectedDeleteId = undefined;
       }

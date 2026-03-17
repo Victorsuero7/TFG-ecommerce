@@ -7,6 +7,7 @@ export interface UserService {
     getAllPaginated(page: number): Promise<SchemaResponse<UserDTO[]>>
     getOne(id: number): Promise<SchemaResponse<UserDTO | null>>
     insert(user: UserDTO): Promise<SchemaResponse<UserDTO>>
+    update(user: UserDTO): Promise<SchemaResponse<UserDTO>>
     signUp(dto: RegisterUserDTO): Promise<SchemaResponse<UserDTO>>
     login(dto: LoginUserDTO): Promise<string | null>
     emailExists(email: string): Promise<SchemaResponse<string | null>>
