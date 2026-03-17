@@ -5,12 +5,27 @@ import { ProductDTO } from '../dtos/ProductDTO';
 import { getPath } from '../utils/ImageUploaderMiddleware';
 import { CategoryDTO } from '../dtos/CategoryDTO';
 
+/**
+ * Controlador encargado de gestionar las operaciones relacionadas con productos.
+ */
 export class ProductController {
+
+    /**
+     * Constructor del controlador.
+     * @param service Servicio de productos.
+     */
     constructor(service: ProductService) {
         this.service = service;
     }
     private readonly service: ProductService;
 
+    /**
+     * Crea un producto.
+     * @param req Contiene los datos del producto y el archivo de imagen.
+     * @param res Respuesta HTTP.
+     * @returns Devuelve respuesta HTTP: 200 con el producto creado y 
+     * 500 si hay error.
+     */
     insert = async (req: Request, res: Response) => {
         try {
             // console.log("ruta del archivo ", req.file?.path);
@@ -26,6 +41,12 @@ export class ProductController {
         }
     }
 
+    /**
+     * Actualiza un producto existente.
+     * @param req Contiene los datos que queremos actualizar y una imagen opcional.
+     * @param res Respuesta HTTP.
+     * @returns Devuelve respuesta HTTP: 200 con el producto actualizado y 500 si hay error.
+     */
     update = async (req: Request, res: Response) => {
         try {
             const dto = ProductDTO.createDTO(req.body)
@@ -40,6 +61,12 @@ export class ProductController {
         }
     }
 
+    /**
+     * Actualiza varios productos en una sola operación.
+     * @param req Contiene un array de productos.
+     * @param res Respuesta HTTP.
+     * @returns Devuelve una respuesta HTTP: 200 con los productos actualizados y 500 si hay error.
+     */
     updateMany = async (req: Request, res: Response) => {
         try {
             // console.log('[updateMany] req.body:', JSON.stringify(req.body));
@@ -58,6 +85,12 @@ export class ProductController {
         }
     }
 
+    /**
+     * Obtiene un producto por su identificador.
+     * @param req Contiene el identificador único del producto.
+     * @param res Respuesta HTTP.
+     * @returns Devuelve una respuesta HTTP: 200 con el producto encontrado o null y 500 si hay error.
+     */
     getOne = async (req: Request, res: Response) => {
         try {
             const id = req.params.id
@@ -70,6 +103,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Obtiene todos los productos.
+     */
     getAll = async (req: Request, res: Response) => {
         try {
             const result = await this.service.getAll()
@@ -80,6 +116,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Obtiene todos los productos con paginación.
+     */
     getAllPaginated = async (req: Request, res: Response) => {
         try {
             const page = Number(req.params.page ?? 1);
@@ -95,6 +134,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Obtiene productos filtrados por su stock.
+     */
     getByStock = async (req: Request, res: Response) => {
         try {
             const page = Number(req.query.page)
@@ -109,6 +151,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Busca productos por nombre.
+     */
     getByName = async (req: Request, res: Response) => {
         try {
             const name = req.params.name
@@ -121,6 +166,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Obtiene productos por descripción.
+     */
     getByDescription = async (req: Request, res: Response) => {
         try {
             const description = req.params.description
@@ -133,6 +181,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Obtiene productos por el nombre de la categoría.
+     */
     getByCategoryName = async (req: Request, res: Response) => {
         try {
             const categoryName = req.params.categoryName
@@ -145,6 +196,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Deshabilita un producto.
+     */
     delete = async (req: Request, res: Response) => {
         try {
             const id = req.params.id
@@ -158,6 +212,9 @@ export class ProductController {
         }
     }
 
+    /**
+     * Obtiene una lista de productos deshabilitados.
+     */
     disabled = async (req: Request, res: Response) => {
         try {
             const page = Number(req.params.page) ?? 1
@@ -168,6 +225,10 @@ export class ProductController {
             return res.status(500)
         }
     }
+
+    /**
+     * Obtiene productos por categoría.
+     */
     byCategory = async (req: Request, res: Response) => {
         try {
             const page = req.params.pge ? Number(req.query.page) : 1;
