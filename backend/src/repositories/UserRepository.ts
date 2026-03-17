@@ -12,6 +12,10 @@ export class UserRepository extends TypeORMRepository<User, number> {
         return await this.repo.findOneBy({ email })
     }
 
+    async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
+        return await this.repo.findOneBy({ phoneNumber })
+    }
+
     async findAllByPage(offset: number, limit: number): Promise<[User[], number]> {
         return await this.repo.findAndCount({ where: { enable: true }, skip: offset, take: limit })
     }

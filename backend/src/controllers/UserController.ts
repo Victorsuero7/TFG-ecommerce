@@ -77,9 +77,9 @@ export class UserController {
             const result = await this.service.signUp(dto!)
             return this.login(req, res)
         } catch (error) {
-            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             console.log(error);
-            res.status(500).json({ message: "Internal server error" })
+            return res.status(500).json({ message: "Internal server error" })
         }
     }
 
@@ -90,9 +90,9 @@ export class UserController {
             const result = await this.service.emailExists(email)
             if (!result) return res.status(200).json({ result: "email available" })
         } catch (error) {
-            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             // console.log(error);
-            res.status(500).json({ message: "Internal server error" })
+            return res.status(500).json({ message: "Internal server error" })
         }
     }
 

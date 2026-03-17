@@ -79,6 +79,10 @@ export class UserServiceImpl implements UserService {
         try {
             const userExists = await this.repo.findByEmail(dto.email)
             if (userExists) throw HttpErrors.badRequest("Ya existe una cuenta con ese email")
+
+            const phoneExists = await this.repo.findByPhoneNumber(dto.phoneNumber)
+            if (phoneExists) throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+
             const salt = bcrypt.genSaltSync(5);
             let hash = bcrypt.hashSync(dto.password, salt)
             const user = new User()
@@ -94,6 +98,21 @@ export class UserServiceImpl implements UserService {
         catch (error) {
             console.log(error)
             if (error instanceof HttpErrors) throw error;
+            const dbError = error as { code?: string; sqlMessage?: string }
+            if (dbError?.code === 'ER_DUP_ENTRY') {
+                const duplicateValueMatch = dbError.sqlMessage?.match(/Duplicate entry '([^']+)'/)
+                const duplicateValue = duplicateValueMatch?.[1]
+
+                if (duplicateValue === dto.phoneNumber) {
+                    throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+                }
+
+                if (duplicateValue === dto.email) {
+                    throw HttpErrors.badRequest("Ya existe una cuenta con ese email")
+                }
+
+                throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+            }
             throw HttpErrors.internalServerError("Something went wrong")
         }
     }
