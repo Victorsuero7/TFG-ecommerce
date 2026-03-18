@@ -6,6 +6,7 @@ import { Subject, Subscription, of, switchMap, debounceTime, distinctUntilChange
 import { ProductService } from '../../services/product/product.service';
 import { Product } from '../../models/product.model';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-list-products',
@@ -33,11 +34,12 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   minStock?: number;
   maxStock?: number;
   showDisabled = false;
+  isViewOnly = false;
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
 
-  constructor(private productSvc: ProductService, private router: Router) {
+  constructor(private productSvc: ProductService, private router: Router, private authSvc: AuthService) {
     (window as any).showAuthToast = () => {
       localStorage.setItem('auth_redirect_toast', 'Debes estar autenticado para acceder');
       this.showToast('Debes estar autenticado para acceder', 'error');
@@ -50,6 +52,8 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.isViewOnly = this.authSvc.isViewOnly();
+
     fetch(environment.apiUrl + '/config')
       .then(res => res.json())
       .then(cfg => {
@@ -218,14 +222,19 @@ export class ListProductsComponent implements OnInit, OnDestroy {
   }
 
   view(id?: number) { if (id) this.router.navigate(['/products/detail', id]); }
-  edit(id?: number) { if (id) this.router.navigate(['/products/edit', id]); }
+  edit(id?: number) {
+    if (this.isViewOnly) return;
+    if (id) this.router.navigate(['/products/edit', id]);
+  }
 
   openDeleteModal(id?: number) {
+    if (this.isViewOnly) return;
     if (!id) return;
     this.selectedDeleteId = id;
   }
 
   confirmDelete() {
+    if (this.isViewOnly) return;
     const id = this.selectedDeleteId;
     if (!id) return;
     this.productSvc.softdelete(id).subscribe({

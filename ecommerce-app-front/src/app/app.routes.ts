@@ -24,6 +24,8 @@ import { UserLoginComponent } from './pages/user-login/user-login.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 import { UserEditComponent } from './pages/user-edit/user-edit.component';  
 import { AuthGuard } from './guards/auth.guard';
+import { WriteGuard } from './guards/write.guard';
+import { AdminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -33,18 +35,18 @@ export const routes: Routes = [
 
   // Inventory routes
   { path: 'inventory/list', component: InventoryListComponent, canActivate: [AuthGuard] },
-  { path: 'inventory/new', component: CreateInventarioComponent, canActivate: [AuthGuard] },
+  { path: 'inventory/new', component: CreateInventarioComponent, canActivate: [AuthGuard, WriteGuard] },
 
   // products
   { path: 'products/list', component: ListProductsComponent, canActivate: [AuthGuard] },
-  { path: 'products/new', component: CreateProductComponent, canActivate: [AuthGuard] },
-  { path: 'products/edit/:id', component: EditProductComponent, canActivate: [AuthGuard] },
+  { path: 'products/new', component: CreateProductComponent, canActivate: [AuthGuard, WriteGuard] },
+  { path: 'products/edit/:id', component: EditProductComponent, canActivate: [AuthGuard, WriteGuard] },
   { path: 'products/detail/:id', component: ProductDetailComponent, canActivate: [AuthGuard] },
 
   // categories
   { path: 'categories/list', component: ListCategoriesComponent, canActivate: [AuthGuard] },
-  { path: 'categories/new', component: CreateCategoryComponent, canActivate: [AuthGuard] },
-  { path: 'categories/edit/:id', component: EditCategoryComponent, canActivate: [AuthGuard] },
+  { path: 'categories/new', component: CreateCategoryComponent, canActivate: [AuthGuard, WriteGuard] },
+  { path: 'categories/edit/:id', component: EditCategoryComponent, canActivate: [AuthGuard, WriteGuard] },
   { path: 'categories/detail/:id', component: CategoryDetailComponent, canActivate: [AuthGuard] },
 
   //users 
@@ -52,7 +54,7 @@ export const routes: Routes = [
   { path: 'register', component: UserRegisterComponent },
   { path: 'login', component: UserLoginComponent },
   { path: 'user/detail/:id', component: UserDetailComponent, canActivate: [AuthGuard] },
-  { path: 'user/edit/:id', component: UserEditComponent, canActivate: [AuthGuard] },
+  { path: 'user/edit/:id', component: UserEditComponent, canActivate: [AuthGuard, AdminGuard] },
 
   { path: '**', redirectTo: 'dashboard' }
 ];

@@ -56,7 +56,7 @@
 				<div class="col-2 text-end px-2 actions-column">
 					<div class="actions-buttons">
 						<button class="btn btn-sm btn-outline-secondary me-1" (click)="view(p.id)" title="Ver" [attr.aria-label]="'Ver producto ' + p.name"><i class="bi bi-eye"></i></button>
-					<ng-container *ngIf="!showDisabled">
+					<ng-container *ngIf="!showDisabled && !isViewOnly">
 							<button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(p.id)" title="Editar" [attr.aria-label]="'Editar producto ' + p.name"><i class="bi bi-pencil"></i></button>
 							<button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(p.id)" title="Eliminar" [attr.aria-label]="'Eliminar producto ' + p.name" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
 					</ng-container>

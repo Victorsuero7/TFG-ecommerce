@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../models/user.model';
-import {map} from 'rxjs';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-list-users',
@@ -28,10 +28,12 @@ export class ListUsersComponent implements OnInit {
   pages: number[] = [];
 
   selectedDeleteId?: number;
+  canManageUsers = false;
 
-  constructor(private userSvc: UserService, private router: Router) {}
+  constructor(private userSvc: UserService, private router: Router, private authSvc: AuthService) {}
 
   ngOnInit(): void {
+    this.canManageUsers = this.authSvc.hasAnyRole(['ADMIN']);
     this.load();
   }
 
@@ -73,18 +75,21 @@ export class ListUsersComponent implements OnInit {
   }
 
   edit(id?: number) {
+    if (!this.canManageUsers) return;
     console.log('Editar usuario', id);
     if (id) this.router.navigate(['/user/edit', id]);
   }
 
   
   openDeleteModal(id?: number) {
+    if (!this.canManageUsers) return;
     console.log('Abrir modal borrar usuario', id);
     if (!id) return;
     this.selectedDeleteId = id;
   }
 
   confirmDelete() {
+    if (!this.canManageUsers) return;
     const id = this.selectedDeleteId;
     if (!id) return;
     this.userSvc.softdelete(id).subscribe({
