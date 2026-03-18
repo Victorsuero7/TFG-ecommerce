@@ -9,11 +9,28 @@ import { ObjectLiteral, ReturnDocument, Transaction } from "typeorm";
 
 const PPP = envs.PRODUCTS_PER_PAGE ?? 20;
 
+/**
+ * Implementación del servicio de categorías.
+ * 
+ * Contiene la lógica de negocio relacionada con la gestión de las 
+ * categorías de los productos.
+ */
 export class CategoryServiceImpl implements CategoryService {
     private readonly repo: CategoryRepository;
+
+    /**
+     * Constructor del repositorio.
+     * @param repo Repositorio de categorías.
+     */
     constructor(repo: CategoryRepository) {
         this.repo = repo;
     }
+
+    /**
+     * Obtiene todas las categorías usando paginación.
+     * @param page Página a consultar.
+     * @returns Devuelve una lista CategoryDTO.
+     */
     async getAllPaginated(page: number): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
             // const metadata: Metadata = {}
@@ -26,6 +43,10 @@ export class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    /**
+     * Obtiene todas las categorías.
+     * @returns Devuelve una lista de CategoryDTO.
+     */
     async getAll(): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
             const result = (await this.repo.findAll()).map(e => CategoryDTO.fromEntity(e))
@@ -35,6 +56,11 @@ export class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    /**
+     * Obtiene una categoría por su identificador.
+     * @param id Identificador único de la categoría.
+     * @returns Devuelve un CategoryDTO o null.
+     */
     async getById(id: number): Promise<SchemaResponse<CategoryDTO | null>> {
         try {
             const result = await this.repo.findOneById(id)
@@ -46,7 +72,12 @@ export class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    async insert(dto: CategoryDTO): Promise<SchemaResponse<CategoryDTO>> {
+    /**
+     * Inserta una nueva categoría en la base de datos.
+     * @param dto CategoryDTO a guardar.
+     * @returns Devuelve la categoría guardada.
+     */
+    async insert(dto: CategoryDTO): Promise <SchemaResponse<CategoryDTO>> {
         try {
             const category: Category = dto.toEntity()
             const result = await this.repo.save(category)
@@ -57,8 +88,13 @@ export class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    async update(dto: CategoryDTO): Promise<SchemaResponse<CategoryDTO>> {
-        try {
+    /**
+     * Actualiza una categoría.
+     * @param dto CategoryDTO a actualizar.
+     * @returns Devuelve la categoría actualizada.
+     */
+    async update(dto: CategoryDTO): Promise<SchemaResponse<CategoryDTO>>{
+        try{
             const category: Category = dto.toEntity()
             const entity = this.repo.preload(category)
             if (!entity) throw HttpErrors.internalServerError("Something went wrong")
@@ -71,6 +107,11 @@ export class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    /**
+     * Obtiene categorías por nombre.
+     * @param name Nombre de la CategoryDTO.
+     * @returns Devuelve un array de CategoryDTO.
+     */
     async findByName(name: string): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
             const [entities, count] = await this.repo.findByName(name)
@@ -82,6 +123,12 @@ export class CategoryServiceImpl implements CategoryService {
             throw error
         }
     }
+
+    /**
+     * Obtiene categorías por descripción.
+     * @param description Texto de la descripción de la categoría.
+     * @returns Devuelve un array de CategoryDTO.
+     */
     async findByDescription(description: string): Promise<SchemaResponse<CategoryDTO[]>> {
         try {
             const [entities, count] = await this.repo.findByDescription(description)
