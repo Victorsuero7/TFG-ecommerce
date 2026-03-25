@@ -11,6 +11,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
+/**
+ * Componente de detalle de producto.
+ * Carga y muestra toda la información de un producto a partir del id de la ruta.
+ */
 export class ProductDetailComponent implements OnInit {
   product?: Product;
   loading = true;

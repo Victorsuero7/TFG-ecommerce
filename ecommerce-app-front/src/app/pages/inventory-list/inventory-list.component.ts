@@ -13,6 +13,11 @@ import { environment } from '../../../environments/environment';
   templateUrl: './inventory-list.component.html',
   styleUrls: ['./inventory-list.component.css']
 })
+/**
+ * Componente de listado de movimientos de inventario.
+ * Muestra el historial de movimientos de stock con paginación y búsqueda
+ * reactiva por nombre de producto.
+ */
 export class InventoryListComponent implements OnInit, OnDestroy {
   movements: Movement[] = [];
   loading = true;

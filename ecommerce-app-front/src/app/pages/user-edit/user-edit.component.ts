@@ -11,6 +11,11 @@ import { UserService } from '../../services/user/user.service';
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.css']
 })
+/**
+ * Componente para editar los datos de un usuario existente.
+ * Precarga los campos del usuario desde la API y permite actualizar nombre,
+ * apellido, email, teléfono y fecha de nacimiento.
+ */
 export class UserEditComponent implements OnInit {
   form: FormGroup;
   error: string | null = null;

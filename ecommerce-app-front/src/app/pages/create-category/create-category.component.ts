@@ -11,6 +11,11 @@ import { CategoryService } from '../../services/category/category.service';
   templateUrl: './create-category.component.html',
   styleUrls: ['./create-category.component.css']
 })
+/**
+ * Componente para crear una nueva categoría.
+ * Gestiona el formulario reactivo con campos de nombre y descripción,
+ * y redirige al listado tras la creación exitosa.
+ */
 export class CreateCategoryComponent {
   form!: FormGroup;
   loading = false;

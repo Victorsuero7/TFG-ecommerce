@@ -7,6 +7,11 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 
+/**
+ * Servicio para la gestión de categorías.
+ * Extiende GenericService con operaciones específicas como búsqueda por nombre,
+ * descripción y actualización múltiple.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +20,11 @@ export class CategoryService extends GenericService<Category> {
     super(http, 'category');
   }
 
+  /**
+   * Construye las cabeceras de autorización con el token JWT.
+   * Si no hay token, redirige al login.
+   * @returns Objeto con cabeceras HTTP.
+   */
   private getAuthHeaders(): { headers: HttpHeaders } {
     const token = this.authService.getToken();
     if (token) {
@@ -30,6 +40,10 @@ export class CategoryService extends GenericService<Category> {
     }
   }
 
+  /**
+   * Obtiene todas las categorías con autenticación.
+   * @returns Observable con el array de categorías.
+   */
   override getAll(): Observable<Category[]> {
   const options = this.getAuthHeaders();
   return this.http.get<Category[]>(`${this.baseUrl}`, options).pipe(
@@ -37,6 +51,11 @@ export class CategoryService extends GenericService<Category> {
   );
 }
 
+  /**
+   * Obtiene una categoría por su identificador.
+   * @param id Identificador de la categoría.
+   * @returns Observable con la categoría encontrada.
+   */
   override getById(id: number): Observable<Category> {
     const options = this.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}/${id}`, options).pipe(
@@ -44,6 +63,11 @@ export class CategoryService extends GenericService<Category> {
     );
   }
 
+  /**
+   * Busca categorías cuyo nombre coincida con el texto dado.
+   * @param name Texto a buscar en el nombre.
+   * @returns Observable con las categorías encontradas.
+   */
   searchByName(name: string): Observable<Category[]> {
     const options = this.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}/name/${encodeURIComponent(name)}`, options).pipe(
@@ -51,6 +75,11 @@ export class CategoryService extends GenericService<Category> {
     );
   }
 
+  /**
+   * Busca categorías cuya descripción contenga el texto dado.
+   * @param description Texto a buscar en la descripción.
+   * @returns Observable con las categorías encontradas.
+   */
   searchByDescription(description: string): Observable<Category[]> {
     const options = this.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}/description/${encodeURIComponent(description)}`, options).pipe(
@@ -58,16 +87,32 @@ export class CategoryService extends GenericService<Category> {
     );
   }
   
+  /**
+   * Crea una nueva categoría en el backend.
+   * @param item Datos de la categoría a crear.
+   * @returns Observable con la categoría creada.
+   */
   override create(item: Category): Observable<Category> {
     const options = this.getAuthHeaders();
     return this.http.post<Category>(`${this.baseUrl}/insert`, item, options);
   }
 
+  /**
+   * Actualiza múltiples categorías en una sola petición.
+   * @param items Array de categorías con los datos actualizados.
+   * @returns Observable con la respuesta del servidor.
+   */
   updateMany(items: Category[]): Observable<any> {
     const options = this.getAuthHeaders();
     return this.http.patch(`${this.baseUrl}/update/many`, items, options);
   }
 
+  /**
+   * Actualiza una categoría existente.
+   * @param id Identificador de la categoría.
+   * @param item Nuevos datos de la categoría.
+   * @returns Observable con la categoría actualizada.
+   */
   override update(id: number, item: Category): Observable<Category> {
     const options = this.getAuthHeaders();
     const data = { ...item, id };
