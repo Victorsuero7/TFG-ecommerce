@@ -17,6 +17,12 @@ import { Movement } from '../../models/movement.model';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+/**
+ * Componente principal del dashboard.
+ * Carga y muestra métricas globales del almacén: totales de productos,
+ * categorías, stock, valor, productos con poco stock, últimos movimientos
+ * y distribución por categoría.
+ */
 export class DashboardComponent implements OnInit {
     latestMovements: Movement[] = [];
   loading = true;

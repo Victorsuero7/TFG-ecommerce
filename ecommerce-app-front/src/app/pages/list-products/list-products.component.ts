@@ -15,6 +15,11 @@ import { AuthService } from '../../services/auth/auth.service';
   templateUrl: './list-products.component.html',
   styleUrls: ['./list-products.component.css']
 })
+/**
+ * Componente de listado de productos.
+ * Soporta paginación, búsqueda reactiva por nombre, descripción y categoría,
+ * filtrado por rango de stock y alternancia entre productos activos e inactivos.
+ */
 export class ListProductsComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   loading = true;

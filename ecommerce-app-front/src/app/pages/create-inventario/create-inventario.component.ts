@@ -6,6 +6,10 @@ import { ProductService } from '../../services/product/product.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 
+/**
+ * Extiende el modelo Product con los campos de cantidad actual y stock original
+ * necesarios para el formulario de ajuste de inventario.
+ */
 export interface ProductInventario extends Product {
   cantidad: number;
   stockOriginal: number;
@@ -17,6 +21,11 @@ export interface ProductInventario extends Product {
   templateUrl: './create-inventario.component.html',
   styleUrls: ['./create-inventario.component.css']
 })
+/**
+ * Componente para ajustar el inventario de productos.
+ * Carga todos los productos activos, permite incrementar o decrementar
+ * la cantidad de cada uno y guarda únicamente los productos modificados.
+ */
 export class CreateInventarioComponent {
   productos: ProductInventario[] = [];
   loadingProducts = true;

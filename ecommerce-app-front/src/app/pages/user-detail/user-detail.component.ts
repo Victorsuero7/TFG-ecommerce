@@ -11,6 +11,10 @@ import { User } from '../../models/user.model';
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.css']
 })
+/**
+ * Componente de detalle de usuario.
+ * Carga y muestra toda la información de un usuario a partir del id de la ruta.
+ */
 export class UserDetailComponent implements OnInit {
   user?: User;
   loading = true;

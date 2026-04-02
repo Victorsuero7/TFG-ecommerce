@@ -4,15 +4,25 @@ type ThemeMode = 'light' | 'dark';
 
 const THEME_STORAGE_KEY = 'app_theme_mode';
 
+/**
+ * Servicio encargado de gestionar el tema visual de la aplicación (claro/oscuro).
+ * Persiste la preferencia en localStorage y aplica el atributo de Bootstrap al documento.
+ */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly _mode = signal<ThemeMode>('light');
+
+  /** Señal de solo lectura con el modo de tema actual. */
   readonly mode = this._mode.asReadonly();
 
   constructor() {
     this.initializeTheme();
   }
 
+  /**
+   * Indica si el tema actual es oscuro.
+   * @returns `true` si el modo es 'dark'.
+   */
   isDark(): boolean {
     return this._mode() === 'dark';
   }

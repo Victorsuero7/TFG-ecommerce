@@ -11,6 +11,10 @@ import { Category } from '../../models/category.model';
   templateUrl: './edit-category.component.html',
   styleUrl: './edit-category.component.css'
 })
+/**
+ * Componente para editar una categoría existente.
+ * Precarga los datos de la categoría a partir del id de la ruta y permite modificar nombre y descripción.
+ */
 export class EditCategoryComponent implements OnInit{
   
   form: FormGroup;

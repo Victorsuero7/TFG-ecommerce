@@ -12,6 +12,10 @@ import { AuthService } from '../../services/auth/auth.service';
   templateUrl: './list-users.component.html',
   styleUrls: ['./list-users.component.css']
 })
+/**
+ * Componente de listado de usuarios.
+ * Muestra usuarios paginados con opciones para ver, editar y desactivar (borrado lógico).
+ */
 export class ListUsersComponent implements OnInit {
   users: User[] = [];
   loading = true;

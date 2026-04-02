@@ -6,6 +6,9 @@ import { Component } from '@angular/core';
   templateUrl: './goods-entry.component.html',
   styleUrl: './goods-entry.component.css'
 })
+/**
+ * Componente para registrar entradas de mercancía (pendiente de implementación).
+ */
 export class GoodsEntryComponent {
 
 }
