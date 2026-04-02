@@ -15,6 +15,11 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrls: ['./user-register.component.css']
 })
 
+/**
+ * Componente de registro de nuevos usuarios.
+ * Incluye validación de formulario reactivo, comprobación asíncrona de email
+ * duplicado y verificación de coincidencia de contraseñas.
+ */
 export class UserRegisterComponent {
   error: string | null = null;
   loading = true;

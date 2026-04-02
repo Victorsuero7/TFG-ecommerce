@@ -10,6 +10,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './category-detail.component.html',
   styleUrls: ['./category-detail.component.css']
 })
+/**
+ * Componente de detalle de categoría.
+ * Carga y muestra la información de una categoría a partir del id de la ruta.
+ */
 export class CategoryDetailComponent {
  category?: Category;
   loading = true;

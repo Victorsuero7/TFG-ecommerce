@@ -13,6 +13,11 @@ import {environment} from '../../../environments/environment';
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.css']
 })
+/**
+ * Componente para editar un producto existente.
+ * Precarga los datos del producto a partir del id de la ruta, permite modificar
+ * todos sus campos incluida la imagen, y envía los cambios como FormData.
+ */
 export class EditProductComponent implements OnInit {
   form: FormGroup;
   error: string | null = null;

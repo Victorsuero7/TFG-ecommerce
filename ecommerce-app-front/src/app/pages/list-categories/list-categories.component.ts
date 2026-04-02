@@ -13,6 +13,10 @@ import { Category } from '../../models/category.model';
   templateUrl: './list-categories.component.html',
   styleUrl: './list-categories.component.css'
 })
+/**
+ * Componente de listado de categorías.
+ * Soporta búsqueda reactiva por nombre y descripción con deduplicación de resultados.
+ */
 export class ListCategoriesComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   loading = true;

@@ -14,6 +14,11 @@ import { Product } from '../../models/product.model';
   templateUrl: './create-product.component.html',
   styleUrls: ['./create-product.component.css']
 })
+/**
+ * Componente para crear un nuevo producto.
+ * Gestiona el formulario reactivo con campos de nombre, descripción, precio,
+ * stock, talla, categoría e imagen, y envía los datos al backend como FormData.
+ */
 export class CreateProductComponent {
   form!: FormGroup;
   categories: Category[] = [];

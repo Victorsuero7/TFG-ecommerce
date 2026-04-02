@@ -12,6 +12,10 @@ import {AuthService} from '../../services/auth/auth.service';
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.css']
 })
+/**
+ * Componente de inicio de sesión.
+ * Gestiona el formulario de login, valida credenciales y redirige al dashboard tras autenticarse correctamente.
+ */
 export class UserLoginComponent {
 error: string | null = null;
   loading = true;

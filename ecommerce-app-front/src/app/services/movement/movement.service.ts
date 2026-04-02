@@ -7,6 +7,10 @@ import { Movement } from '../../models/movement.model';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 
+/**
+ * Servicio para la gestión de movimientos de stock.
+ * Permite consultar el historial de movimientos con paginación y búsqueda por nombre de producto.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +19,11 @@ export class MovementService {
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
 
+  /**
+   * Construye las cabeceras de autorización con el token JWT.
+   * Si no hay token, redirige al login.
+   * @returns Objeto con cabeceras HTTP.
+   */
   private getAuthHeaders(): { headers: HttpHeaders } {
     const token = this.authService.getToken();
     if (token) {
@@ -30,6 +39,11 @@ export class MovementService {
     }
   }
 
+  /**
+   * Obtiene todos los movimientos paginados.
+   * @param page Número de página (por defecto 1).
+   * @returns Observable con los movimientos y el total de registros.
+   */
   getAll(page: number = 1): Observable<{ data: Movement[], count: number }> {
     const options = this.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}/all/${page}`, options).pipe(
@@ -44,6 +58,12 @@ export class MovementService {
     );
   }
 
+  /**
+   * Busca movimientos filtrando por nombre de producto.
+   * @param name Nombre del producto a buscar.
+   * @param page Número de página (por defecto 1).
+   * @returns Observable con los movimientos coincidentes y el total de registros.
+   */
   searchByProductName(name: string, page: number = 1): Observable<{ data: Movement[], count: number }> {
     const options = this.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}/find`, { params: { name, page: page.toString() }, ...options }).pipe(
@@ -57,6 +77,11 @@ export class MovementService {
       })
     );
   }
+  /**
+   * Mapea la respuesta del backend al modelo Movement del frontend.
+   * @param m Objeto raw recibido del servidor.
+   * @returns Entidad Movement normalizada.
+   */
   private mapMovement(m: any): Movement {
     return {
       id: m.id,
