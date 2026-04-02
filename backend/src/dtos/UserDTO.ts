@@ -16,6 +16,7 @@ export class UserDTO {
      * @param lastName - Apellidos del usuario.
      * @param email - Correo electrónico del usuario.
      * @param phoneNumber - Número de teléfono del usuario.
+     * @param birthDate - Fecha de nacimiento del usuario.
      * @param role - Rol del usuario.
      */
     constructor(
@@ -26,9 +27,6 @@ export class UserDTO {
         public readonly phoneNumber: string,
         public readonly birthDate: Date | null | undefined,
         public readonly role: ROLE | null | undefined) { }
-
-        // public readonly birthDate!: Date;
-        public readonly role: ROLE | null) { }
     
     /**
      * Convierte una entidad User en un UserDTO.
@@ -49,16 +47,16 @@ export class UserDTO {
     }
 
     /**
-     * Convierte el DTO en una entidad User.
+     * Convierte un UserDTO en una entidad User.
      * 
-     * @returns Devuelve una entidad User con los datos del DTO.
+     * @returns - Devuelve un objeto User con los datos del DTO.
      */
     toEntity(): User {
         const user = new User()
         Object.assign(user, this)
         return user
     }
-
+    
     /**
      * Crea un DTO a partir de un objeto genérico.
      * 

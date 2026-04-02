@@ -8,7 +8,6 @@
  */
 export class RegisterUserDTO {
 
-    // birthDate!: Date;
     /**
      * Constructor privado para evitar crear instancias sin pasar por 
      * el método de validación 'create'.
@@ -18,6 +17,7 @@ export class RegisterUserDTO {
      * @param email Correo electrónico del usuario.
      * @param phoneNumber Teléfono del usuario.
      * @param password Contraseña del usuario.
+     * @param birthDate Fecha de nacimiento del usuario.
      */
     private constructor(
         public readonly name: string,
@@ -26,8 +26,6 @@ export class RegisterUserDTO {
         public readonly phoneNumber: string,
         public readonly password: string,
         public readonly birthDate?: Date | null) { }
-
-        public readonly password: string) { }
     
     /**
      * Crea un RegisterUserDTO validando previamente los datos recibidos 
