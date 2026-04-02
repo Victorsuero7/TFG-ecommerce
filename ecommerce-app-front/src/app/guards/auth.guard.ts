@@ -8,9 +8,13 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): boolean {
     const token = this.authService.getToken();
-    if (token) {
+        if (token && !this.authService.isTokenExpired()) {
       return true;
     } else {
+      if (token && this.authService.isTokenExpired()) {
+        console.log('Token expirado detectado en guard');
+        this.authService.logout();
+      }
       this.router.navigate(['/login']);
       return false;
     }

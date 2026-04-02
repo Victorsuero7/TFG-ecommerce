@@ -33,11 +33,13 @@
             <i class="bi bi-archive me-2" aria-hidden="true"></i>Inventarios
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/inventory/new" routerLinkActive="active">
-            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Nuevo inventario
-          </a>
-        </li>
+        @if (!auth.isViewOnly()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/inventory/new" routerLinkActive="active">
+              <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Nuevo inventario
+            </a>
+          </li>
+        }
 
         <li class="nav-section-title mt-3 d-none d-lg-block">Productos</li>
         <li class="nav-item">
@@ -45,11 +47,13 @@
             <i class="bi bi-boxes me-2" aria-hidden="true"></i>Productos
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/products/new" routerLinkActive="active">
-            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Nuevo producto
-          </a>
-        </li>
+        @if (!auth.isViewOnly()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/products/new" routerLinkActive="active">
+              <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Nuevo producto
+            </a>
+          </li>
+        }
 
         <li class="nav-section-title mt-3 d-none d-lg-block">Categorías</li>
         <li class="nav-item">
@@ -57,18 +61,22 @@
             <i class="bi bi-tags me-2" aria-hidden="true"></i>Categorías
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/categories/new" routerLinkActive="active">
-            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Nueva categoría
-          </a>
-        </li>
+        @if (!auth.isViewOnly()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/categories/new" routerLinkActive="active">
+              <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Nueva categoría
+            </a>
+          </li>
+        }
 
-        <li class="nav-section-title mt-3 d-none d-lg-block">Usuarios</li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/users/list" routerLinkActive="active">
-            <i class="bi bi-people me-2" aria-hidden="true"></i>Usuarios
-          </a>
-        </li>
+        @if (!auth.isViewOnly()) {
+          <li class="nav-section-title mt-3 d-none d-lg-block">Usuarios</li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/users/list" routerLinkActive="active">
+              <i class="bi bi-people me-2" aria-hidden="true"></i>Usuarios
+            </a>
+          </li>
+        }
 
         <li class="nav-section-title mt-3 d-none d-lg-block">Cuenta</li>
         @if (!auth.isLoggedIn()) {

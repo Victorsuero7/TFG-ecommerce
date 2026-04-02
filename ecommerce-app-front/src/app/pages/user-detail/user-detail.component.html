@@ -18,6 +18,7 @@
 				<ul class="list-group list-group-flush mb-2">
 					<li class="list-group-item px-0 py-1"><strong>Email:</strong> {{ user.email || '-' }}</li>
 					<li class="list-group-item px-0 py-1"><strong>Teléfono:</strong> {{ user.phoneNumber || '-' }}</li>
+					<li class="list-group-item px-0 py-1"><strong>Rol:</strong> {{ user.role || '-' }}</li>
 					<li class="list-group-item px-0 py-1"><strong>Fecha nacimiento:</strong> {{ user.birthDate ? (user.birthDate | date:'dd/MM/yyyy') : '-' }}</li>
 				</ul>
 			</div>

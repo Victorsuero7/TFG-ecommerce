@@ -47,6 +47,7 @@ export class UserRegisterComponent {
     
     this.form.get('password')?.valueChanges.subscribe(() => this.checkPasswords());
     this.form.get('confirmPassword')?.valueChanges.subscribe(() => this.checkPasswords());
+    this.form.get('phoneNumber')?.valueChanges.subscribe(() => this.clearPhoneTakenError());
   }
 
   onSubmit() {
@@ -67,6 +68,14 @@ export class UserRegisterComponent {
         error: (err) => {
         this.submitting = false;
         const msg = err?.error?.message || 'Error al registrar usuario';
+
+        if (typeof msg === 'string' && msg.toLowerCase().includes('teléfono')) {
+          const phoneControl = this.form.get('phoneNumber');
+          const currentErrors = phoneControl?.errors || {};
+          phoneControl?.setErrors({ ...currentErrors, phoneTaken: true });
+          phoneControl?.markAsTouched();
+        }
+
         this.showToast(msg, 'error');
       }
     })
@@ -130,6 +139,14 @@ export class UserRegisterComponent {
       }),
       first()
     );
+  }
+
+  private clearPhoneTakenError() {
+    const phoneControl = this.form.get('phoneNumber');
+    if (!phoneControl?.hasError('phoneTaken')) return;
+    const currentErrors = { ...(phoneControl.errors || {}) };
+    delete (currentErrors as any).phoneTaken;
+    phoneControl.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
   }
 
   goToLogin() { this.router.navigate(['/login']); }

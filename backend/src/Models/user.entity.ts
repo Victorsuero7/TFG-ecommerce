@@ -73,10 +73,10 @@ export class User {
     @Column({ type: 'boolean', default: true })
     enable!: boolean
 
-    /**
+     /**
      * Fecha de nacimiento del usuario.
      * Campo opcional no utilizado actualmente.
      */
-    // @Column({ type: 'date' })
-    // birthDate!: Date;
-}
+    @Column({ type: 'date', nullable: true })
+    birthDate!: Date | null;
+  

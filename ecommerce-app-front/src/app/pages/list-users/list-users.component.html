@@ -6,8 +6,9 @@
     <div class="col-1">ID</div>
     <div class="col">Nombre</div>
     <div class="col-2">Teléfono</div>
-    <div class="col-3">Email</div>
+    <div class="col-2">Email</div>
     <div class="col-2">Fecha nacimiento</div>
+    <div class="col-1">Rol</div>
     <div class="col-2 text-end actions-column"><span class="actions-header-label">Acciones</span></div>
   </div>
   <div *ngIf="loading" class="mb-3">Cargando...</div>
@@ -17,13 +18,14 @@
         <div class="col-1 small px-2">{{ u.id }}</div>
         <div class="col small px-2">{{ fullName(u) }}</div>
         <div class="col-2 small px-2">{{ u.phoneNumber }}</div>
-        <div class="col-3 small px-2">{{ u.email }}</div>
+        <div class="col-2 small px-2">{{ u.email }}</div>
         <div class="col-2 small px-2">{{ formatDate(u.birthDate) }}</div>
+        <div class="col-1 small px-2">{{ u.role || '-' }}</div>
         <div class="col-2 text-end px-2 actions-column">
           <div class="actions-buttons">
             <button class="btn btn-sm btn-outline-secondary me-1" (click)="view(u.id)" title="Ver" [attr.aria-label]="'Ver usuario ' + fullName(u)"><i class="bi bi-eye"></i></button>
-            <button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(u.id)" title="Editar" [attr.aria-label]="'Editar usuario ' + fullName(u)"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(u.id)" title="Eliminar" [attr.aria-label]="'Eliminar usuario ' + fullName(u)" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
+            <button *ngIf="canManageUsers" class="btn btn-sm btn-outline-secondary me-1" (click)="edit(u.id)" title="Editar" [attr.aria-label]="'Editar usuario ' + fullName(u)"><i class="bi bi-pencil"></i></button>
+            <button *ngIf="canManageUsers" class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(u.id)" title="Eliminar" [attr.aria-label]="'Eliminar usuario ' + fullName(u)" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
           </div>
         </div>
       </div>
@@ -62,7 +64,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal"
+        <button *ngIf="canManageUsers" type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal"
           (click)="confirmDelete()">Desactivar</button>
       </div>
     </div>

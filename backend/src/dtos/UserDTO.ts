@@ -24,6 +24,9 @@ export class UserDTO {
         public readonly lastName: string,
         public readonly email: string,
         public readonly phoneNumber: string,
+        public readonly birthDate: Date | null | undefined,
+        public readonly role: ROLE | null | undefined) { }
+
         // public readonly birthDate!: Date;
         public readonly role: ROLE | null) { }
     
@@ -34,7 +37,15 @@ export class UserDTO {
      * @returns - Devuelve un objeto UserDTO con los datos del usuario.
      */
     static fromEntity(user: User): UserDTO {
-        return new UserDTO(user?.id, user?.name, user?.lastName, user?.email, user?.phoneNumber, user?.role)
+        return new UserDTO(
+            user?.id,
+            user?.name,
+            user?.lastName,
+            user?.email,
+            user?.phoneNumber,
+            user?.birthDate ?? null,
+            user?.role,
+        )
     }
 
     /**
@@ -55,7 +66,19 @@ export class UserDTO {
      * @returns Devuelve una nueva instancia de UserDTO.
      */
     static createDTO(object: { [key: string]: any; }): UserDTO {
-        const { id, name, lastName, email, phoneNumber, role } = object;
-        return new UserDTO(id, name, lastName, email, phoneNumber, role)
+        const { id, name, lastName, email, phoneNumber, birthDate, role } = object;
+        const hasBirthDate = Object.prototype.hasOwnProperty.call(object, 'birthDate');
+        let normalizedBirthDate: Date | null | undefined = undefined;
+
+        if (hasBirthDate) {
+            if (!birthDate) {
+                normalizedBirthDate = null;
+            } else {
+                const parsedBirthDate = new Date(birthDate);
+                normalizedBirthDate = Number.isNaN(parsedBirthDate.getTime()) ? null : parsedBirthDate;
+            }
+        }
+
+        return new UserDTO(id, name, lastName, email, phoneNumber, normalizedBirthDate, role)
     }
 }

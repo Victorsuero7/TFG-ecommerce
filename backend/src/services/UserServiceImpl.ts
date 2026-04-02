@@ -80,6 +80,42 @@ export class UserServiceImpl implements UserService {
         }
     }
 
+    async update(dto: UserDTO): Promise<SchemaResponse<UserDTO>> {
+        try {
+            if (!dto.id) throw HttpErrors.badRequest("Missing user id")
+
+            const entity = await this.repo.findOneById(dto.id)
+            if (!entity) throw HttpErrors.NotFound()
+
+            if (dto.email && dto.email !== entity.email) {
+                const userExists = await this.repo.findByEmail(dto.email)
+                if (userExists && userExists.id !== entity.id) {
+                    throw HttpErrors.badRequest("User alredy exists")
+                }
+            }
+
+            if (dto.phoneNumber && dto.phoneNumber !== entity.phoneNumber) {
+                const phoneExists = await this.repo.findByPhoneNumber(dto.phoneNumber)
+                if (phoneExists && phoneExists.id !== entity.id) {
+                    throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+                }
+            }
+
+            entity.name = dto.name ?? entity.name
+            entity.lastName = dto.lastName ?? entity.lastName
+            entity.email = dto.email ?? entity.email
+            entity.phoneNumber = dto.phoneNumber ?? entity.phoneNumber
+            if (dto.birthDate !== undefined) entity.birthDate = dto.birthDate
+            if (dto.role) entity.role = dto.role
+
+            const result = await this.repo.save(entity)
+            return new SchemaResponse(UserDTO.fromEntity(result))
+        } catch (error) {
+            console.log(error)
+            throw error
+        }
+    }
+
     /**
      * Autenticación del usuario y generación de token JWT.
      * @param dto UsuarioDTO a autenticar.
@@ -89,6 +125,7 @@ export class UserServiceImpl implements UserService {
         try {
             const user = await this.repo.findByEmail(dto.email)
             if (!user) throw HttpErrors.badRequest("Invalid credentials")
+            if (!user.enable) throw HttpErrors.forbidden("Usuario desactivado")
             const validPassword = await bcrypt.compare(dto.password, user!.password)
             if (!validPassword) throw HttpErrors.badRequest("Invalid credentials")
             const token = await JWTAdapter.generateToken({ id: user!.id, name: user!.name, role: user!.role }, '2h')
@@ -114,6 +151,10 @@ export class UserServiceImpl implements UserService {
         try {
             const userExists = await this.repo.findByEmail(dto.email)
             if (userExists) throw HttpErrors.badRequest("Ya existe una cuenta con ese email")
+
+            const phoneExists = await this.repo.findByPhoneNumber(dto.phoneNumber)
+            if (phoneExists) throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+
             const salt = bcrypt.genSaltSync(5);
             let hash = bcrypt.hashSync(dto.password, salt)
             const user = new User()
@@ -122,6 +163,7 @@ export class UserServiceImpl implements UserService {
             user.lastName = dto!.lastName
             user.phoneNumber = dto!.phoneNumber
             user.password = hash
+            if (dto.birthDate !== undefined) user.birthDate = dto.birthDate
 
             const userRegistered = await this.repo.save(user)
             return new SchemaResponse(UserDTO.fromEntity(userRegistered))
@@ -129,6 +171,21 @@ export class UserServiceImpl implements UserService {
         catch (error) {
             console.log(error)
             if (error instanceof HttpErrors) throw error;
+            const dbError = error as { code?: string; sqlMessage?: string }
+            if (dbError?.code === 'ER_DUP_ENTRY') {
+                const duplicateValueMatch = dbError.sqlMessage?.match(/Duplicate entry '([^']+)'/)
+                const duplicateValue = duplicateValueMatch?.[1]
+
+                if (duplicateValue === dto.phoneNumber) {
+                    throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+                }
+
+                if (duplicateValue === dto.email) {
+                    throw HttpErrors.badRequest("Ya existe una cuenta con ese email")
+                }
+
+                throw HttpErrors.badRequest("Ya existe una cuenta con ese teléfono")
+            }
             throw HttpErrors.internalServerError("Something went wrong")
         }
     }

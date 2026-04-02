@@ -39,6 +39,17 @@ export class UserController {
         }
     }
 
+    update = async (req: Request, res: Response) => {
+        try {
+            const dto = UserDTO.createDTO(req.body)
+            const result = await this.service.update(dto)
+            return res.status(200).json({ message: "User updated", user: result })
+        } catch (error) {
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
+            return res.status(500)
+        }
+    }
+
     /**
      * Obtiene un usuario por identificador
      */
@@ -60,6 +71,7 @@ export class UserController {
         try {
             const page = Number(req.params.page ?? 1);
             const response = await this.service.getAllPaginated(page);
+            console.log('RESPONSE:', response);
             return res.status(200).json({
                 data: response.result,
                 totalCount: response.metadata?.count ?? 0,
@@ -110,7 +122,7 @@ export class UserController {
             //Pendiente redireccionar a la home o alguna pagina por determinar
         }
         catch (error) {
-            if (error instanceof HttpErrors) return res.status(400).json({ message: "Invalid credentials" })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             console.error('ERROR EN EL CONTROLLER:', error);
             res.status(500).json({ message: "Internal Server Error" })
         }
@@ -152,9 +164,9 @@ export class UserController {
             const result = await this.service.signUp(dto!)
             return this.login(req, res)
         } catch (error) {
-            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             console.log(error);
-            res.status(500).json({ message: "Internal server error" })
+            return res.status(500).json({ message: "Internal server error" })
         }
     }
 
@@ -168,9 +180,9 @@ export class UserController {
             const result = await this.service.emailExists(email)
             if (!result) return res.status(200).json({ result: "email available" })
         } catch (error) {
-            if (error instanceof HttpErrors) res.status(error.statusCode).json({ message: error.message })
+            if (error instanceof HttpErrors) return res.status(error.statusCode).json({ message: error.message })
             // console.log(error);
-            res.status(500).json({ message: "Internal server error" })
+            return res.status(500).json({ message: "Internal server error" })
         }
     }
 

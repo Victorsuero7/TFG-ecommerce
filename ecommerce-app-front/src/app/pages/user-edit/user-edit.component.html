@@ -35,6 +35,19 @@
           <div class="invalid-feedback d-block" *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">El teléfono es obligatorio.</div>
 				</div>
 
+				<div class="mb-3" *ngIf="canEditRole; else roleReadOnly">
+					<label for="role" class="form-label">Rol</label>
+					<select id="role" class="form-select" formControlName="role">
+						<option *ngFor="let role of roleOptions" [value]="role">{{ role }}</option>
+					</select>
+				</div>
+				<ng-template #roleReadOnly>
+					<div class="mb-3">
+						<label class="form-label">Rol</label>
+						<input class="form-control" type="text" [value]="currentRole" disabled />
+					</div>
+				</ng-template>
+
 				<div class="mb-3">
 					<label for="birthDate" class="form-label">Fecha de nacimiento</label>
 					<input id="birthDate" class="form-control" type="date" formControlName="birthDate" />

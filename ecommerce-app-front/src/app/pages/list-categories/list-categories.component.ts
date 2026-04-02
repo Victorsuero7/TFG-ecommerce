@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, Subscription, of, switchMap, debounceTime, distinctUntilChanged, catchError, forkJoin, map } from 'rxjs';
 import { CategoryService } from '../../services/category/category.service';
 import { Category } from '../../models/category.model';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-list-categories',
@@ -23,13 +24,16 @@ export class ListCategoriesComponent implements OnInit, OnDestroy {
   error = '';
   searchTerm = '';
   searchField: 'all' | 'name' | 'description' = 'all';
+  isViewOnly = false;
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
 
-  constructor(private categorySvc: CategoryService, private router: Router) {}
+  constructor(private categorySvc: CategoryService, private router: Router, private authSvc: AuthService) {}
 
   ngOnInit(): void {
+    this.isViewOnly = this.authSvc.isViewOnly();
+
     this.load();
     this.searchSub = this.search$.pipe(
       debounceTime(350),
@@ -87,7 +91,10 @@ export class ListCategoriesComponent implements OnInit, OnDestroy {
   }
 
   view(id?: number) { if (id) this.router.navigate(['/categories/detail/', id]); }
-  edit(id?: number) { if (id) this.router.navigate(['/categories/edit/', id]); }
+  edit(id?: number) {
+    if (this.isViewOnly) return;
+    if (id) this.router.navigate(['/categories/edit/', id]);
+  }
 
   
 }

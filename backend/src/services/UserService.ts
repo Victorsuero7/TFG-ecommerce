@@ -15,6 +15,7 @@ export interface UserService {
     getOne(id: number): Promise<SchemaResponse<UserDTO | null>>
     /** Inserta un nuevo usuario. */
     insert(user: UserDTO): Promise<SchemaResponse<UserDTO>>
+    update(user: UserDTO): Promise<SchemaResponse<UserDTO>>
     /** Registra un nuevo usuario en el sistema. */
     signUp(dto: RegisterUserDTO): Promise<SchemaResponse<UserDTO>>
     /** Realiza el login del usuario y devuelve un token JWT. */

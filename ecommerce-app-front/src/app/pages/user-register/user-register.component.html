@@ -35,6 +35,7 @@
             [class.is-invalid]="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">
           <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('required')" class="invalid-feedback">El teléfono es obligatorio.</div>
           <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('pattern')" class="invalid-feedback">Introduce un número de teléfono válido.</div>
+          <div *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.hasError('phoneTaken')" class="invalid-feedback">Ya existe una cuenta con ese teléfono.</div>
         </div>
 
         <div class="mb-3">

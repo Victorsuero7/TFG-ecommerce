@@ -4,7 +4,6 @@ import { GenericService } from '../../services/generic/generic.service';
 import { User } from '../../models/user.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import {Product} from '../../models/product.model';
 import {PaginatedResponse} from '../product/product.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
@@ -35,18 +34,35 @@ export class UserService extends GenericService<User> {
     }
   }
 
+  
   /**
    * Obtiene usuarios de forma paginada.
    * @param page Número de página.
    * @returns Observable con los usuarios y el total de registros.
    */
-  getAllPaginated(page: number): Observable<PaginatedResponse<Product>> {
+  
+  getAllPaginated(page: number): Observable<PaginatedResponse<User>> {
     const options = this.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}/all/${page}`, options).pipe(
       map((res: any) => ({
         data: res.data ?? [],
         totalCount: res.totalCount ?? 0
       }))
+    );
+  }
+
+  override getById(id: number): Observable<User> {
+    const options = this.getAuthHeaders();
+    return this.http.get<any>(`${this.baseUrl}/${id}`, options).pipe(
+      map((res: any) => (res?.message?.result ?? res?.result ?? res?.message ?? res) as User)
+    );
+  }
+
+  override update(id: number, item: User): Observable<User> {
+    const options = this.getAuthHeaders();
+    const payload = { ...item, id };
+    return this.http.patch<any>(`${this.baseUrl}/update`, payload, options).pipe(
+      map((res: any) => (res?.user?.result ?? res?.user ?? res?.result ?? res?.message ?? res) as User)
     );
   }
   
